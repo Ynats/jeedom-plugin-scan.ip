@@ -216,6 +216,13 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
         self::recordInJson(json_encode(self::scanReseau()));
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            if ($scan_ip->getIsEnable() == 1) {
+                scan_ipCmd::cmdRefresh($scan_ip);
+                log::add('scan_ip', 'debug', 'syncScanIp :. scan_ipCmd::cmdRefresh('.$scan_ip->getId().')');
+            }
+        }
     }
     
     public static function nmad($_ip, $_end = NULL){
@@ -250,7 +257,6 @@ class scan_ip extends eqLogic {
             log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau 2');
             $nmapResult = self::nmad($config["plage_ip_2"] . '.' . $config["plage_start_2"], $config["plage_end_2"]);
             $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
-            var_dump($now);
         }
         
         if($config["plage_3_enable"] == 1){
