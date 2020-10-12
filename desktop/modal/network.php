@@ -70,7 +70,7 @@ $savingMac = scan_ip::getAlleqLogics();
             <table style="width: 100%; margin: -5px -5px 10px 5px;">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
-                        <th class="scanTd">{{Suivi}}</th>
+                        <th style="text-align: center;" class="scanTd">{{Equipements}}</th>
                         <th class="scanTd">{{Adresse MAC}}</th>
                         <th class="scanTd">{{ip}}</th>
                         <th class="scanTd">{{Nom}}</th>
@@ -89,7 +89,7 @@ $savingMac = scan_ip::getAlleqLogics();
                         if(isset($savingMac[$value->mac]["enable"])){
                             if($savingMac[$value->mac]["enable"] == 1){
                                 $classPresent = "macPresentActif";
-                                $textPresent = "Activé";
+                                $textPresent = "Enregistré";
                                 $classSuivi = "spanScanIp EnableScanIp";
                             } else {
                                 $classPresent = "macPresentInactif";
@@ -98,7 +98,7 @@ $savingMac = scan_ip::getAlleqLogics();
                             }
                         } else {
                             $classPresent = "macAbsent";
-                            $textPresent = "Inconnue";
+                            $textPresent = "Non enregistré";
                             $classSuivi = "spanScanIp NoneScanIp";
                         }
                         
@@ -132,8 +132,14 @@ $savingMac = scan_ip::getAlleqLogics();
             </div>
             <div>
                 <label class="col-sm-5 control-label">Adresse MAC : </label>
-                <div><?php echo $ipsReseau["jeedom"]->mac?></div>
+                <div><?php echo $ipsReseau["jeedom"]->mac ?></div>
             </div>
+            <?php if(gethostbyaddr($ipsReseau["jeedom"]->ip_v4) != $ipsReseau["jeedom"]->ip_v4){ ?>            
+            <div>
+                <label class="col-sm-5 control-label">Host Name : </label>
+                <div><?php echo gethostbyaddr($ipsReseau["jeedom"]->ip_v4) ?></div>
+            </div>
+            <?php } ?> 
         </div>
         <br />
     </div>

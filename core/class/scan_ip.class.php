@@ -197,11 +197,7 @@ class scan_ip extends eqLogic {
      */
 
     /*     * **********************Getteur Setteur*************************** */
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# START -> PREVISY
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    
+   
 //    public function get() {
 //        log::add('scan_ip', 'debug', '#######################################################################################');
 //        log::add('scan_ip', 'debug', 'get :. #ID#' . $_id . ' lancement');
@@ -246,15 +242,19 @@ class scan_ip extends eqLogic {
         
         $now = array();
         
+        log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau principal');
         $nmapResult = self::nmad($config["plage_ip"] . '.' . $config["plage_start"], $config["plage_end"]);
         $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
         
         if($config["plage_2_enable"] == 1){
+            log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau 2');
             $nmapResult = self::nmad($config["plage_ip_2"] . '.' . $config["plage_start_2"], $config["plage_end_2"]);
             $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
+            var_dump($now);
         }
         
         if($config["plage_3_enable"] == 1){
+            log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau 3');
             $nmapResult = self::nmad($config["plage_ip_3"] . '.' . $config["plage_start_3"], $config["plage_end_3"]);
             $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
         }
@@ -277,7 +277,6 @@ class scan_ip extends eqLogic {
     
     public static function filtreIpMac($_now, $_retour_nman, $_ips_ignore = array()){
         
-        $i = 0;
         foreach ($_retour_nman as $value) {
             
             if(preg_match('(Starting Nmap)', $value) AND empty($now["infos"]["nmap"])) {
@@ -285,7 +284,7 @@ class scan_ip extends eqLogic {
             }   
             elseif (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $value)) {
                 preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $value, $ip_out);
-                $i++;
+                $i = time().rand(100000, 999999);
                 if(!in_array($ip_out[0], $_ip_ignore)){
                     $valueIp = $ip_out[0];
                 }  

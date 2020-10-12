@@ -35,7 +35,7 @@ list($plage_ip_1, $plage_ip_2, $plage_ip_3) = explode('.', $conf["ip_route"]);
 <form class="form-horizontal">
     <fieldset>
         <legend>
-            <i <?php if($conf["plage_1_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:orange;"'; } ?> class="fas fa-sitemap"></i> Réseau directement associé à votre Jeedom
+            <i <?php if($conf["plage_1_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:red;"'; } ?> class="fas fa-sitemap"></i> Réseau directement associé à votre Jeedom
 	</legend>
         
         <div class="form-group" style="margin-top: 15px;">
@@ -62,7 +62,7 @@ list($plage_ip_1, $plage_ip_2, $plage_ip_3) = explode('.', $conf["ip_route"]);
     
     <fieldset>
         <legend>
-            <i <?php if($conf["plage_2_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:orange;"'; } ?> class="fas fa-sitemap"></i> 1er sous-réseau (optionnel)
+            <i <?php if($conf["plage_2_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:red;"'; } ?> class="fas fa-sitemap"></i> 1er sous-réseau (optionnel)
 	</legend>
         
         <div class="form-group" style="margin-top: 15px;">
@@ -89,7 +89,7 @@ list($plage_ip_1, $plage_ip_2, $plage_ip_3) = explode('.', $conf["ip_route"]);
     
     <fieldset>
         <legend>
-            <i <?php if($conf["plage_3_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:orange;"'; } ?> class="fas fa-sitemap"></i> 2em sous-réseau (optionnel)
+            <i <?php if($conf["plage_3_enable"] == 1){ echo 'style="color:green;"'; } else { echo 'style="color:red;"'; } ?> class="fas fa-sitemap"></i> 2em sous-réseau (optionnel)
 	</legend>
         
         <div class="form-group" style="margin-top: 15px;">
