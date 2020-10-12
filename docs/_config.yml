@@ -24,5 +24,5 @@ image: https://www.jeedom.com/site/logo.png
 social:
   name:  Jeedom-Scan.Ip
   links:
-    - https://github.com/Ynats/jeedom-plugin-scan.ip/
+    - https://github.com/Ynats/jeedom-plugin-scan.ip
     - https://github.com/jeedom

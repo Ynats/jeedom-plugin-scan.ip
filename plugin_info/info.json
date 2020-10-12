@@ -7,8 +7,8 @@
         "require" : "4",
         "hasDependency": true,
 	"category" : "communication",
-	"changelog" : "https://ynats.github.io\/jeedom-plugin-scan_ip\/#language#/changelog",
-	"documentation" : "https:\/\/ynats.github.io\/jeedom-plugin-scan_ip\/#language#/",
+	"changelog" : "https://ynats.github.io\/jeedom-plugin-scan.ip\/#language#/changelog",
+	"documentation" : "https:\/\/ynats.github.io\/jeedom-plugin-scan.ip\/#language#/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/plugin-scan_ip/"
 	},
