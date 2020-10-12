@@ -36,41 +36,16 @@ class scan_ip extends eqLogic {
         $return["ip_route"] = self::getIpRoute();
         
         $return["plage_ip"] = self::getPlageIp($return["ip_route"]);
-        $return["plage_start"] = self::checkConfig('plage_start');
-        $return["plage_end"] = self::checkConfig('plage_end');
+        $return["plage_start"] = config::byKey('plage_start', 'scan_ip', NULL);
+        $return["plage_end"] = config::byKey('plage_end', 'scan_ip', NULL);
         
         if($return["plage_start"] == NULL OR $return["plage_end"] == NULL){
-           $return["plage_1_enable"] = 0;
-        } else { $return["plage_1_enable"] = 1; }
-        
-        $return["start_plage_2_1"] = self::checkConfig('start_plage_2_1');
-        $return["start_plage_2_2"] = self::checkConfig('start_plage_2_2');
-        $return["start_plage_2_3"] = self::checkConfig('start_plage_2_3');
-        $return["plage_ip_2"] = $return["start_plage_2_1"] .".".$return["start_plage_2_2"].".".$return["start_plage_2_3"];
-        $return["plage_start_2"] = self::checkConfig('plage_2_start');
-        $return["plage_end_2"] = self::checkConfig('plage_2_end');
-        
-        if(     $return["start_plage_2_1"] == NULL OR $return["start_plage_2_2"] == NULL OR $return["start_plage_2_3"] == NULL OR $return["plage_start_2"] == NULL OR $return["plage_end_2"] == NULL){
-           $return["plage_2_enable"] = 0;
-        } else { $return["plage_2_enable"] = 1; }
-        
-        $return["start_plage_3_1"] = config::byKey('start_plage_3_1', 'scan_ip');
-        $return["start_plage_3_2"] = config::byKey('start_plage_3_2', 'scan_ip');
-        $return["start_plage_3_3"] = config::byKey('start_plage_3_3', 'scan_ip');
-        $return["plage_ip_3"] = $return["start_plage_3_1"] .".".$return["start_plage_3_2"].".".$return["start_plage_3_3"];
-        $return["plage_start_3"] = config::byKey('plage_3_start', 'scan_ip');
-        $return["plage_end_3"] = config::byKey('plage_3_end', 'scan_ip');
-        
-        if($return["start_plage_3_1"] == "" OR $return["start_plage_3_2"] == "" OR $return["start_plage_3_3"] == "" OR $return["plage_start_3"] == "" OR $return["plage_end_3"] == ""){
-           $return["plage_3_enable"] = 0;
-        } else { $return["plage_3_enable"] = 1; }
+           $return["plage_enable"] = 0;
+        } else { $return["plage_enable"] = 1; }
         
         return $return;
     }
     
-    public static function checkConfig($_config){
-        return config::byKey($_config, 'scan_ip', NULL);
-    }
 
     /*     * ***********************Methode static*************************** */
 
@@ -247,21 +222,9 @@ class scan_ip extends eqLogic {
         
         $ignoreIps = array($infoRouter["ip_v4"], $infoJeedom["ip_v4"]);  
         
-        $now = array();
-        
-        log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau principal');
-        $nmapResult = self::nmad($config["plage_ip"] . '.' . $config["plage_start"], $config["plage_end"]);
-        $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
-        
-        if($config["plage_2_enable"] == 1){
-            log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau 2');
-            $nmapResult = self::nmad($config["plage_ip_2"] . '.' . $config["plage_start_2"], $config["plage_end_2"]);
-            $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
-        }
-        
-        if($config["plage_3_enable"] == 1){
-            log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau 3');
-            $nmapResult = self::nmad($config["plage_ip_3"] . '.' . $config["plage_start_3"], $config["plage_end_3"]);
+        if($config["plage_enable"] == 1){
+            log::add('scan_ip', 'debug', 'scanReseau :. Scan du réseau principal');
+            $nmapResult = self::nmad($config["plage_ip"] . '.' . $config["plage_start"], $config["plage_end"]);
             $now = self::filtreIpMac($now, $nmapResult, $ignoreIps);
         }
         
@@ -283,6 +246,8 @@ class scan_ip extends eqLogic {
     
     public static function filtreIpMac($_now, $_retour_nman, $_ips_ignore = array()){
         
+        $i = 0;
+        
         foreach ($_retour_nman as $value) {
             
             if(preg_match('(Starting Nmap)', $value) AND empty($now["infos"]["nmap"])) {
@@ -290,8 +255,8 @@ class scan_ip extends eqLogic {
             }   
             elseif (preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $value)) {
                 preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $value, $ip_out);
-                $i = time().rand(100000, 999999);
                 if(!in_array($ip_out[0], $_ip_ignore)){
+                    $i++;
                     $valueIp = $ip_out[0];
                 }  
             } 

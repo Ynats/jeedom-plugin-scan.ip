@@ -15,11 +15,6 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Sur la configuration
-function autoChangeIp(input, output){
-    $('#'+output).val($('#'+input).val());
-}
-
 // Sur la partie NetWork
 $('#bt_scanIpNetwork').off('click').on('click', function () {
   $('#md_modal').dialog({title: "{{Afficher le Réseau}}"});
