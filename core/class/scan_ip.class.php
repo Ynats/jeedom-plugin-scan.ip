@@ -250,8 +250,7 @@ class scan_ip extends eqLogic {
     public static function getRegex($_type){
         if($_type == "ip_v4") { return "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/"; }
         elseif($_type == "mac") { return "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/"; }
-        else { $return = NULL; }
-        return $return;
+        else { return NULL; }
     }
     
     public static function getIpRoute(){
@@ -309,7 +308,8 @@ class scan_ip extends eqLogic {
     public static function arpVersion(){
         $exec = shell_exec('sudo arp-scan  -V');
         $list = preg_split('/[\r\n]+/', $exec);
-        return $list[0];
+        if(preg_match("(sudo: arp-scan:)", $list[0])){ return NULL; }
+        else { return $list[0]; }
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +357,6 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'recordInJson :.  Lancement');
         
-        $config = self::getConfig();
         self::prepareJsonFolder();
         self::createJsonFile($_json);
 
@@ -409,13 +408,12 @@ class scan_ip extends eqLogic {
         $return = array();
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
-        $test = exec('nmap -V | grep "Nmap version"');
-        
-        if (preg_match('(Nmap version )', $test)) {
+        if (self::arpVersion() != NULL) {
             $return['state'] = 'ok';
         } else {
             $return['state'] = 'nok';
         }
+        
         log::add('scan_ip', 'debug', 'dependancy_info :. ' . $return['state']);
         return $return;
     }
