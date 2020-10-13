@@ -262,7 +262,7 @@ class scan_ip extends eqLogic {
         $record = self::getAlleqLogics();
         $list = (array) self::getJsonTampon();
         $print = "";
-        foreach ($list["all"] as $value) {
+        foreach ($list["sort"] as $value) {
             if(empty($record[$value->mac])){
                 $print .= '<option value="'. $value->mac .'"';
                 if($_selected != NULL AND $_selected == $value->mac) { $print .= ' selected'; }
