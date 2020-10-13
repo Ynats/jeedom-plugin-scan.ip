@@ -457,8 +457,8 @@ class scan_ipCmd extends cmd {
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $json = (array) scan_ip::getJsonTampon();
         $eqlogic->checkAndUpdateCmd('ip_v4', scan_ip::searchByMac($eqlogic->getConfiguration("adress_mac")));
-        $eqlogic->checkAndUpdateCmd('update_time', $json["timestamp"]->time);
-        $eqlogic->checkAndUpdateCmd('update_date', $json["timestamp"]->date);
+        $eqlogic->checkAndUpdateCmd('update_time', $json["infos"]->time);
+        $eqlogic->checkAndUpdateCmd('update_date', $json["infos"]->date);
     }
 
     /*     * **********************Getteur Setteur*************************** */
