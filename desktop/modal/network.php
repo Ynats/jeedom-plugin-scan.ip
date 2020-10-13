@@ -25,7 +25,6 @@ if(empty($ipsReseau)){
     scan_ip::syncScanIp();
     $ipsReseau = (array) scan_ip::getJsonTampon();
 }
-
 $savingMac = scan_ip::getAlleqLogics();
 
 ?>
@@ -64,7 +63,7 @@ $savingMac = scan_ip::getAlleqLogics();
 <div class="col-md-8">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
-            <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["timestamp"]->date ?>)</h3>
+            <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]->date ?>)</h3>
         </div>
         <div class="panel-body">
             <table style="width: 100%; margin: -5px -5px 10px 5px;">
@@ -78,16 +77,16 @@ $savingMac = scan_ip::getAlleqLogics();
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($ipsReseau["all"] as $value) {
+                    foreach ($ipsReseau["sort"] as $device) {
                         
-                        if(isset($savingMac[$value->mac]["name"])){
-                            $name = $savingMac[$value->mac]["name"];
+                        if(isset($savingMac[$device->mac]["name"])){
+                            $name = $savingMac[$device->mac]["name"];
                         } else {
-                            $name = $value->name;
+                            $name = "-";
                         }
                         
-                        if(isset($savingMac[$value->mac]["enable"])){
-                            if($savingMac[$value->mac]["enable"] == 1){
+                        if(isset($savingMac[$device->mac]["enable"])){
+                            if($savingMac[$device->mac]["enable"] == 1){
                                 $classPresent = "macPresentActif";
                                 $textPresent = "Enregistré";
                                 $classSuivi = "spanScanIp EnableScanIp";
@@ -104,8 +103,8 @@ $savingMac = scan_ip::getAlleqLogics();
                         
                         echo '<tr>'
                         . '<td class="'.$classPresent.'"><span class="'.$classSuivi.'">' . $textPresent . '</span></td>'
-                        . '<td class="scanTd '.$classPresent.'">' . $value->mac . '</td>'
-                        . '<td class="scanTd '.$classPresent.'">' . $value->ip_v4 . '</td>'
+                        . '<td class="scanTd '.$classPresent.'">' . $device->mac . '</td>'
+                        . '<td class="scanTd '.$classPresent.'">' . $device->ip_v4 . '</td>'
                         . '<td class="scanTd '.$classPresent.'">' . $name . '</td>'
                         . '</tr>';
                     }
@@ -153,11 +152,11 @@ $savingMac = scan_ip::getAlleqLogics();
         <div class="panel-body">
             <div>
                 <label class="col-sm-5 control-label">ip : </label>
-                <div><?php echo $ipsReseau["routeur"]->ip_v4 ?></div>
+                <div><?php echo $ipsReseau["route"]->ip_v4 ?></div>
             </div>
             <div>
                 <label class="col-sm-5 control-label">Adresse MAC : </label>
-                <div><?php echo $ipsReseau["routeur"]->mac ?></div>
+                <div><?php echo $ipsReseau["route"]->mac ?></div>
             </div>
         </div>
         <br />
