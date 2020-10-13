@@ -24,8 +24,6 @@ class scan_ip extends eqLogic {
     /*     * *************************Attributs****************************** */
     
     public static $_widgetPossibility = array('custom' => true);
-    public static $regex_ip_v4 = "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/";
-    public static $regex_mac = "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/";
 
     /*     * **************************Configuration************************* */
 
@@ -234,7 +232,7 @@ class scan_ip extends eqLogic {
         $list = preg_split('/[\r\n]+/', $exec);
         
         foreach ($list as $i => $value) {
-            if (preg_match(self::$regex_ip_v4, $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value)) {
+            if (preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value)) {
                 $return["ip_v4"] = trim(str_replace("inet", "", explode("/",$value)[0]));
                 $return["mac"] = strtoupper(trim(str_replace("link/ether", "", explode("brd",$list[$i-1])[0])));
                 $return["name"] = config::byKey('name');
@@ -247,6 +245,13 @@ class scan_ip extends eqLogic {
     public static function getPlageIp($_ip){
         list($a, $b, $c) = explode('.', $_ip);
         return $a . "." . $b . "." . $c;
+    }
+    
+    public static function getRegex($_type){
+        if($_type == "ip_v4") { return "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/"; }
+        elseif($_type == "mac") { return "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/"; }
+        else { $return = NULL; }
+        return $return;
     }
     
     public static function getIpRoute(){
@@ -284,9 +289,9 @@ class scan_ip extends eqLogic {
         $exec = shell_exec('sudo arp-scan  --localnet');
         $list = preg_split('/[\r\n]+/', $exec);
         foreach ($list as $scanLine) {
-            if (preg_match(self::$regex_ip_v4, $scanLine)) {
-                preg_match(self::$regex_ip_v4, $scanLine, $sortIp); 
-                preg_match(self::$regex_mac, $scanLine, $sortMac);
+            if (preg_match(self::getRegex("ip_v4"), $scanLine)) {
+                preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
+                preg_match(self::getRegex("mac"), $scanLine, $sortMac);
                 if($sortIp[0] == $_ipRoute){
                     $return["route"]["ip_v4"] = $sortIp[0];
                     $return["route"]["mac"] = strtoupper($sortMac[0]);
