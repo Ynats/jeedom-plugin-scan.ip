@@ -4,7 +4,7 @@
 	"description" : "Ce plugin permet de scanner régulièrement votre réseau afin de lever des alertes et/ou corriger des changements d'Ip non-souhaités.",
 	"licence" : "AGPL",
 	"author" : "Ynats",
-        "require" : "4",
+        "require" : "3.3",
         "hasDependency": true,
 	"category" : "monitoring",
 	"changelog" : "https://ynats.github.io\/jeedom-plugin-scan.ip\/#language#/changelog",
