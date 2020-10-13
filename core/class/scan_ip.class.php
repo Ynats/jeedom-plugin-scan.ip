@@ -403,9 +403,8 @@ class scan_ip extends eqLogic {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static function dependancy_info() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'dependancy_info :. Lancement');
         $return = array();
+        $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
         if (self::arpVersion() != NULL) {
@@ -420,7 +419,7 @@ class scan_ip extends eqLogic {
 
     public static function dependancy_install() {
         log::remove(__CLASS__ . '_update');
-        return array('script' => dirname(__FILE__) . '/../../resources/install_scan_ip.sh ' . jeedom::getTmpFolder('scan_ip') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+        return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder('scan_ip') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
