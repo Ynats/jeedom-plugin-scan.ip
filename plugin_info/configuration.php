@@ -21,5 +21,12 @@ if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
+var_dump(scan_ip::getConfig()); 
 ?>
 
+<form class="form-horizontal">
+    <fieldset>
+        <?php echo scan_ip::printInputSubConfig() ?> 
+        <br />
+    </fieldset>
+</form>
