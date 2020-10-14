@@ -32,10 +32,15 @@ class scan_ip extends eqLogic {
         $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
         $return["jsonTampon"] = $return["folderTampon"]."mapping.json"; // Fichier des Json en Tampon
         
-        $a = 0;
+        $a = $enable = 0;
         foreach (scan_ip::scanSubReseau() as $sub) { $a++;
             $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
             $return["subReseau"][$a]["name"] = $sub["name"];
+            $enable = $return["subReseau"][$a]["enable"] + $enable;
+        }
+        
+        if($enable == 0){
+            log::add('scan_ip', 'error', "Aucun réseau n'est activé. Allez dans la configuration du plugin pour écouter un réseau.");
         }
         return $return;
     }
