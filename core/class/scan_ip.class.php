@@ -258,6 +258,7 @@ class scan_ip extends eqLogic {
     public static function scanSubReseau(){ 
         log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
 
+        $ipRoute = self::getIpRoute();
         $exec = shell_exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec); 
         $i = 0;
@@ -275,7 +276,7 @@ class scan_ip extends eqLogic {
                     
                 }
             }
-            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value) AND $ok == 1) {
+            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($ipRoute).")", $value) AND $ok == 1) {
                 $return[$i]["ip_v4"] = self::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*";
             }
         }
