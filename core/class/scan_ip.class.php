@@ -31,7 +31,13 @@ class scan_ip extends eqLogic {
         $return["folderTampon"] = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
         $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
         $return["jsonTampon"] = $return["folderTampon"]."mapping.json"; // Fichier des Json en Tampon
-        $return["timeSynchro"] = 60 * 5; // Synchro avec le site distant tous les X secondes
+        
+        $a = 0;
+        foreach (scan_ip::scanSubReseau() as $sub) { $a++;
+            $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
+            $return["subReseau"][$a]["name"] = $sub["name"];
+        }
+        
         return $return;
     }
     
@@ -195,8 +201,15 @@ class scan_ip extends eqLogic {
         
         $ipRoute = self::getIpRoute();
         $infoJeedom = self::getInfoJeedom($ipRoute);
+        
+        $now = array();
+        foreach (scan_ip::scanSubReseau() as $sub) { $a++;
+            if(config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0) == 1){
+                $tmp = self::arpScan($ipRoute, $sub["name"]); 
+                $now = array_merge($now, $tmp);
+            }
+        }
 
-        $now = self::arpScan($ipRoute); 
         $now["jeedom"] = $infoJeedom; 
         $now["infos"]["version_arp"] = self::arpVersion();
         $now["infos"]["time"] = time();
@@ -232,11 +245,38 @@ class scan_ip extends eqLogic {
         $list = preg_split('/[\r\n]+/', $exec);
         
         foreach ($list as $i => $value) {
-            if (preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value)) {
+            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value)) {
                 $return["ip_v4"] = trim(str_replace("inet", "", explode("/",$value)[0]));
                 $return["mac"] = strtoupper(trim(str_replace("link/ether", "", explode("brd",$list[$i-1])[0])));
                 $return["name"] = config::byKey('name');
                 break;
+            }
+        }
+        return $return;
+    }
+    
+    public static function scanSubReseau(){ 
+        log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
+
+        $exec = shell_exec('sudo ip a');
+        $list = preg_split('/[\r\n]+/', $exec); 
+        $i = 0;
+        $exclude = "lo";
+        
+        foreach ($list as $value) {
+            if(preg_match(self::getRegex("sub_reseau"), $value)){ 
+                $ok = 0;
+                $name = trim(explode(":", $value)[1]);
+                if($name != $exclude) {
+                    $ok = 1;
+                    $i++; 
+                    $return[$i]["name"] = $name; 
+                } else {
+                    
+                }
+            }
+            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value) AND $ok == 1) {
+                $return[$i]["ip_v4"] = self::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*";
             }
         }
         return $return;
@@ -250,6 +290,7 @@ class scan_ip extends eqLogic {
     public static function getRegex($_type){
         if($_type == "ip_v4") { return "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/"; }
         elseif($_type == "mac") { return "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/"; }
+        elseif($_type == "sub_reseau") { return "/\d{1,3}\:\s(.+)\:\s/"; }
         else { return NULL; }
     }
     
@@ -281,11 +322,43 @@ class scan_ip extends eqLogic {
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# APP NMAP
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+    
+//    public static function nmadScan($_ip, $_end = NULL){
+//        log::add('scan_ip', 'debug', 'nmad :. Lancement');
+//        $nmap = 'sudo nmap -sP ' . $_ip;
+//        if($_end != NULL){ 
+//            $nmap .= '-' . $_end; 
+//        }
+//        exec($nmap, $return);
+//        
+//        log::add('scan_ip', 'debug', $return);
+//        return $return;
+//    }
+//    
+//    public static function nmadFilterMac($_input, $_ip, $_exclude = array()){
+//        if (preg_match('(MAC Address: )', $_input)) {
+//            if(!in_array($_ip, $_exclude)){
+//                $mac_out = str_replace('MAC Address: ', "", $_input);
+//                $mac_out = str_replace(' (', "|", $mac_out);
+//                $mac_out = str_replace(')', "", $mac_out);
+//                $mac_out = explode("|", $mac_out);
+//                return $mac_out[0];
+//            }
+//        } 
+//    }
+
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# APP NMAP
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # APP ARP-SCAN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function arpScan($_ipRoute){
-        $exec = shell_exec('sudo arp-scan  --localnet');
+    public static function arpScan($_ipRoute, $_subReseau){
+        $exec = shell_exec('sudo arp-scan --interface='.$_subReseau.' --localnet');
         $list = preg_split('/[\r\n]+/', $exec);
         foreach ($list as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) {
@@ -306,10 +379,12 @@ class scan_ip extends eqLogic {
     }
     
     public static function arpVersion(){
-        $exec = shell_exec('sudo arp-scan  -V');
+        $exec = shell_exec('sudo arp-scan -V');
         $list = preg_split('/[\r\n]+/', $exec);
-        if(preg_match("(sudo: arp-scan:)", $list[0])){ return NULL; }
-        else { return $list[0]; }
+        foreach ($list as $searchVersion) {
+            if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
+            elseif(preg_match("(arp-scan )", $searchVersion)){ return $list[0]; }
+        }     
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,13 +394,7 @@ class scan_ip extends eqLogic {
 # TACHES CRON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static function cron5() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'CRON 5 :. START');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'cron5 :. Lancement');
-        
-        log::add('scan_ip', 'debug', 'cron5 :. self::syncScanIp()');
+    public static function cronTemplate(){
         self::syncScanIp();
         
         $eqLogics = eqLogic::byType('scan_ip');
@@ -335,16 +404,35 @@ class scan_ip extends eqLogic {
                 log::add('scan_ip', 'debug', 'cron5 :. scan_ipCmd::cmdRefresh('.$scan_ip->getId().')');
             }
         }
+    }
+    
+    public static function cron5() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'CRON :. START');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'cron :. Lancement');
+        
+        self::cronTemplate();
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'CRON 5 :. FIN');
+        log::add('scan_ip', 'debug', 'CRON :. FIN');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
 
     }
     
-//    public static function cronHourly() {
-//        
-//    }
+    public static function printInmutSubConfig(){
+        $return = "";
+        foreach (scan_ip::scanSubReseau() as $sub) { 
+            $return .= '<div class="form-group" style="margin-top: 15px;">';
+            $return .= '<label class="col-sm-3 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
+            $return .= '<div class="col-sm-3">';
+            $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
+            $return .= '</div>';
+            $return .= '</div>';
+        }
+        return $return;
+    }
+   
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # TACHES CRON
@@ -352,6 +440,11 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DU JSON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+    
+    //    public static function cronHourly() {
+    //        
+    //    }
+    
     
     public static function recordInJson($_json) {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
