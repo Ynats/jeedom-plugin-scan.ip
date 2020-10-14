@@ -37,7 +37,6 @@ class scan_ip extends eqLogic {
             $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
             $return["subReseau"][$a]["name"] = $sub["name"];
         }
-        
         return $return;
     }
     
@@ -261,12 +260,10 @@ class scan_ip extends eqLogic {
         $ipRoute = self::getIpRoute();
         $exec = shell_exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec); 
-        $i = 0;
         $exclude = "lo";
         
         foreach ($list as $value) {
             if(preg_match(self::getRegex("sub_reseau"), $value)){ 
-                $ok = 0;
                 $name = trim(explode(":", $value)[1]);
                 if($name != $exclude) {
                     $ok = 1;
@@ -276,7 +273,7 @@ class scan_ip extends eqLogic {
                     
                 }
             }
-            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($ipRoute).")", $value) AND $ok == 1) {
+            if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($ipRoute).")", $value)) {
                 $return[$i]["ip_v4"] = self::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*";
             }
         }
@@ -421,15 +418,17 @@ class scan_ip extends eqLogic {
 
     }
     
-    public static function printInmutSubConfig(){
+    public static function printInputSubConfig(){
         $return = "";
-        foreach (scan_ip::scanSubReseau() as $sub) { 
-            $return .= '<div class="form-group" style="margin-top: 15px;">';
-            $return .= '<label class="col-sm-3 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
-            $return .= '<div class="col-sm-3">';
-            $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
-            $return .= '</div>';
-            $return .= '</div>';
+        foreach (scan_ip::scanSubReseau() as $sub) {
+            if($sub["name"] != "lo") {
+                $return .= '<div class="form-group" style="margin-top: 15px;">';
+                $return .= '<label class="col-sm-3 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
+                $return .= '<div class="col-sm-3">';
+                $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
+                $return .= '</div>';
+                $return .= '</div>';
+            }
         }
         return $return;
     }
