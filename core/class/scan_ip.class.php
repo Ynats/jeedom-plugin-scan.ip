@@ -260,13 +260,11 @@ class scan_ip extends eqLogic {
         $ipRoute = self::getIpRoute();
         $exec = shell_exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec); 
-        $exclude = "lo";
         
         foreach ($list as $value) {
             if(preg_match(self::getRegex("sub_reseau"), $value)){ 
                 $name = trim(explode(":", $value)[1]);
                 if($name != $exclude) {
-                    $ok = 1;
                     $i++; 
                     $return[$i]["name"] = $name; 
                 } else {
@@ -495,12 +493,19 @@ class scan_ip extends eqLogic {
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
+    public static function compilationOk() {
+        if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
+                return FALSE;
+        }
+        return TRUE;
+    }
+    
     public static function dependancy_info() {
         $return = array();
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
-        if (self::arpVersion() != NULL) {
+        if (self::compilationOk() != FALSE) {
             $return['state'] = 'ok';
         } else {
             $return['state'] = 'nok';
