@@ -30,7 +30,8 @@ class scan_ip extends eqLogic {
     public static function getConfig() {
         $return["folderTampon"] = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
         $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
-        $return["jsonTampon"] = $return["folderTampon"]."mapping.json"; // Fichier des Json en Tampon
+        $return["jsonTampon"] = $return["folderTampon"]."mapping.json";
+        $return["fichierTampon"] = $return["folderTampon"]."serialize.temp";
         
         $a = $enable = 0;
         foreach (scan_ip::scanSubReseau() as $sub) { $a++;
@@ -40,7 +41,7 @@ class scan_ip extends eqLogic {
         }
         
         if($enable == 0){
-            log::add('scan_ip', 'error', "Aucun réseau n'est activé. Allez dans la configuration du plugin pour écouter un réseau.");
+            log::add('scan_ip', 'error', "Aucun réseau n'est activé. Allez dans la configuration du plugin pour activer un réseau.");
         }
         return $return;
     }
@@ -213,6 +214,10 @@ class scan_ip extends eqLogic {
                 $now = array_merge($now, $tmp);
             }
         }
+        
+        if(count($now) == 0){
+            log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
+        }
 
         $now["jeedom"] = $infoJeedom; 
         $now["infos"]["version_arp"] = self::arpVersion();
@@ -245,7 +250,7 @@ class scan_ip extends eqLogic {
     public static function getInfoJeedom($_ipRoute){ 
         log::add('scan_ip', 'debug', 'getInfoJeedom :. Lancement');
 
-        $exec = shell_exec('sudo ip a');
+        $exec = exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec);
         
         foreach ($list as $i => $value) {
@@ -261,10 +266,13 @@ class scan_ip extends eqLogic {
     
     public static function scanSubReseau(){ 
         log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
-
+        
         $ipRoute = self::getIpRoute();
-        $exec = shell_exec('sudo ip a');
+        $exec = exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec); 
+        
+        // Cache à intégrer ici
+        //self::createFileSerialize($list); // En cours
         
         foreach ($list as $value) {
             if(preg_match(self::getRegex("sub_reseau"), $value)){ 
@@ -359,7 +367,7 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public static function arpScan($_ipRoute, $_subReseau){
-        $exec = shell_exec('sudo arp-scan --interface='.$_subReseau.' --localnet');
+        $exec = exec('sudo arp-scan --interface='.$_subReseau.' --localnet');
         $list = preg_split('/[\r\n]+/', $exec);
         foreach ($list as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) {
@@ -380,7 +388,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function arpVersion(){
-        $exec = shell_exec('sudo arp-scan -V');
+        $exec = exec('sudo arp-scan -V');
         $list = preg_split('/[\r\n]+/', $exec);
         foreach ($list as $searchVersion) {
             if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
@@ -495,11 +503,29 @@ class scan_ip extends eqLogic {
 # GESTION DU JSON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# GESTION CACHE SERIALIZE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+    
+    public static function createFileSerialize($_data){
+        log::add('scan_ip', 'debug', 'createFileSerialize :. Lancement');
+        $config = self::getConfig();
+        
+        $fichier = fopen($config["fichierTampon"], 'w');
+        fputs($fichier, serialize($_data));
+        fclose($fichier);
+
+        chmod($config["fichierTampon"], 0777);
+    }
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# GESTION CACHE SERIALIZE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static function compilationOk() {
-        if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
+        if (exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
                 return FALSE;
         }
         return TRUE;
