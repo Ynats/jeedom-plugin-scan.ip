@@ -33,11 +33,11 @@ class scan_ip extends eqLogic {
         $return["jsonTampon"] = $return["folderTampon"]."mapping.json";
         $return["serializeTampon"] = $return["folderTampon"]."serialize.temp";
         
-        $a = $enable = 0;
-        foreach (scan_ip::scanSubReseau() as $sub) { 
+        $a = $return["subReseauEnable"] = 0;
+        foreach (self::scanSubReseau() as $sub) { 
             $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
             $return["subReseau"][$a]["name"] = $sub["name"];
-            $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $enable;
+            $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $return["subReseauEnable"];
             $a++;
         }
         
