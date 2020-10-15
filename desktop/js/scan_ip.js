@@ -15,6 +15,7 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Sur la partie NetWork
 $('#bt_scanIpNetwork').off('click').on('click', function () {
   $('#md_modal').dialog({title: "{{Afficher le Réseau}}"});
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=network').dialog('open');
@@ -24,6 +25,7 @@ $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });
 
+// Au changement du menu de sélection on reproduit la valeur dans le champ
 $('#scan_ip_mac_select').change(function(){
     var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
     $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);

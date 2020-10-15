@@ -112,7 +112,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
                             <div class="col-sm-3">
                                 <select id="scan_ip_mac_select" style="color: #039be5 !important;" class="form-control">
-                                    <option>Sélectionner parmis les adresses Mac non enregistrées</option>
+                                    <option>Sélectionner parmi les adresses Mac non enregistrées</option>
                                     <?php
                                         scan_ip::printSelectOptionAdressMac();
                                     ?>
