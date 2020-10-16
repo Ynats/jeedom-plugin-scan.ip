@@ -231,6 +231,9 @@ class scan_ip extends eqLogic {
             }
             if(count($new) == 0){
                 log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
+                log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
+                log::add('scan_ip', 'debug', serialize($new));
+                log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
                 exit();
             } 
             else {
@@ -259,6 +262,9 @@ class scan_ip extends eqLogic {
         }
         else {
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
+            log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
+            log::add('scan_ip', 'debug', serialize($config["subReseau"]));
+            log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
         }
 
         $now["jeedom"] = $infoJeedom; 
