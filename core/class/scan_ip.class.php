@@ -81,6 +81,19 @@ class scan_ip extends eqLogic {
         $info->setSubType('string');
         $info->save();
         
+        $info = $this->getCmd(null, 'last_ip_v4');
+        if (!is_object($info)) {
+            $info = new scan_ipCmd();
+            $info->setName(__('Last IpV4', __FILE__));
+        }
+        $info->setLogicalId('last_ip_v4');
+        $info->setEqLogic_id($this->getId());
+        $info->setIsHistorized(0);
+        $info->setIsVisible(0);
+        $info->setType('info');
+        $info->setSubType('string');
+        $info->save();
+        
         $info = $this->getCmd(null, 'update_time');
         if (!is_object($info)) {
             $info = new scan_ipCmd();
@@ -634,6 +647,7 @@ class scan_ipCmd extends cmd {
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]);
         } else {
             $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
+            $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
         $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
         $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
