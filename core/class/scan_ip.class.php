@@ -231,27 +231,31 @@ class scan_ip extends eqLogic {
             }
             if(count($new) == 0){
                 log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
-            }
+                exit();
+            } 
+            else {
             
-            $old = self::getFileSerialize($config);
+                $old = self::getFileSerialize($config);
 
-            if(empty($old) OR count($old) == 0){ $now = $new; } 
-            else { $now = array_merge($old, $new); } 
+                if(empty($old) OR count($old) == 0){ $now = $new; } 
+                else { $now = array_merge($old, $new); } 
 
-            self::createFileSerialize($config, $now);
+                self::createFileSerialize($config, $now);
 
-            foreach ($now as $mac => $scanLine) {
-                if($scanLine["ip_v4"] == $ipRoute){
-                    $now["route"]["ip_v4"] = $scanLine["ip_v4"];
-                    $now["route"]["mac"] = $mac;
-                } else {
-                    $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"]);
-                    $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "time" => $scanLine["time"]);
-                    $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "time" => $scanLine["time"]);           
+                foreach ($now as $mac => $scanLine) {
+                    if($scanLine["ip_v4"] == $ipRoute){
+                        $now["route"]["ip_v4"] = $scanLine["ip_v4"];
+                        $now["route"]["mac"] = $mac;
+                    } else {
+                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"]);
+                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "time" => $scanLine["time"]);
+                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "time" => $scanLine["time"]);           
+                    }
                 }
-            }
+
+                ksort($now["sort"]);
             
-            ksort($now["sort"]);
+            }
         }
         else {
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
@@ -488,7 +492,7 @@ class scan_ip extends eqLogic {
         self::prepareJsonFolder($_config);
         self::createJsonFile($_config, $_json);
 
-        log::add('scan_ip', 'debug', 'recordInJson :. Enregistrement du Json : ' . $config["jsonTampon"]);
+        log::add('scan_ip', 'debug', 'recordInJson :. Enregistrement du Json : ' . $_config["jsonTampon"]);
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
     
