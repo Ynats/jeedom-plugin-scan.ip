@@ -576,7 +576,7 @@ class scan_ip extends eqLogic {
         fputs($fichier, serialize($_data));
         fclose($fichier);
 
-        chmod($_config["fichierTampon"], 0777);
+        chmod($_config["serializeTampon"], 0777);
     }
     
     public static function getFileSerialize($_config){
