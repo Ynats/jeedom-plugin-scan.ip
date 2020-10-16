@@ -490,9 +490,9 @@ class scan_ip extends eqLogic {
     
     public static function prepareJsonFolder($_config){
         log::add('scan_ip', 'debug', 'prepareJsonFolder :. Lancement');
-        if (!is_dir($config["folderTampon"])) {
+        if (!is_dir($_config["folderTampon"])) {
             log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . $_config["folderTampon"]);
-            mkdir($config["folderTampon"], 0777);
+            mkdir($_config["folderTampon"], 0777);
         }
     }
     
