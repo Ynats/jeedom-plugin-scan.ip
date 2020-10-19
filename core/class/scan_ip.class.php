@@ -132,8 +132,8 @@ class scan_ip extends eqLogic {
         $refresh->setSubType('other');
         $refresh->save();
         
-        // Mise à jour des données
-        scan_ipCmd::cmdRefresh($refresh->getEqLogic());
+//        // Mise à jour des données
+//        scan_ipCmd::cmdRefresh($refresh->getEqLogic());
 
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
