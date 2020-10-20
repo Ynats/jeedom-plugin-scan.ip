@@ -28,6 +28,7 @@ class scan_ip extends eqLogic {
     /*     * **************************Configuration************************* */
 
     public static function getConfig() {
+        log::add('scan_ip', 'debug', 'getConfig :. Lancement');
         $return["folderTampon"] = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
         $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
         $return["jsonTampon"] = $return["folderTampon"]."mapping.json";
@@ -207,15 +208,14 @@ class scan_ip extends eqLogic {
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {
             if ($scan_ip->getIsEnable() == 1) {
-                scan_ipCmd::cmdRefresh($scan_ip);
-                log::add('scan_ip', 'debug', 'syncScanIp :. scan_ipCmd::cmdRefresh('.$scan_ip->getId().')');
+                log::add('scan_ip', 'debug', 'syncScanIp :. cmdRefresh('.$scan_ip->getId().')');
+                self::cmdRefresh($scan_ip);
             }
         }
     }
     
     public static function scanReseau(){
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'scanReseau :. Lancement du scan');
+        log::add('scan_ip', 'debug', 'scanReseau :. Lancement');
         
         $config = self::getConfig();
         $ipRoute = self::getIpRoute();
@@ -276,12 +276,11 @@ class scan_ip extends eqLogic {
         self::recordInJson($config, json_encode($now));
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        return $now;
     }
      
     public static function searchByMac($_searchMac){ 
-        $sort = (array) scan_ip::getJsonTampon();
+        log::add('scan_ip', 'debug', 'searchByMac :. Lancement');
+        $sort = (array) self::getJsonTampon();
         if(!empty($sort["byMac"]->{$_searchMac}->ip_v4)){
             $return["ip_v4"] = $sort["byMac"]->{$_searchMac}->ip_v4;
             $return["time"] = $sort["byMac"]->{$_searchMac}->time;
@@ -321,10 +320,12 @@ class scan_ip extends eqLogic {
     }
     
     public static function getIpRoute(){
+        log::add('scan_ip', 'debug', 'getIpRoute :. Lancement');
         return exec("ip route show default | awk '/default/ {print $3}'");
     }
     
     public static function getAlleqLogics(){
+        log::add('scan_ip', 'debug', 'getAlleqLogics :. Lancement');
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {
             $return[$scan_ip->getConfiguration("adress_mac")]["name"] = $scan_ip->name;
@@ -338,6 +339,19 @@ class scan_ip extends eqLogic {
         if($expire <= $_time){ return 0; } 
         else { return 1; }
     }
+    
+    public static function cmdRefresh($eqlogic){
+        log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
+        $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
+        if(self::isOffline($device["time"]) == 0){
+            $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]);
+        } else {
+            $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
+            $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+        }
+        $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
+        $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+    }
             
             
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,8 +359,9 @@ class scan_ip extends eqLogic {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static function printInputSubConfig(){
+        log::add('scan_ip', 'debug', 'printInputSubConfig :. Lancement');
         $return = "";
-        foreach (scan_ip::scanSubReseau() as $sub) {
+        foreach (self::scanSubReseau() as $sub) {
             if($sub["name"] != "lo") {
                 $return .= '<div class="form-group" style="margin-top: 15px;">';
                 $return .= '<label class="col-sm-4 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
@@ -360,6 +375,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function printSelectOptionAdressMac($_selected = NULL){
+        log::add('scan_ip', 'debug', 'printSelectOptionAdressMac :. Lancement');
         $record = self::getAlleqLogics();
         $list = (array) self::getJsonTampon();
         $print = "";
@@ -413,6 +429,7 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public static function arpScanShell($_subReseau){
+        log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
         $exec = shell_exec('sudo arp-scan --interface='.$_subReseau.' --localnet');
@@ -430,12 +447,13 @@ class scan_ip extends eqLogic {
     }
     
     public static function arpVersion(){
+        log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
         $exec = shell_exec('sudo arp-scan -V');
         $list = preg_split('/[\r\n]+/', $exec);
         foreach ($list as $searchVersion) {
             if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
             elseif(preg_match("(arp-scan )", $searchVersion)){ return $list[0]; }
-        }     
+        }    
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,21 +462,9 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # TACHES CRON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static function cronTemplate(){
-        self::syncScanIp();
-        
-        $eqLogics = eqLogic::byType('scan_ip');
-        foreach ($eqLogics as $scan_ip) {
-            if ($scan_ip->getIsEnable() == 1) {
-                scan_ipCmd::cmdRefresh($scan_ip);
-                log::add('scan_ip', 'debug', 'cron5 :. scan_ipCmd::cmdRefresh('.$scan_ip->getId().')');
-            }
-        }
-    }
     
     public static function cron() {
-        
+
         $now = time();
         $cronConfig = config::byKey('cron_pass', 'scan_ip', 3);
         $cronLast = config::byKey('last_cron', 'scan_ip', 0);
@@ -471,7 +477,7 @@ class scan_ip extends eqLogic {
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             log::add('scan_ip', 'debug', 'cron :. Lancement');
             
-            self::cronTemplate();
+            self::syncScanIp();
             config::save('last_cron', time(), 'scan_ip');
             
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -503,7 +509,6 @@ class scan_ip extends eqLogic {
     }
     
     public static function getJsonTampon() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'getJsonTampon :. Lancement');
         $config = self::getConfig();
         $return = json_decode(file_get_contents($config["jsonTampon"]));
@@ -580,6 +585,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function getFileSerialize($_config){
+        log::add('scan_ip', 'debug', 'getFileSerialize :. Lancement');
         return unserialize(file_get_contents($_config["serializeTampon"]));
     }
     
@@ -591,6 +597,8 @@ class scan_ip extends eqLogic {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static function compilationOk() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'compilationOk :. Lancement');
         if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
             return FALSE;
         }
@@ -598,6 +606,8 @@ class scan_ip extends eqLogic {
     }
     
     public static function dependancy_info() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'dependancy_info :. Lancement');
         $return = array();
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
@@ -613,6 +623,8 @@ class scan_ip extends eqLogic {
     }
 
     public static function dependancy_install() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'dependancy_install :. Lancement');
         log::remove(__CLASS__ . '_update');
         return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder('scan_ip') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
@@ -640,28 +652,19 @@ class scan_ipCmd extends cmd {
      */
 
     public function execute($_options = array()) {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'execute :. Lancement');
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) { //vérifie le logicalid de la commande 			
             case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
-                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
-                $this->cmdRefresh($eqlogic);
+                scan_ip::cmdRefresh($eqlogic);
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
         }
     }
     
-    public static function cmdRefresh($eqlogic){
-        log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
-        $device = scan_ip::searchByMac($eqlogic->getConfiguration("adress_mac"));
-        if(scan_ip::isOffline($device["time"]) == 0){
-            $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]);
-        } else {
-            $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
-            $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
-        }
-        $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
-        $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
-    }
+    
 
     /*     * **********************Getteur Setteur*************************** */
 }
