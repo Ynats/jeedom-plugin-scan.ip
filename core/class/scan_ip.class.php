@@ -431,7 +431,7 @@ public function toHtml($_version = 'dashboard') {
         $replace["#etat_cycle#"] = "#50aa50";
     } 
     
-    if($replace["#last_ip_v4#"] != $replace["#ip_v4#"]){
+    if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){
         $replace["#etat_last_ip#"] = ' color:orange;';
     } else {
         $replace["#etat_last_ip#"] = '';
