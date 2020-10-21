@@ -420,10 +420,14 @@ public function toHtml($_version = 'dashboard') {
     
     if($replace["#ip_v4#"] == "..."){
         $replace["#etat_cycle#"] = "red";
-    } elseif($replace["#last_ip_v4#"] == $replace["#ip_v4#"]){
+    } else{
         $replace["#etat_cycle#"] = "green";
-    } elseif($replace["#last_ip_v4#"] != $replace["#ip_v4#"]){
-        $replace["#etat_cycle#"] = "orange";
+    } 
+    
+    if($replace["#last_ip_v4#"] != $replace["#ip_v4#"]){
+        $replace["#etat_last_ip#"] = ' color:orange;';
+    } else {
+        $replace["#etat_last_ip#"] = '';
     }
             
     return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
