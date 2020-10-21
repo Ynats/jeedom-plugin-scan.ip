@@ -343,7 +343,7 @@ class scan_ip extends eqLogic {
             }
             
         } else {
-            $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
+            $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
         
