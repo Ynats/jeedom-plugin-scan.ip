@@ -159,19 +159,6 @@ class scan_ip extends eqLogic {
 //        log::add('scan_ip', 'debug', 'postRemove :. lancement');
 //    }
 
-// Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
-
-//    public function toHtml($_version = 'dashboard') {
-//
-//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-//        log::add('scan_ip', 'debug', 'toHtml :. lancement');
-//
-//
-//        log::add('scan_ip', 'debug', 'toHtml :. fin');
-//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-//
-//        return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
-//    }
 
     /*
      * Non obligatoire mais ca permet de déclencher une action après modification de variable de configuration
@@ -211,7 +198,7 @@ class scan_ip extends eqLogic {
                 log::add('scan_ip', 'debug', 'syncScanIp :. cmdRefresh('.$scan_ip->getId().')');
                 self::cmdRefresh($scan_ip);
             }
-        }
+        }  
     }
     
     public static function scanReseau(){
@@ -345,12 +332,19 @@ class scan_ip extends eqLogic {
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
         if(self::isOffline($device["time"]) == 0){
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]);
+            if($eqlogic->getCmd(null, 'last_ip_v4') == "") {
+                $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+            }
         } else {
             $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
+        
         $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
         $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+        
+        $eqlogic->toHtml('dashboard');
+        $eqlogic->refreshWidget();
     }
             
             
@@ -393,36 +387,52 @@ class scan_ip extends eqLogic {
 # AFFICHAGE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# APP NMAP
+# GESTION DU WIDGET
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
-//    public static function nmadScan($_ip, $_end = NULL){
-//        log::add('scan_ip', 'debug', 'nmad :. Lancement');
-//        $nmap = 'sudo nmap -sP ' . $_ip;
-//        if($_end != NULL){ 
-//            $nmap .= '-' . $_end; 
-//        }
-//        exec($nmap, $return);
-//        
-//        log::add('scan_ip', 'debug', $return);
-//        return $return;
-//    }
-//    
-//    public static function nmadFilterMac($_input, $_ip, $_exclude = array()){
-//        if (preg_match('(MAC Address: )', $_input)) {
-//            if(!in_array($_ip, $_exclude)){
-//                $mac_out = str_replace('MAC Address: ', "", $_input);
-//                $mac_out = str_replace(' (', "|", $mac_out);
-//                $mac_out = str_replace(')', "", $mac_out);
-//                $mac_out = explode("|", $mac_out);
-//                return $mac_out[0];
-//            }
-//        } 
-//    }
+public function toHtml($_version = 'dashboard') {
+    
+    log::add('scan_ip', 'debug', 'toHtml :.  Lancement');
+    
+    $replace = $this->preToHtml($_version); //récupère les informations de notre équipement
+    
+    if (!is_array($replace)) {
+        return $replace;
+    }
+    
+    $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
+    $version = jeedom::versionAlias($_version);
+    
+    $tmp_cmd = $this->getCmd(null, 'ip_v4');
+    $replace["#ip_v4#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
+    
+    if($replace["#ip_v4#"] == ""){
+        $replace["#ip_v4#"] = "...";
+    }
+    
+    $tmp_cmd = $this->getCmd(null, 'last_ip_v4');
+    $replace["#last_ip_v4#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
+    
+    $tmp_cmd = $this->getCmd(null, 'update_date');
+    $replace["#update_date#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
+    
+    $replace["#mac#"] = $this->getConfiguration("adress_mac");
+    
+    if($replace["#ip_v4#"] == "..."){
+        $replace["#etat_cycle#"] = "red";
+    } elseif($replace["#last_ip_v4#"] == $replace["#ip_v4#"]){
+        $replace["#etat_cycle#"] = "green";
+    } elseif($replace["#last_ip_v4#"] != $replace["#ip_v4#"]){
+        $replace["#etat_cycle#"] = "orange";
+    }
+            
+    return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
+    
+}
 
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# APP NMAP
+# GESTION DU WIDGET
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # APP ARP-SCAN
@@ -446,14 +456,27 @@ class scan_ip extends eqLogic {
         return $return;
     }
     
+//    public static function arpVersion(){
+//        log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
+//        $exec = shell_exec('sudo arp-scan -V');
+//        $list = preg_split('/[\r\n]+/', $exec);
+//        foreach ($list as $searchVersion) {
+//            if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
+//            elseif(preg_match("(arp-scan )", $searchVersion)){ return $list[0]; }
+//        }    
+//    }
+    
     public static function arpVersion(){
         log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
-        $exec = shell_exec('sudo arp-scan -V');
-        $list = preg_split('/[\r\n]+/', $exec);
-        foreach ($list as $searchVersion) {
-            if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
-            elseif(preg_match("(arp-scan )", $searchVersion)){ return $list[0]; }
-        }    
+        $exec = exec('sudo arp-scan -V 2>&1',$output, $return_var);
+        if($return_var == 0) { // execution commande OK
+          foreach ($output as $searchVersion) {
+              if(preg_match("(arp-scan )", $searchVersion)) { return substr($searchVersion,9); }
+          }    
+        } else {
+          log::add('scan_ip', 'error', 'sudo: arp-scan: command not found');
+          return("arp-scan not found");
+        }
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,28 +488,23 @@ class scan_ip extends eqLogic {
     
     public static function cron() {
 
-        $now = time();
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'CRON :. START');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            
         $cronConfig = config::byKey('cron_pass', 'scan_ip', 3);
-        $cronLast = config::byKey('last_cron', 'scan_ip', 0);
-        
         log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
         
-        if($cronLast == 0 OR $now >= $cronLast+(60*$cronConfig)) {
-            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            log::add('scan_ip', 'debug', 'CRON :. START');
-            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            log::add('scan_ip', 'debug', 'cron :. Lancement');
-            
-            self::syncScanIp();
-            config::save('last_cron', time(), 'scan_ip');
-            
-            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            log::add('scan_ip', 'debug', 'CRON :. FIN');
-            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        if((date('i') % $cronConfig) == 0) {
+          log::add('scan_ip', 'debug', 'cron :. Lancement');
+          self::syncScanIp();
+        } else {
+            log::add('scan_ip', 'debug', 'cron :. Annulé');
         }
-        else{
-            log::add('scan_ip', 'debug', 'cron :. Annulée ');
-        }
+        
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'CRON :. FIN');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
     }
     
@@ -596,14 +614,14 @@ class scan_ip extends eqLogic {
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
-    public static function compilationOk() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'compilationOk :. Lancement');
-        if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
-            return FALSE;
-        }
-        return TRUE;
-    }
+//    public static function compilationOk() {
+//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+//        log::add('scan_ip', 'debug', 'compilationOk :. Lancement');
+//        if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
+//            return FALSE;
+//        }
+//        return TRUE;
+//    }
     
     public static function dependancy_info() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -612,10 +630,10 @@ class scan_ip extends eqLogic {
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
-        if (self::compilationOk() != FALSE) {
-            $return['state'] = 'ok';
-        } else {
+        if (self::arpVersion() == "arp-scan not found") {
             $return['state'] = 'nok';
+        } else {
+            $return['state'] = 'ok';
         }
         
         log::add('scan_ip', 'debug', 'dependancy_info :. ' . $return['state']);
