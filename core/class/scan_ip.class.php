@@ -330,11 +330,18 @@ class scan_ip extends eqLogic {
     public static function cmdRefresh($eqlogic){
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
+
         if(self::isOffline($device["time"]) == 0){
-            $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]);
-            if($eqlogic->getCmd(null, 'last_ip_v4') == "") {
+            $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
+            
+            // Récupération de la commande
+            $tmp_cmd = $eqlogic->getCmd(null, 'last_ip_v4');
+            $last_ip_v4 =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
+            
+            if($last_ip_v4 == "") {
                 $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
             }
+            
         } else {
             $eqlogic->checkAndUpdateCmd('ip_v4', NULl);
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
@@ -421,7 +428,7 @@ public function toHtml($_version = 'dashboard') {
     if($replace["#ip_v4#"] == "..."){
         $replace["#etat_cycle#"] = "red";
     } else{
-        $replace["#etat_cycle#"] = "green";
+        $replace["#etat_cycle#"] = "#50aa50";
     } 
     
     if($replace["#last_ip_v4#"] != $replace["#ip_v4#"]){
