@@ -122,6 +122,18 @@ class scan_ip extends eqLogic {
         $info->save();
 
 
+        $refresh = $this->getCmd(null, 'on_line');
+        if (!is_object($refresh)) {
+            $refresh = new scan_ipCmd();
+            $refresh->setName(__('Online', __FILE__));
+        }
+        $refresh->setEqLogic_id($this->getId());
+        $refresh->setLogicalId('on_line');
+        $refresh->setType('info');
+        $refresh->setSubType('binary');
+        $refresh->save();
+        
+        
         $refresh = $this->getCmd(null, 'refresh');
         if (!is_object($refresh)) {
             $refresh = new scan_ipCmd();
@@ -334,8 +346,10 @@ class scan_ip extends eqLogic {
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
             $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
             if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
+            $eqlogic->checkAndUpdateCmd('on_line', 1);
             
         } else {
+            $eqlogic->checkAndUpdateCmd('on_line', 0);
             $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
@@ -399,6 +413,7 @@ class scan_ip extends eqLogic {
             $return[$a]["ip_v4"] = self::getCommande('ip_v4', $scan_ip);
             $return[$a]["last_ip_v4"] = self::getCommande('last_ip_v4', $scan_ip);
             $return[$a]["update_date"] = self::getCommande('update_date', $scan_ip);
+            $return[$a]["on_line"] = self::getCommande('on_line', $scan_ip);
             $a++;
         }  
         

@@ -54,7 +54,7 @@ $list = 0;
 <?php
                     foreach ($allEquipements as $equipement) {
                         
-                        if($equipement["ip_v4"] == ""){ 
+                        if($equipement["on_line"] == 0){ 
                             $color = "red"; 
                             $equipement["ip_v4"] = "..."; 
                             $statut = "Hors ligne"; 
@@ -65,7 +65,7 @@ $list = 0;
                             $statutColor = "color:#50aa50";
                         }
                         
-                        if($equipement["ip_v4"] != $equipement["last_ip_v4"] AND $equipement["ip_v4"] != "..."){
+                        if($equipement["ip_v4"] != $equipement["last_ip_v4"] AND $equipement["on_line"] == 1){
                             $style_last = "color: orange";
                             $statut = "Changement d'Ip";
                             $statutColor = "color:orange";
