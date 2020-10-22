@@ -583,12 +583,12 @@ public static function printCycle($_width, $_color){
         $exec = shell_exec('sudo ip a');
         $list = preg_split('/[\r\n]+/', $exec); 
         $i = 0;
-        $exclude = "lo";
+        $exclude = array("lo", "");
         
         foreach ($list as $value) {
             if(preg_match(self::getRegex("sub_reseau"), $value)){ 
                 $name = trim(explode(":", $value)[1]);
-                if($name != $exclude) {
+                if(!in_array($name, $exclude)) {
                     $i++; 
                     $return[$i]["name"] = $name; 
                 }
