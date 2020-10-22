@@ -54,7 +54,7 @@ $list = 0;
 <?php
                     foreach ($allEquipements as $equipement) {
                         
-                        if($equipement["on_line"] == 0){ 
+                        if($equipement["on_line"] == 0 AND $equipement["ip_v4"] == ""){ 
                             $color = "red"; 
                             $equipement["ip_v4"] = "..."; 
                             $statut = "Hors ligne"; 
