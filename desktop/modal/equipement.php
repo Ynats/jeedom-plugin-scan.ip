@@ -65,7 +65,7 @@ $list = 0;
                             $statutColor = "color:#50aa50";
                         }
                         
-                        if($equipement["ip_v4"] != $equipement["last_ip_v4"] AND $equipement["on_line"] == 1){
+                        if($equipement["ip_v4"] != $equipement["last_ip_v4"] AND $equipement["on_line"] == 1 AND $equipement["last_ip_v4"] != ""){
                             $style_last = "color: orange";
                             $statut = "Changement d'Ip";
                             $statutColor = "color:orange";
