@@ -21,6 +21,12 @@ $('#bt_scanIpNetwork').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=network').dialog('open');
 });
 
+// Sur la partie Equipement
+$('#bt_scanIpEquipement').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{Afficher les équipements}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=equipement').dialog('open');
+});
+
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });

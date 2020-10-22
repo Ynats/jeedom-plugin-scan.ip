@@ -27,6 +27,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <br>
                 <span>{{Afficher le Réseau}}</span>
             </div>
+            <div class="cursor logoSecondary" id="bt_scanIpEquipement">
+                <i class="fas fa-sitemap"></i>
+                <br>
+                <span>{{Afficher les équipements}}</span>
+            </div>
             <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
                 <i class="fas fa-wrench"></i>
                 <br>

@@ -244,7 +244,6 @@ class scan_ip extends eqLogic {
                 }
 
                 ksort($now["sort"]);
-            
             }
         }
         else {
@@ -259,7 +258,6 @@ class scan_ip extends eqLogic {
         $now["infos"]["time"] = time();
         $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
         
-
         self::recordInJson($config, json_encode($now));
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
@@ -332,15 +330,10 @@ class scan_ip extends eqLogic {
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
 
         if(self::isOffline($device["time"]) == 0){
+            
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
-            
-            // Récupération de la commande
-            $tmp_cmd = $eqlogic->getCmd(null, 'last_ip_v4');
-            $last_ip_v4 =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
-            
-            if($last_ip_v4 == "") {
-                $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
-            }
+            $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
+            if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
             
         } else {
             $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
@@ -352,6 +345,11 @@ class scan_ip extends eqLogic {
         
         $eqlogic->toHtml('dashboard');
         $eqlogic->refreshWidget();
+    }
+    
+    public static function getCommande($_ComName, $_this){
+        $tmp_cmd = $_this->getCmd(null, $_ComName);
+        return (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
     }
             
             
@@ -390,6 +388,23 @@ class scan_ip extends eqLogic {
         echo $print;
     }
     
+    public static function showEquipements(){
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'showEquipements :. Lancement');
+        $a = 0;
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            $return[$a]["name"] = $scan_ip->name;
+            $return[$a]["mac"] = $scan_ip->getConfiguration("adress_mac");
+            $return[$a]["ip_v4"] = self::getCommande('ip_v4', $scan_ip);
+            $return[$a]["last_ip_v4"] = self::getCommande('last_ip_v4', $scan_ip);
+            $return[$a]["update_date"] = self::getCommande('update_date', $scan_ip);
+            $a++;
+        }  
+        
+       return $return;
+    }
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # AFFICHAGE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -410,18 +425,11 @@ public function toHtml($_version = 'dashboard') {
     $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
     $version = jeedom::versionAlias($_version);
     
-    $tmp_cmd = $this->getCmd(null, 'ip_v4');
-    $replace["#ip_v4#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
-    
-    if($replace["#ip_v4#"] == ""){
-        $replace["#ip_v4#"] = "...";
-    }
-    
-    $tmp_cmd = $this->getCmd(null, 'last_ip_v4');
-    $replace["#last_ip_v4#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
-    
-    $tmp_cmd = $this->getCmd(null, 'update_date');
-    $replace["#update_date#"] =  (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
+    $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
+    if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
+
+    $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this);
+    $replace["#update_date#"] = self::getCommande('update_date', $this);
     
     $replace["#mac#"] = $this->getConfiguration("adress_mac");
     
@@ -441,7 +449,13 @@ public function toHtml($_version = 'dashboard') {
     
 }
 
-    
+public static function printCycle($_width, $_color){
+    $return = '<div style="margin: 0;">';
+    $return .= '<div style="width: '.$_width.'; height: '.$_width.'; border-radius: '.$_width.'; background: '.$_color.';"></div>';
+    $return .= '</div>';
+    return $return;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DU WIDGET
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
@@ -466,16 +480,6 @@ public function toHtml($_version = 'dashboard') {
         } 
         return $return;
     }
-    
-//    public static function arpVersion(){
-//        log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
-//        $exec = shell_exec('sudo arp-scan -V');
-//        $list = preg_split('/[\r\n]+/', $exec);
-//        foreach ($list as $searchVersion) {
-//            if(preg_match("(sudo: arp-scan: command not found)", $searchVersion)){ return NULL; }
-//            elseif(preg_match("(arp-scan )", $searchVersion)){ return $list[0]; }
-//        }    
-//    }
     
     public static function arpVersion(){
         log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
