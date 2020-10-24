@@ -32,6 +32,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <br>
                 <span>{{Afficher les équipements}}</span>
             </div>
+            <div class="cursor logoSecondary" id="bt_scanIpPlugInPlugin">
+                <i class="fas fa-sitemap"></i>
+                <br>
+                <span>{{Plug On Plugins}}</span>
+            </div>
             <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
                 <i class="fas fa-wrench"></i>
                 <br>

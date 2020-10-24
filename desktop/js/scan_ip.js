@@ -27,6 +27,13 @@ $('#bt_scanIpEquipement').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=equipement').dialog('open');
 });
 
+
+// Sur la partie Plug on Plugins
+$('#bt_scanIpPlugInPlugin').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{Plug on Plugins}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=subPlugs').dialog('open');
+});
+
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });
