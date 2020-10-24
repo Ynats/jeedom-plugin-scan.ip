@@ -371,6 +371,21 @@ class scan_ip extends eqLogic {
 # AFFICHAGE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
+    public static function printSelectOptionEquiements($_selected = NULL){
+        log::add('scan_ip', 'debug', 'printSelectOptionEquiements :. Lancement');
+        $eqLogics = eqLogic::byType('scan_ip');
+        $print = '<option value=""></option>';
+        foreach ($eqLogics as $scan_ip) {
+            if ($scan_ip->getIsEnable() == 1) {
+                $mac = $scan_ip->getConfiguration("adress_mac");
+                $print .= '<option value="'. $mac .'"';
+                if($_selected != NULL AND $_selected == $mac) { $print .= ' selected'; }
+                $print .= '>[' . $mac . '] ' . $scan_ip->name . '</option>';
+            }
+        }  
+        return $print;
+    }
+    
     public static function printInputSubConfig(){
         log::add('scan_ip', 'debug', 'printInputSubConfig :. Lancement');
         $return = "";
