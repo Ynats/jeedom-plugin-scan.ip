@@ -23,7 +23,9 @@ function scan_ip_install() {
 }
 
 function scan_ip_update() {
-    
+    foreach (scan_ip::byType('scan_ip') as $scan_ip) {
+        $scan_ip->save();
+    }  
 }
 
 
