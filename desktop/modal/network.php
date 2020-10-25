@@ -129,10 +129,12 @@ $list = 1;
             <h3 class="panel-title">Votre Jeedom</h3>
         </div>
         <div class="panel-body">
+        <?php if($ipsReseau["jeedom"]->name != "") { ?>
             <div>
                 <label class="col-sm-5 control-label">Nom : </label>
                 <div><?php echo $ipsReseau["jeedom"]->name ?></div> 
             </div>
+        <?php } ?>
             <div>
                 <label class="col-sm-5 control-label">ip : </label>
                 <div><?php echo $ipsReseau["jeedom"]->ip_v4 ?></div> 
@@ -141,12 +143,12 @@ $list = 1;
                 <label class="col-sm-5 control-label">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["jeedom"]->mac ?></div>
             </div>
-<?php if (gethostbyaddr($ipsReseau["jeedom"]->ip_v4) != $ipsReseau["jeedom"]->ip_v4) { ?>            
+            <?php if (gethostbyaddr($ipsReseau["jeedom"]->ip_v4) != $ipsReseau["jeedom"]->ip_v4) { ?>            
                 <div>
                     <label class="col-sm-5 control-label">Host Name : </label>
                     <div><?php echo gethostbyaddr($ipsReseau["jeedom"]->ip_v4) ?></div>
                 </div>
-<?php } ?> 
+            <?php } ?> 
         </div>
         <br />
     </div>
