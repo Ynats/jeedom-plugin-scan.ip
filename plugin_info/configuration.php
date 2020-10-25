@@ -33,7 +33,7 @@ if (!isConnect()) {
                     <option value="3">{{3 minutes}}</option>
                     <option value="2">{{2 minutes}}</option>
                     <option value="1">{{1 minute}}</option>
-                </select>
+                </select> 
             </div>
         </div>
     </fieldset>

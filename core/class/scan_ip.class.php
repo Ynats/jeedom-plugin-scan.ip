@@ -185,20 +185,6 @@ class scan_ip extends eqLogic {
      */
 
     /*     * **********************Getteur Setteur*************************** */
-   
-//    public function get() {
-//        log::add('scan_ip', 'debug', '#######################################################################################');
-//        log::add('scan_ip', 'debug', 'get :. #ID#' . $_id . ' lancement');
-//
-//        $eqLogic = self::byId($this->getId());
-//
-//        if ($eqLogic->getIsEnable() == 1) {
-//            
-//            
-//        }
-//
-//        log::add('scan_ip', 'debug', '#######################################################################################');
-//    }
     
     public static function syncScanIp(){
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -290,9 +276,8 @@ class scan_ip extends eqLogic {
     public static function getInfoJeedom($_ipRoute){ 
         log::add('scan_ip', 'debug', 'getInfoJeedom :. Lancement');
 
-        $exec = shell_exec('sudo ip a');
-        $list = preg_split('/[\r\n]+/', $exec);
-        
+        exec('sudo ip a', $list);
+
         foreach ($list as $i => $value) {
             if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($_ipRoute).")", $value)) {
                 $return["ip_v4"] = trim(str_replace("inet", "", explode("/",$value)[0]));
@@ -354,6 +339,12 @@ class scan_ip extends eqLogic {
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
         
+        // Mise à jour de l'élément associé
+        $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin");
+        if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+            self::plugs_majElement($device["ip_v4"], $plug_element_plugin);
+        }
+        
         $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
         $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
         
@@ -368,24 +359,9 @@ class scan_ip extends eqLogic {
             
             
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# AFFICHAGE VUES
+# ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    
-    public static function printSelectOptionEquiements($_selected = NULL){
-        log::add('scan_ip', 'debug', 'printSelectOptionEquiements :. Lancement');
-        $eqLogics = eqLogic::byType('scan_ip');
-        $print = '<option value=""></option>';
-        foreach ($eqLogics as $scan_ip) {
-            if ($scan_ip->getIsEnable() == 1) {
-                $mac = $scan_ip->getConfiguration("adress_mac");
-                $print .= '<option value="'. $mac .'"';
-                if($_selected != NULL AND $_selected == $mac) { $print .= ' selected'; }
-                $print .= '>[' . $mac . '] ' . $scan_ip->name . '</option>';
-            }
-        }  
-        return $print;
-    }
-    
+
     public static function printInputSubConfig(){
         log::add('scan_ip', 'debug', 'printInputSubConfig :. Lancement');
         $return = "";
@@ -420,71 +396,98 @@ class scan_ip extends eqLogic {
     public static function showEquipements(){
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'showEquipements :. Lancement');
+        
+        $allEquipementsPlugs = self::plugs_getEquiementsById();
+        
         $a = 0;
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {
             $return[$a]["name"] = $scan_ip->name;
+            $return[$a]["link"] = "<a href='/index.php?v=d&m=scan_ip&p=scan_ip&id=".$scan_ip->getId()."'>".$scan_ip->name."</a>";
             $return[$a]["mac"] = $scan_ip->getConfiguration("adress_mac");
             $return[$a]["ip_v4"] = self::getCommande('ip_v4', $scan_ip);
             $return[$a]["last_ip_v4"] = self::getCommande('last_ip_v4', $scan_ip);
             $return[$a]["update_date"] = self::getCommande('update_date', $scan_ip);
             $return[$a]["on_line"] = self::getCommande('on_line', $scan_ip);
+            
+            if(!empty($scan_ip->getConfiguration("plug_element_plugin"))){
+                $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin"));
+                
+                $return[$a]["plug_element_plugin"] = "<a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a>";
+            } else {
+                $return[$a]["plug_element_plugin"] = NULL;
+            }
+            
             $a++;
         }  
         
        return $return;
     }
+
+    public static function vueSubTitle($_titre){
+        echo '  <div class="form-group">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-5">
+                           <div style="background-color: #039be5; padding: 2px 5px; color: white; margin: 20px 0; font-weight: bold;">'. $_titre .'</div>
+                    </div>
+                </div>';
+    }
+    
+    public static function getCycle($_width, $_color){
+        $return = '<div style="margin: 0;">';
+        $return .= '<div style="width: '.$_width.'; height: '.$_width.'; border-radius: '.$_width.'; background: '.$_color.';"></div>';
+        $return .= '</div>';
+        return $return;
+    }
+    
+    public static function printShell($_shell){
+        $output = shell_exec($_shell);
+        echo "<pre style='background-color: #1b2426 !important; color: white !important;'>".$output."</pre>";
+    }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# AFFICHAGE VUES
+# ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DU WIDGET
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
-public function toHtml($_version = 'dashboard') {
-    
-    log::add('scan_ip', 'debug', 'toHtml :.  Lancement');
-    
-    $replace = $this->preToHtml($_version); //récupère les informations de notre équipement
-    
-    if (!is_array($replace)) {
-        return $replace;
-    }
-    
-    $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
-    $version = jeedom::versionAlias($_version);
-    
-    $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
-    if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
+    public function toHtml($_version = 'dashboard') {
 
-    $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this);
-    $replace["#update_date#"] = self::getCommande('update_date', $this);
-    
-    $replace["#mac#"] = $this->getConfiguration("adress_mac");
-    
-    if($replace["#ip_v4#"] == "..."){
-        $replace["#etat_cycle#"] = "red";
-    } else{
-        $replace["#etat_cycle#"] = "#50aa50";
-    } 
-    
-    if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){
-        $replace["#etat_last_ip#"] = ' color:orange;';
-    } else {
-        $replace["#etat_last_ip#"] = '';
-    }
-            
-    return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
-    
-}
+        log::add('scan_ip', 'debug', 'toHtml :.  Lancement');
 
-public static function printCycle($_width, $_color){
-    $return = '<div style="margin: 0;">';
-    $return .= '<div style="width: '.$_width.'; height: '.$_width.'; border-radius: '.$_width.'; background: '.$_color.';"></div>';
-    $return .= '</div>';
-    return $return;
-}
+        $replace = $this->preToHtml($_version); //récupère les informations de notre équipement
+
+        if (!is_array($replace)) {
+            return $replace;
+        }
+
+        $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
+        $version = jeedom::versionAlias($_version);
+
+        $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
+        if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
+
+        $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this);
+        $replace["#update_date#"] = self::getCommande('update_date', $this);
+
+        $replace["#mac#"] = $this->getConfiguration("adress_mac");
+
+        if($replace["#ip_v4#"] == "..."){
+            $replace["#etat_cycle#"] = "red";
+        } else{
+            $replace["#etat_cycle#"] = "#50aa50";
+        } 
+
+        if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){
+            $replace["#etat_last_ip#"] = ' color:orange;';
+        } else {
+            $replace["#etat_last_ip#"] = '';
+        }
+
+        return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
+
+    }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DU WIDGET
@@ -497,9 +500,9 @@ public static function printCycle($_width, $_color){
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
-        $exec = shell_exec('sudo arp-scan --interface='.$_subReseau.' --localnet');
-        $scan = preg_split('/[\r\n]+/', $exec);
-        foreach ($scan as $scanLine) {
+        exec('sudo arp-scan --interface='.$_subReseau.' --localnet', $output);
+        
+        foreach ($output as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) {
                 preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
                 preg_match(self::getRegex("mac"), $scanLine, $sortMac);
@@ -610,8 +613,7 @@ public static function printCycle($_width, $_color){
         log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
         
         $ipRoute = self::getIpRoute();
-        $exec = shell_exec('sudo ip a');
-        $list = preg_split('/[\r\n]+/', $exec); 
+        exec('sudo ip a', $list);
         $i = 0;
         $exclude = array("lo", "");
         
@@ -656,18 +658,72 @@ public static function printCycle($_width, $_color){
 # GESTION CACHE SERIALIZE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# PLUGINS PLUG AND PLAY
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public static function plugs_allPlugs(){
+        $plugs = array(
+            "xiaomihome",
+            );
+        return $plugs;
+    }
+    
+    public static function plugs_require($_plug){
+        require_once(__DIR__ . "/../../../../plugins/scan_ip/core/subPlugs/".$_plug.".php");
+    }
+    
+    public static function plugs_getPlugsElements($_plugs){
+        self::plugs_require($_plugs);
+        $class = "scan_ip_".$_plugs;
+        ${$_plugs} = new $class;
+        return ${$_plugs}->getAllElements();
+    }
+    
+    public static function plugs_getElements(){
+        $return = array();
+        foreach (self::plugs_allPlugs() as $plugs) {
+            $return = array_merge($return, self::plugs_getPlugsElements($plugs));
+        }
+        return $return;
+    }
+    
+    public static function plugs_majElement($_ip, $_element){
+        $plug = explode("|", $_element);
+        self::plugs_require($plug[0]);
+        $class = "scan_ip_".$plug[0];
+        ${$plug[0]} = new $class;
+        ${$plug[0]}->majIpElement($_ip, $plug[1]);
+    }
+    
+    public static function plugs_printSelectOptionEquiements($_selected = NULL){
+        log::add('scan_ip', 'debug', 'plugs_printSelectOptionEquiements :. Lancement');
+        $print = ""; 
+        foreach (self::plugs_getElements() as $equipement) {
+            $value = $equipement["plugin"] ."|".$equipement["id"];
+            $print .= "<option value=\"". $value."\"";
+            if($_selected != NULL AND $_selected == $value) { $print .= " selected"; }
+            $print .= ">[" . $equipement["plugin_print"] . "] " . $equipement["name"] . " (actuellement ". $equipement["ip_v4"] .")</option>";
+        }  
+        echo $print;
+    }
+    
+    public static function plugs_getEquiementsById(){
+        log::add('scan_ip', 'debug', 'plugs_getEquiementsById :. Lancement'); 
+        foreach (self::plugs_getElements() as $equipement) { 
+            $return[$equipement["id"]]["name"] = $equipement["name"];
+            $return[$equipement["id"]]["ip_v4"] = $equipement["ip_v4"];
+            $return[$equipement["id"]]["plugin"] = $equipement["plugin"];
+        }  
+        return $return;
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# PLUGINS PLUG AND PLAY
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    
-//    public static function compilationOk() {
-//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-//        log::add('scan_ip', 'debug', 'compilationOk :. Lancement');
-//        if (shell_exec('ls /var/lib/dpkg/info/arp-scan.list | wc -l') == 0) {
-//            return FALSE;
-//        }
-//        return TRUE;
-//    }
-    
+   
     public static function dependancy_info() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'dependancy_info :. Lancement');

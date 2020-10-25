@@ -8,7 +8,7 @@ class scan_ip_xiaomihome {
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/subPlugs/*****.php
     */
-    public static $plug = "xiaomihome";
+    public static $plug = "idplugin";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -38,6 +38,7 @@ class scan_ip_xiaomihome {
         }
         return $return;
     }
+    
     
     /**
     * getIpElement sert à récupérer l'ip d'un élément du plugin par son id

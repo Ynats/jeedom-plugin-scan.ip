@@ -20,7 +20,8 @@ if (!isConnect('admin')) {
 }
 
 $allEquipements = scan_ip::showEquipements();
-$list = 0;
+
+$list = 1;
 
 ?>
 
@@ -43,11 +44,12 @@ $list = 0;
                         <th style="text-align: center; width:20px;">#</th>
                         <th style="width:40px;"></th>
                         <th style="width:250px;" class="scanTd">{{Nom}}</th>
-                        <th style="width:200px;" class="scanTd">{{Adresse MAC}}</th>
-                        <th style="width:150px;">{{ip}}</th>
-                        <th style="width:150px;">{{Dernière ip}}</th>
-                        <th style="width:200px;">{{Mis à jour}}</th>
-                        <th>{{Statut}}</th>
+                        <th style="width:150px;" class="scanTd">{{Adresse MAC}}</th>
+                        <th style="width:125px;">{{ip}}</th>
+                        <th style="width:125px;">{{Dernière ip}}</th>
+                        <th style="width:170px;">{{Mis à jour}}</th>
+                        <th style="width:150px;">{{Statut}}</th>
+                        <th>{{Elément plugin associé}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,13 +75,14 @@ $list = 0;
                         
                         echo '<tr>'
                             . '<td style="text-align:center;" class="">' . $list++ . '</td>'
-                            . '<td style="padding-left:10px;">' . scan_ip::printCycle("15px", $color) . '</td>'
-                            . '<td class="scanTd">' . $equipement["name"] . '</td>'
+                            . '<td style="padding-left:10px;">' . scan_ip::getCycle("15px", $color) . '</td>'
+                            . '<td class="scanTd">' . $equipement["link"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                             . '<td class="scanTd">' . $equipement["ip_v4"] . '</td>'
                             . '<td class="scanTd" style="'.$style_last.'">' . $equipement["last_ip_v4"] . '</td>'
                             . '<td class="scanTd">' . $equipement["update_date"] . '</td>'
                             . '<td class="scanTd" style="'.$statutColor.'">' . $statut . '</td>'
+                            . '<td class="scanTd"">' . $equipement["plug_element_plugin"] . '</td>'
                             . '</tr>';
                     }
 ?>
