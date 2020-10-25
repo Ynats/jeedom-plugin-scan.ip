@@ -24,17 +24,12 @@ class scan_ip_xiaomihome {
 
         $eqLogics = eqLogic::byType(self::$plug); 
         
-        foreach ($eqLogics as $eqLogic) { 
-
-            if ($eqLogic->getConfiguration('type') == 'yeelight' OR $eqLogic->getConfiguration('type') == 'wifi') {
-                
-                $return[$eqLogic->getId()]["plugin"] = self::$plug;
-                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
-                $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
-                $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration('ipwifi');
-                
-            }
+        foreach ($eqLogics as $eqLogic) {    
+//            $return[$eqLogic->getId()]["plugin"] = self::$plug;
+//            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
+//            $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
+//            $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
+//            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration('ipwifi');
         }
         return $return;
     }
@@ -54,7 +49,7 @@ class scan_ip_xiaomihome {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) {  
-                return $eqLogic->getConfiguration('ipwifi');
+//                return $eqLogic->getConfiguration('ipwifi');
                 break;
             }
         }
@@ -74,11 +69,11 @@ class scan_ip_xiaomihome {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration('ipwifi') != $_ip){
-                    $eqLogic->setConfiguration('ipwifi', $_ip);
-                    $eqLogic->save(); 
-                    break;
-                }   
+//                if($eqLogic->getConfiguration('ipwifi') != $_ip){
+//                    $eqLogic->setConfiguration('ipwifi', $_ip);
+//                    $eqLogic->save(); 
+//                    break;
+//                }   
             }
         }
         
