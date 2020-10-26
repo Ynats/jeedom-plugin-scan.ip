@@ -24,7 +24,7 @@ class scan_ip extends eqLogic {
     /*     * *************************Attributs****************************** */
     
     public static $_widgetPossibility = array('custom' => true);
-    public static $nb_equipement_by_mac = 10;
+    public static $_nb_equipement_by_mac = 10;
 
     /*     * **************************Configuration************************* */
 
@@ -34,6 +34,7 @@ class scan_ip extends eqLogic {
         $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
         $return["jsonTampon"] = $return["folderTampon"]."mapping.json";
         $return["serializeTampon"] = $return["folderTampon"]."serialize.temp";
+        $return["nb_equipement_by_mac"] = 10;
         
         $a = $return["subReseauEnable"] = 0;
         foreach (self::scanSubReseau() as $sub) { 
@@ -343,7 +344,7 @@ class scan_ip extends eqLogic {
         ///////////////////////////////////////////
         // Mise à jour de l'élément associé
         
-        for ($index = 1; $index < self::$nb_equipement_by_mac; $index++) {
+        for ($index = 1; $index < self::$_nb_equipement_by_mac; $index++) {
             $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
         
             if(self::plugs_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
@@ -426,7 +427,7 @@ class scan_ip extends eqLogic {
             
             $return[$a]["plug_element_plugin"] = NULL;
             
-            for ($index = 1; $index < self::$nb_equipement_by_mac; $index++) {
+            for ($index = 1; $index < self::$_nb_equipement_by_mac; $index++) {
                 if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
                     $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
 
@@ -758,7 +759,7 @@ class scan_ip extends eqLogic {
         
         $selection = scan_ip::plugs_printSelectOptionEquiements();
         
-        for ($index = 1; $index < self::$nb_equipement_by_mac+1; $index++) {
+        for ($index = 1; $index < self::$_nb_equipement_by_mac+1; $index++) {
             echo '<div class="form-group">';
             echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
             echo '<div class="col-sm-5">';
