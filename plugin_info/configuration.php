@@ -26,6 +26,9 @@ if (!isConnect()) {
 
 <form class="form-horizontal">
     <fieldset>
+<?php
+    scan_ip::vueSubTitle("Cadence de rafraichissement", "config");
+?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}</label>
             <div class="col-lg-2">
@@ -35,12 +38,23 @@ if (!isConnect()) {
                     <option value="3">{{3 minutes}}</option>
                     <option value="2">{{2 minutes}}</option>
                     <option value="1">{{1 minute}}</option>
-                </select>
+                </select> 
+            </div>
+        </div>
+    <?php
+        scan_ip::vueSubTitle("Plage(s) à scanner", "config");
+        
+        echo scan_ip::printInputSubConfig(); 
+    
+        scan_ip::vueSubTitle("Plug & Play : Plugins compatibles", "config");
+    ?> 
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
+            <div class="col-lg-2">
+                <?php echo scan_ip::plugs_printPlugs(); ?>
             </div>
         </div>
     </fieldset>
-    <fieldset>
-        <?php echo scan_ip::printInputSubConfig() ?> 
-        <br />
-    </fieldset>
+    <br />
 </form>
+
