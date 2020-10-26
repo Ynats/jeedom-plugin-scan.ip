@@ -346,14 +346,15 @@ class scan_ip extends eqLogic {
         
         for ($index = 1; $index < self::$_nb_equipement_by_mac; $index++) {
             $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
-        
-            if(self::plugs_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
-                if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-                    self::plugs_majElement($device["ip_v4"], $plug_element_plugin);
+            if($plug_element_plugin != ""){
+                if(self::plugs_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
+                    if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                        self::plugs_majElement($device["ip_v4"], $plug_element_plugin);
+                    }
+                } else {
+                    $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                    $eqlogic->save();
                 }
-            } else {
-                $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
-                $eqlogic->save();
             }
         }
         
