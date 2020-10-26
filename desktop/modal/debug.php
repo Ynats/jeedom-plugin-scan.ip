@@ -48,9 +48,9 @@ if (!isConnect('admin')) {
 </div>
 
 <?php
-$config = scan_ip::getConfig();
-if ($config["subReseauEnable"] > 0) {
-    foreach ($config["subReseau"] as $sub) {
+$subReseau = scan_ip::getSubReseauEnable();
+if ($subReseau["subReseauEnable"] > 0) {
+    foreach ($subReseau["subReseau"] as $sub) {
         if ($sub["enable"] == 1) {
             ?>
 

@@ -25,30 +25,11 @@ class scan_ip extends eqLogic {
     
     public static $_widgetPossibility = array('custom' => true);
     public static $_nb_equipement_by_mac = 10;
+    public static $_folderTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
+    public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
+    public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
+    public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
 
-    /*     * **************************Configuration************************* */
-
-    public static function getConfig() {
-        log::add('scan_ip', 'debug', 'getConfig :. Lancement');
-        $return["folderTampon"] = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
-        $return["jsonTamponTemp"] = $return["folderTampon"]."mapping.temp";
-        $return["jsonTampon"] = $return["folderTampon"]."mapping.json";
-        $return["serializeTampon"] = $return["folderTampon"]."serialize.temp";
-        $return["nb_equipement_by_mac"] = 10;
-        
-        $a = $return["subReseauEnable"] = 0;
-        foreach (self::scanSubReseau() as $sub) { 
-            $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
-            $return["subReseau"][$a]["name"] = $sub["name"];
-            $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $return["subReseauEnable"];
-            $a++;
-        }
-        
-        if($return["subReseauEnable"] == 0){
-            log::add('scan_ip', 'error', "Aucun réseau n'est activé. Allez dans la configuration du plugin pour activer un réseau.");
-        }
-        return $return; 
-    }  
 
     /*     * ***********************Methode static*************************** */
 
@@ -188,6 +169,23 @@ class scan_ip extends eqLogic {
 
     /*     * **********************Getteur Setteur*************************** */
     
+    public static function getSubReseauEnable() {
+        log::add('scan_ip', 'debug', 'getSubReseauEnable :. Lancement');
+        
+        $a = $return["subReseauEnable"] = 0;
+        foreach (self::scanSubReseau() as $sub) { 
+            $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
+            $return["subReseau"][$a]["name"] = $sub["name"];
+            $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $return["subReseauEnable"];
+            $a++;
+        }
+        
+        if($return["subReseauEnable"] == 0){
+            log::add('scan_ip', 'error', "Aucun réseau n'est activé. Allez dans la configuration du plugin pour activer un réseau.");
+        }
+        return $return; 
+    }
+    
     public static function syncScanIp(){
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
@@ -204,13 +202,13 @@ class scan_ip extends eqLogic {
     public static function scanReseau(){
         log::add('scan_ip', 'debug', 'scanReseau :. Lancement');
         
-        $config = self::getConfig();
+        $subReseau = self::getSubReseauEnable();
         $ipRoute = self::getIpRoute();
         $infoJeedom = self::getInfoJeedom($ipRoute);
         
-        if($config["subReseauEnable"] > 0){
+        if($subReseau["subReseauEnable"] > 0){
             $new = array();
-            foreach ($config["subReseau"] as $sub) { 
+            foreach ($subReseau["subReseau"] as $sub) { 
                 if($sub["enable"] == 1){
                     $scanResult = self::arpScanShell($sub["name"]);
                     $new = array_merge($new, $scanResult);
@@ -225,12 +223,12 @@ class scan_ip extends eqLogic {
             } 
             else {
             
-                $old = self::getFileSerialize($config);
+                $old = self::getFileSerialize();
 
                 if(empty($old) OR count($old) == 0){ $now = $new; } 
                 else { $now = array_merge($old, $new); } 
 
-                self::createFileSerialize($config, $now);
+                self::createFileSerialize($now);
 
                 foreach ($now as $mac => $scanLine) {
                     if($scanLine["ip_v4"] == $ipRoute){
@@ -249,7 +247,7 @@ class scan_ip extends eqLogic {
         else {
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
             log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
-            log::add('scan_ip', 'debug', serialize($config["subReseau"]));
+            log::add('scan_ip', 'debug', serialize($subReseau["subReseau"]));
             log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
         }
 
@@ -258,7 +256,7 @@ class scan_ip extends eqLogic {
         $now["infos"]["time"] = time();
         $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
         
-        self::recordInJson($config, json_encode($now));
+        self::recordInJson(json_encode($now));
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
     }
@@ -319,7 +317,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function isOffline($_time){
-        $expire = time() - (60 * 5); // 5 minutes
+        $expire = time() - (60 * config::byKey('offline_time', 'scan_ip', 4));
         if($expire <= $_time){ return 0; } 
         else { return 1; }
     }
@@ -327,7 +325,9 @@ class scan_ip extends eqLogic {
     public static function cmdRefresh($eqlogic){
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
-
+        $offline_time = $eqlogic->getConfiguration("offline_time");
+        
+        
         if(self::isOffline($device["time"]) == 0){
             
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
@@ -562,7 +562,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'CRON :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             
-        $cronConfig = config::byKey('cron_pass', 'scan_ip', 3);
+        $cronConfig = config::byKey('cron_pass', 'scan_ip', 1);
         log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
         
         if((date('i') % $cronConfig) == 0) {
@@ -585,43 +585,42 @@ class scan_ip extends eqLogic {
 # GESTION DU JSON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     
-    public static function recordInJson($_config, $_json) {
+    public static function recordInJson($_json) {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'recordInJson :.  Lancement');
         
-        self::prepareJsonFolder($_config);
-        self::createJsonFile($_config, $_json);
+        self::prepareJsonFolder();
+        self::createJsonFile($_json);
 
-        log::add('scan_ip', 'debug', 'recordInJson :. Enregistrement du Json : ' . $_config["jsonTampon"]);
+        log::add('scan_ip', 'debug', 'recordInJson :. Enregistrement du Json : ' . self::$_jsonTampon);
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
     
     public static function getJsonTampon() {
         log::add('scan_ip', 'debug', 'getJsonTampon :. Lancement');
-        $config = self::getConfig();
-        $return = json_decode(file_get_contents($config["jsonTampon"]));
+        $return = json_decode(file_get_contents(self::$_jsonTampon));
         log::add('scan_ip', 'debug', 'getJsonTampon :. Chargement du Json Mapping');
         return $return;
     }
     
-    public static function prepareJsonFolder($_config){
+    public static function prepareJsonFolder(){
         log::add('scan_ip', 'debug', 'prepareJsonFolder :. Lancement');
-        if (!is_dir($_config["folderTampon"])) {
-            log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . $_config["folderTampon"]);
-            mkdir($_config["folderTampon"], 0777);
+        if (!is_dir(self::$_folderTampon)) {
+            log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . self::$_folderTampon);
+            mkdir(self::$_folderTampon, 0777);
         }
     }
     
-    public static function createJsonFile($_config, $_json){
+    public static function createJsonFile($_json){
         log::add('scan_ip', 'debug', 'createJsonFile :. Lancement');
         
-        $fichier = fopen($_config["jsonTamponTemp"], 'w');
+        $fichier = fopen(self::$_jsonTamponTemp, 'w');
         fputs($fichier, $_json);
         fclose($fichier);
 
-        unlink($_config["jsonTampon"]);
-        rename($_config["jsonTamponTemp"], $_config["jsonTampon"]);
-        chmod($_config["jsonTampon"], 0777);
+        unlink(self::$_jsonTampon);
+        rename(self::$_jsonTamponTemp, self::$_jsonTampon);
+        chmod(self::$_jsonTampon, 0777);
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,19 +660,19 @@ class scan_ip extends eqLogic {
 # GESTION CACHE SERIALIZE
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
     
-    public static function createFileSerialize($_config, $_data){
+    public static function createFileSerialize($_data){
         log::add('scan_ip', 'debug', 'createFileSerialize :. Lancement');
         
-        $fichier = fopen($_config["serializeTampon"], 'w');
+        $fichier = fopen(self::$_serializeTampon, 'w');
         fputs($fichier, serialize($_data));
         fclose($fichier);
 
-        chmod($_config["serializeTampon"], 0777);
+        chmod(self::$_serializeTampon, 0777);
     }
     
-    public static function getFileSerialize($_config){
+    public static function getFileSerialize(){
         log::add('scan_ip', 'debug', 'getFileSerialize :. Lancement');
-        return unserialize(file_get_contents($_config["serializeTampon"]));
+        return unserialize(file_get_contents(self::$_serializeTampon));
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
