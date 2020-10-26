@@ -7,8 +7,10 @@ class scan_ip_xiaomihome {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/subPlugs/*****.php
+    * Nom de la variable ip à modifier
     */
     public static $plug = "xiaomihome";
+    public static $ip = "ipwifi";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -32,8 +34,7 @@ class scan_ip_xiaomihome {
                 $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
                 $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
                 $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration('ipwifi');
-                
+                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
             }
         }
         return $return;
@@ -53,7 +54,7 @@ class scan_ip_xiaomihome {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) {  
-                return $eqLogic->getConfiguration('ipwifi');
+                return $eqLogic->getConfiguration(self::$ip);
                 break;
             }
         }
@@ -73,8 +74,8 @@ class scan_ip_xiaomihome {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration('ipwifi') != $_ip){
-                    $eqLogic->setConfiguration('ipwifi', $_ip);
+                if($eqLogic->getConfiguration(self::$ip) != $_ip){
+                    $eqLogic->setConfiguration(self::$ip, $_ip);
                     $eqLogic->save(); 
                     break;
                 }   

@@ -24,6 +24,7 @@ class scan_ip extends eqLogic {
     /*     * *************************Attributs****************************** */
     
     public static $_widgetPossibility = array('custom' => true);
+    public static $nb_equipement_by_mac = 10;
 
     /*     * **************************Configuration************************* */
 
@@ -339,11 +340,24 @@ class scan_ip extends eqLogic {
             $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
         
+        ///////////////////////////////////////////
         // Mise à jour de l'élément associé
-        $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin");
-        if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-            self::plugs_majElement($device["ip_v4"], $plug_element_plugin);
+        
+        for ($index = 1; $index < self::$nb_equipement_by_mac; $index++) {
+            $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
+        
+            if(self::plugs_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
+                if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                    self::plugs_majElement($device["ip_v4"], $plug_element_plugin);
+                }
+            } else {
+                $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                $eqlogic->save();
+            }
         }
+        
+        // Mise à jour de l'élément associé
+        ///////////////////////////////////////////
         
         $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
         $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
@@ -367,7 +381,7 @@ class scan_ip extends eqLogic {
         $return = "";
         foreach (self::scanSubReseau() as $sub) {
             if($sub["name"] != "lo") {
-                $return .= '<div class="form-group" style="margin-top: 15px;">';
+                $return .= '<div class="form-group"">';
                 $return .= '<label class="col-sm-4 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
                 $return .= '<div class="col-sm-2">';
                 $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
@@ -410,12 +424,14 @@ class scan_ip extends eqLogic {
             $return[$a]["update_date"] = self::getCommande('update_date', $scan_ip);
             $return[$a]["on_line"] = self::getCommande('on_line', $scan_ip);
             
-            if(!empty($scan_ip->getConfiguration("plug_element_plugin"))){
-                $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin"));
-                
-                $return[$a]["plug_element_plugin"] = "<a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a>";
-            } else {
-                $return[$a]["plug_element_plugin"] = NULL;
+            $return[$a]["plug_element_plugin"] = NULL;
+            
+            for ($index = 1; $index < self::$nb_equipement_by_mac; $index++) {
+                if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
+                    $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
+
+                    $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a></div>";
+                } 
             }
             
             $a++;
@@ -424,11 +440,15 @@ class scan_ip extends eqLogic {
        return $return;
     }
 
-    public static function vueSubTitle($_titre){
+    public static function vueSubTitle($_titre, $_from = "devices"){
+        
+        if($_from == "devices"){ $col1 = "col-sm-3"; $col2 = "col-sm-5"; $margin = "20px 0"; } 
+        elseif ($_from == "config"){ $col1 = "col-sm-4"; $col2 = "col-sm-5"; $margin = "10px 0"; } 
+        
         echo '  <div class="form-group">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-5">
-                           <div style="background-color: #039be5; padding: 2px 5px; color: white; margin: 20px 0; font-weight: bold;">'. $_titre .'</div>
+                    <div class="'.$col1.'"></div>
+                    <div class="'.$col2.'">
+                           <div style="background-color: #039be5; padding: 2px 5px; color: white; margin: '.$margin.'; font-weight: bold;">'. $_titre .'</div>
                     </div>
                 </div>';
     }
@@ -664,8 +684,21 @@ class scan_ip extends eqLogic {
     public static function plugs_allPlugs(){
         $plugs = array(
             "xiaomihome",
+            "broadlink",
+            "googlecast",
             );
         return $plugs;
+    }
+    
+    public static function plugs_printPlugs(){
+        foreach (self::plugs_allPlugs() as $plug) {
+            if(self::pluginExists($plug)){
+                echo "<div><span style='font-weight: bold;'>".$plug."</span> <span style='color:green;'>(Installé)</span></div>";
+            } else {
+                echo "<div><span style='font-weight: bold;'>".$plug."</span> <span style='color:grey;'>(Non installé)</span></div>";
+            }
+            
+        }
     }
     
     public static function plugs_require($_plug){
@@ -682,7 +715,12 @@ class scan_ip extends eqLogic {
     public static function plugs_getElements(){
         $return = array();
         foreach (self::plugs_allPlugs() as $plugs) {
-            $return = array_merge($return, self::plugs_getPlugsElements($plugs));
+            if(self::pluginExists($plugs) == TRUE){
+                $mergeArray = self::plugs_getPlugsElements($plugs);
+                if(is_array($mergeArray)){
+                    $return = array_merge($return, $mergeArray); 
+                }
+            }
         }
         return $return;
     }
@@ -695,17 +733,46 @@ class scan_ip extends eqLogic {
         ${$plug[0]}->majIpElement($_ip, $plug[1]);
     }
     
-    public static function plugs_printSelectOptionEquiements($_selected = NULL){
-        log::add('scan_ip', 'debug', 'plugs_printSelectOptionEquiements :. Lancement');
-        $print = ""; 
+    public static function plugs_printSelectOptionEquiements(){
+        $print = $oldEquip = ""; 
         foreach (self::plugs_getElements() as $equipement) {
-            $value = $equipement["plugin"] ."|".$equipement["id"];
-            $print .= "<option value=\"". $value."\"";
-            if($_selected != NULL AND $_selected == $value) { $print .= " selected"; }
-            $print .= ">[" . $equipement["plugin_print"] . "] " . $equipement["name"] . " (actuellement ". $equipement["ip_v4"] .")</option>";
-        }  
-        echo $print;
+            
+            if($equipement["plugin"] != $oldEquip){ 
+                if($oldEquip != ""){ 
+                    $print .= "</optgroup>";
+                }
+                $print .= "<optgroup label=\"Plugin ".$equipement["plugin"]."\">";
+            }
+            
+            $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
+            $oldEquip = $equipement["plugin"];
+            
+        }
+        
+        $print .= "</optgroup>";
+        
+        return $print;
     }
+    
+    public static function plugs_printOptionEquiements(){
+        
+        $selection = scan_ip::plugs_printSelectOptionEquiements();
+        
+        for ($index = 1; $index < self::$nb_equipement_by_mac+1; $index++) {
+            echo '<div class="form-group">';
+            echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
+            echo '<div class="col-sm-5">';
+            echo '<select class="form-control eqLogicAttr" onchange="verifEquipement()" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
+            echo '<option value="">Sélectionnez un élément</option>';
+            echo '<label class="col-sm-3 control-label">{{Associer à un équipement}}</label>';
+            echo $selection;
+            echo '</select>';
+            echo '</div>';
+            echo '</div>';
+        }
+        
+    }
+                        
     
     public static function plugs_getEquiementsById(){
         log::add('scan_ip', 'debug', 'plugs_getEquiementsById :. Lancement'); 
@@ -715,6 +782,37 @@ class scan_ip extends eqLogic {
             $return[$equipement["id"]]["plugin"] = $equipement["plugin"];
         }  
         return $return;
+    }
+    
+    public static function plugs_existId($_id){
+        $return = eqLogic::byId($_id);
+        if($return != 0){
+            return TRUE; 
+        } else {
+            return FALSE;
+        }
+    }
+    
+    public static function plugs_getAllAssignEquipement(){
+        log::add('scan_ip', 'debug', 'plugs_getAllAssignEquipement :. Lancement');
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            $tmp = $scan_ip->getConfiguration("plug_element_plugin");
+            if(!empty($tmp)) {
+                $return[] = $scan_ip->getConfiguration("plug_element_plugin");
+            }
+        }
+        return $return;
+    }
+    
+    public static function pluginExists($_name) {
+        $pluginExists = TRUE;
+        try {
+            $plugin = plugin::byId($_name);
+        } catch (Exception $e) {
+            $pluginExists = FALSE;
+        }
+        return $pluginExists;
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

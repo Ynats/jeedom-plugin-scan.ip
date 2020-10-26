@@ -3,13 +3,12 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_xiaomihome {
+class scan_ip_googlecast {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/subPlugs/*****.php
-    * Nom de la variable ip à modifier
     */
-    public static $plug = "idplugin";
+    public static $plug = "googlecast";
     public static $ip = "ip";
     
     /**
@@ -21,21 +20,20 @@ class scan_ip_xiaomihome {
     * -> $return[idEquipement]["name"] = Nom de l'équipement
     * -> $return[idEquipement]["id"] = Id de l'équipement
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
+    * -> $return[idEquipement]["device"] = précise si il s'agit d'un élément device pour éviter les conflits (il ne peut pas y avoir plusieurs device pour une même adresse MAC
     */
     public function getAllElements(){
 
-        $eqLogics = eqLogic::byType(self::$plug); 
-        
-        foreach ($eqLogics as $eqLogic) {    
+        $eqLogics = eqLogic::byType(self::$plug);
+        foreach ($eqLogics as $eqLogic) { 
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
+            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('friendly_name');
             $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
             $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
             $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
         }
         return $return;
     }
-    
     
     /**
     * getIpElement sert à récupérer l'ip d'un élément du plugin par son id

@@ -5,6 +5,7 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
+
 ?>
 
 <div class="row row-overflow">
@@ -125,7 +126,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
                             <div class="col-sm-5">
                                 <select id="scan_ip_mac_select" style="color: #039be5 !important;" class="form-control">
-                                    <option>Sélectionner parmi les adresses Mac non enregistrées</option>
+                                    <option value="">Sélectionner parmi les adresses Mac non enregistrées</option>
                                     <?php
                                         scan_ip::printSelectOptionAdressMac();
                                     ?>
@@ -140,22 +141,18 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         
-                        <?php
-                            scan_ip::vueSubTitle("Associer cette adresse MAC à un élément d'un plugin");
-                        ?>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Lier à l'élément du plugin (optionnel)}}</label>
+<!--                       <div class="form-group">
+                            <label class="col-sm-3 control-label">{{ip actuelle (pour information)}}</label>
                             <div class="col-sm-5">
-                                <select class="eqLogicAttr form-control" data-l1key="configuration"  data-l2key="plug_element_plugin">
-                                    <option>Sélectionnez l'élément</option>
-                                    <?php
-                                        scan_ip::plugs_printSelectOptionEquiements($eqLogics->plug_element_plugin);
-                                    ?>
-                                </select>
+                                <input type="text" maxlength="17" id="ipActuelle" value="#IpV4#" class="form-control" style="color: #039be5 !important;" readonly="" />
                             </div>
-                        </div>
+                        </div>-->
                         
+                        <?php
+                            scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs éléments (optionnel)");
+                            scan_ip::plugs_printOptionEquiements();
+                        ?>
+ 
                     </fieldset>
                 </form>
             </div>
