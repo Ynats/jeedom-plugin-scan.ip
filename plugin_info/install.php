@@ -20,26 +20,29 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function scan_ip_install() {
     
-    if (config::byKey('cron_pass') == '') {
-            config::save('cron_pass', 1);
+    if (config::byKey('cron_pass', 'scan_ip') == '') {
+            config::save('cron_pass', 1, 'scan_ip');
     }
-    if (config::byKey('offline_time') == '') {
-            config::save('offline_time', 4);
+    if (config::byKey('offline_time', 'scan_ip') == '') {
+            config::save('offline_time', 4, 'scan_ip');
     }
     
 }
 
 function scan_ip_update() {
 
-    if (config::byKey('cron_pass') == '') {
-            config::save('cron_pass', 1);
+    if (config::byKey('cron_pass', 'scan_ip') == '') {
+            config::save('cron_pass', 1, 'scan_ip');
     }
-    if (config::byKey('offline_time') == '') {
-            config::save('offline_time', 4);
+    if (config::byKey('offline_time', 'scan_ip') == '') {
+            config::save('offline_time', 4, 'scan_ip');
     }
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
-        $scan_ip->save();
+        try {
+            $scan_ip->save();
+        } catch (Exception $e) {
+        }
     }  
 }
 
