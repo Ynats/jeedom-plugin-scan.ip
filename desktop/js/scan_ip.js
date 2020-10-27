@@ -144,11 +144,11 @@ function addCmdToTable(_cmd) {
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
 
-function verifEquipement(){
+function verifEquipement(nb){
     var cpt = 0;
     var nbElement = [];
     
-    for (x = 1; x < 11; x++) {
+    for (x = 1; x <= nb; x++) {
         var val = $('#plug_element_plugin_' + x).find(":selected").val();
         var split = val.split("|");
         if(split[0] != "") { nbElement.push(split[0]); }

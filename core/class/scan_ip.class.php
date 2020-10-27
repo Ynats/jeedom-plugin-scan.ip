@@ -24,7 +24,6 @@ class scan_ip extends eqLogic {
     /*     * *************************Attributs****************************** */
     
     public static $_widgetPossibility = array('custom' => true);
-    public static $_nb_equipement_by_mac = 10;
     public static $_folderTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
@@ -344,16 +343,20 @@ class scan_ip extends eqLogic {
         ///////////////////////////////////////////
         // Mise à jour de l'élément associé
         
-        for ($index = 1; $index < self::$_nb_equipement_by_mac; $index++) {
-            $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
-            if($plug_element_plugin != ""){
-                if(self::bridges_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
-                    if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-                        self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+        $bridge = self::bridges_getElements();
+        
+        if($bridge != FALSE){
+            for ($index = 1; $index < $bridge["nb"]; $index++) {
+                $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
+                if($plug_element_plugin != ""){
+                    if(self::bridges_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
+                        if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                            self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                        }
+                    } else {
+                        $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                        $eqlogic->save();
                     }
-                } else {
-                    $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
-                    $eqlogic->save();
                 }
             }
         }
@@ -428,13 +431,18 @@ class scan_ip extends eqLogic {
             
             $return[$a]["plug_element_plugin"] = NULL;
             
-            for ($index = 1; $index < self::$_nb_equipement_by_mac; $index++) {
-                if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
-                    $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
+            $bridge = self::bridges_getElements();
+            
+            if($bridge != FALSE){
+                for ($index = 1; $index < $bridge["nb"]; $index++) {
+                    if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
+                        $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
 
-                    $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a></div>";
-                } 
+                        $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a></div>";
+                    } 
+                }
             }
+            
             
             $a++;
         }  
@@ -713,18 +721,22 @@ class scan_ip extends eqLogic {
     }
     
     public static function bridges_getElements(){
-        $return = array();
+        $array = array();
+        $i = 0;
         foreach (self::bridges_all() as $bridges) {
             if(self::bridges_pluginExists($bridges) == TRUE){
                 $mergeArray = self::bridges_getPlugsElements($bridges);
                 if(is_array($mergeArray)){
-                    $return = array_merge($return, $mergeArray); 
+                    $i++;
+                    $array = array_merge($array, $mergeArray); 
                 }
             }
         }
-        if(empty($return[0])){
+        if(empty($array[0])){
             return FALSE;
         } else {
+            $return["array"] = $array;
+            $return["nb"] = $i;
             return $return;
         }
     }
@@ -743,18 +755,15 @@ class scan_ip extends eqLogic {
         
         if($allBridges != FALSE){
             $print = $oldEquip = ""; 
-            foreach ($allBridges as $equipement) {
-
+            foreach ($allBridges["array"] as $equipement) {
                 if($equipement["plugin"] != $oldEquip){ 
                     if($oldEquip != ""){ 
                         $print .= "</optgroup>";
                     }
                     $print .= "<optgroup label=\"Plugin ".$equipement["plugin"]."\">";
                 }
-
                 $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
                 $oldEquip = $equipement["plugin"];
-
             }
 
             $print .= "</optgroup>";
@@ -769,13 +778,14 @@ class scan_ip extends eqLogic {
     public static function bridges_printOptionEquiements(){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
+        $nb = self::bridges_getElements()["nb"];
         
         if($selection != FALSE){
-            for ($index = 1; $index < self::$_nb_equipement_by_mac+1; $index++) {
+            for ($index = 1; $index < $nb+1; $index++) {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement()" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
+                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement('.$nb.')" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
                 echo '<option value="">Sélectionnez un élément</option>';
                 echo $selection;
                 echo '</select>';
@@ -796,7 +806,8 @@ class scan_ip extends eqLogic {
     
     public static function bridges_getEquiementsById(){
         log::add('scan_ip', 'debug', 'bridges_getEquiementsById :. Lancement'); 
-        foreach (self::bridges_getElements() as $equipement) { 
+        $all = self::bridges_getElements();
+        foreach ($all["array"] as $equipement) { 
             $return[$equipement["id"]]["name"] = $equipement["name"];
             $return[$equipement["id"]]["ip_v4"] = $equipement["ip_v4"];
             $return[$equipement["id"]]["plugin"] = $equipement["plugin"];
