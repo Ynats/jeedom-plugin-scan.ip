@@ -718,7 +718,7 @@ class scan_ip extends eqLogic {
     public static function bridges_getElements(){
         $return = array();
         foreach (self::bridges_all() as $bridges) {
-            if(self::pluginExists($bridges) == TRUE){
+            if(self::bridges_pluginExists($bridges) == TRUE){
                 $mergeArray = self::bridges_getPlugsElements($bridges);
                 if(is_array($mergeArray)){
                     $return = array_merge($return, $mergeArray); 
