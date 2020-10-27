@@ -636,15 +636,12 @@ class scan_ip extends eqLogic {
         $ipRoute = self::getIpRoute();
         exec('sudo ip a', $list);
         $i = 0;
-        $exclude = array("lo", "");
         
         foreach ($list as $value) {
             if(preg_match(self::getRegex("sub_reseau"), $value)){ 
                 $name = trim(explode(":", $value)[1]);
-                if(!in_array($name, $exclude)) {
-                    $i++; 
-                    $return[$i]["name"] = $name; 
-                }
+                $i++; 
+                $return[$i]["name"] = $name; 
             }
             if(preg_match(self::getRegex("ip_v4"), $value) AND preg_match("(".self::getPlageIp($ipRoute).")", $value)) {
                 $return[$i]["ip_v4"] = self::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*";
