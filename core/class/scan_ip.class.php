@@ -786,7 +786,7 @@ class scan_ip extends eqLogic {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Aucune association possible}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<input value"Pas de plugin compatibles" readonly="">';
+                echo '<input class="form-control" type="text" value"Pas de plugin compatibles" readonly="">';
                 echo '</div>';
                 echo '</div>';
         }
