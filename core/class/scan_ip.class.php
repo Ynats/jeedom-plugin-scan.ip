@@ -346,7 +346,7 @@ class scan_ip extends eqLogic {
         $bridge = self::bridges_getElements();
         
         if($bridge != FALSE){
-            for ($index = 1; $index < $bridge["nb"]; $index++) {
+            for ($index = 1; $index <= $bridge["nb"]; $index++) {
                 $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
                 if($plug_element_plugin != ""){
                     if(self::bridges_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
@@ -434,7 +434,7 @@ class scan_ip extends eqLogic {
             $bridge = self::bridges_getElements();
             
             if($bridge != FALSE){
-                for ($index = 1; $index < $bridge["nb"]; $index++) {
+                for ($index = 1; $index <= $bridge["nb"]; $index++) {
                     if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
                         $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
 
@@ -781,7 +781,7 @@ class scan_ip extends eqLogic {
         $nb = self::bridges_getElements()["nb"];
         
         if($selection != FALSE){
-            for ($index = 1; $index < $nb+1; $index++) {
+            for ($index = 1; $index <= $nb; $index++) {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
@@ -796,7 +796,7 @@ class scan_ip extends eqLogic {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association 1}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<input class="form-control" style="color:orange;" type="text" value="Aucune association possible car aucun plugin installé n\'est compatible" readonly="">';
+                echo '<input class="form-control" style="var(--al-warning-color) !important" type="text" value="Aucune association possible car aucun plugin installé n\'est compatible" readonly="">';
                 echo '</div>';
                 echo '</div>';
         }
