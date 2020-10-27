@@ -385,11 +385,17 @@ class scan_ip extends eqLogic {
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
+    public static function excludeSubReseau($_string){
+        if($_string == "lo"){ return FALSE; }
+        elseif(preg_match('/(tun)[0-9]*/', $_string)){ return FALSE; }
+        else { return TRUE; }
+    }
+    
     public static function printInputSubConfig(){
         log::add('scan_ip', 'debug', 'printInputSubConfig :. Lancement');
         $return = "";
         foreach (self::scanSubReseau() as $sub) {
-            if($sub["name"] != "lo") {
+            if(self::excludeSubReseau($sub["name"]) == TRUE) {
                 $return .= '<div class="form-group"">';
                 $return .= '<label class="col-sm-4 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
                 $return .= '<div class="col-sm-2">';
