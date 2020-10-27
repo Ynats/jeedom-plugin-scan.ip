@@ -722,7 +722,11 @@ class scan_ip extends eqLogic {
                 }
             }
         }
-        return $return;
+        if(empty($return[0])){
+            return FALSE;
+        } else {
+            return $return;
+        }
     }
     
     public static function bridges_majElement($_ip, $_element){
@@ -734,41 +738,57 @@ class scan_ip extends eqLogic {
     }
     
     public static function bridges_printSelectOptionEquiements(){
-        $print = $oldEquip = ""; 
-        foreach (self::bridges_getElements() as $equipement) {
-            
-            if($equipement["plugin"] != $oldEquip){ 
-                if($oldEquip != ""){ 
-                    $print .= "</optgroup>";
+        
+        $allBridges = self::bridges_getElements();
+        
+        if($allBridges != FALSE){
+            $print = $oldEquip = ""; 
+            foreach ($allBridges as $equipement) {
+
+                if($equipement["plugin"] != $oldEquip){ 
+                    if($oldEquip != ""){ 
+                        $print .= "</optgroup>";
+                    }
+                    $print .= "<optgroup label=\"Plugin ".$equipement["plugin"]."\">";
                 }
-                $print .= "<optgroup label=\"Plugin ".$equipement["plugin"]."\">";
+
+                $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
+                $oldEquip = $equipement["plugin"];
+
             }
-            
-            $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
-            $oldEquip = $equipement["plugin"];
-            
+
+            $print .= "</optgroup>";
+
+            return $print;
+        } else {
+            return FALSE;
         }
         
-        $print .= "</optgroup>";
-        
-        return $print;
     }
     
     public static function bridges_printOptionEquiements(){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
         
-        for ($index = 1; $index < self::$_nb_equipement_by_mac+1; $index++) {
-            echo '<div class="form-group">';
-            echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
-            echo '<div class="col-sm-5">';
-            echo '<select class="form-control eqLogicAttr" onchange="verifEquipement()" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
-            echo '<option value="">Sélectionnez un élément</option>';
-            echo '<label class="col-sm-3 control-label">{{Associer à un équipement}}</label>';
-            echo $selection;
-            echo '</select>';
-            echo '</div>';
-            echo '</div>';
+        if($selection != FALSE){
+            for ($index = 1; $index < self::$_nb_equipement_by_mac+1; $index++) {
+                echo '<div class="form-group">';
+                echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
+                echo '<div class="col-sm-5">';
+                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement()" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
+                echo '<option value="">Sélectionnez un élément</option>';
+                echo $selection;
+                echo '</select>';
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+                echo '<div class="form-group">';
+                echo '<label class="col-sm-3 control-label">{{Aucune association possible}}</label>';
+                echo '<div class="col-sm-5">';
+                echo '<input value"Pas de plugin compatibles" readonly="">';
+                echo '</div>';
+                echo '</div>';
         }
         
     }

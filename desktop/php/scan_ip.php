@@ -141,13 +141,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         
-<!--                       <div class="form-group">
-                            <label class="col-sm-3 control-label">{{ip actuelle (pour information)}}</label>
-                            <div class="col-sm-5">
-                                <input type="text" maxlength="17" id="ipActuelle" value="#IpV4#" class="form-control" style="color: #039be5 !important;" readonly="" />
-                            </div>
-                        </div>-->
-                        
                         <?php
                             scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs éléments (optionnel)");
                             scan_ip::bridges_printOptionEquiements();
