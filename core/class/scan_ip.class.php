@@ -131,8 +131,8 @@ class scan_ip extends eqLogic {
         $refresh->setSubType('other');
         $refresh->save();
         
-//        // Mise à jour des données
-//        scan_ipCmd::cmdRefresh($refresh->getEqLogic());
+        // Mise à jour des données
+        self::cmdRefresh($this);
 
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
@@ -558,9 +558,9 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'arpVersion :. Lancement');
         $exec = exec('sudo arp-scan -V 2>&1',$output, $return_var);
         if($return_var == 0) { // execution commande OK
-          foreach ($output as $searchVersion) {
-              if(preg_match("(arp-scan )", $searchVersion)) { return substr($searchVersion,9); }
-          }    
+            foreach ($output as $searchVersion) {
+                if(preg_match("(arp-scan )", $searchVersion)) { return substr($searchVersion,9); }
+            }    
         } else {
           log::add('scan_ip', 'error', 'sudo: arp-scan: command not found');
           return("arp-scan not found");
