@@ -6,11 +6,11 @@
 class scan_ip_xiaomihome {
     
     /**
-    * Nom du Plugin correspondant au nom du fichier présent dans core/subPlugs/*****.php
+    * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "idplugin";
-    public static $ip = "ip";
+    public static $plug = "xiaomihome";
+    public static $ip = "ipwifi";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -26,36 +26,18 @@ class scan_ip_xiaomihome {
 
         $eqLogics = eqLogic::byType(self::$plug); 
         
-        foreach ($eqLogics as $eqLogic) {    
-            $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
-            $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
-            $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
-        }
-        return $return;
-    }
-    
-    
-    /**
-    * getIpElement sert à récupérer l'ip d'un élément du plugin par son id
-    *
-    * @param $_id de l'équipement
-    * 
-    * 
-    * @return string ip de l'équipement au format v4
-    */
-    public function getIpElement($_id){
-        
-        $eqLogics = eqLogic::byType(self::$plug); 
+        foreach ($eqLogics as $eqLogic) { 
 
-        foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) {  
-                return $eqLogic->getConfiguration(self::$ip);
-                break;
+            if ($eqLogic->getConfiguration('type') == 'yeelight' OR $eqLogic->getConfiguration('type') == 'wifi') {
+                
+                $return[$eqLogic->getId()]["plugin"] = self::$plug;
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
+                $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
+                $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
+                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
             }
         }
-        
+        return $return;
     }
     
     /**

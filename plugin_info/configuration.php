@@ -65,7 +65,7 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
             <div class="col-lg-2">
-                <?php echo scan_ip::plugs_printPlugs(); ?>
+                <?php echo scan_ip::bridges_printPlugs(); ?>
             </div>
         </div>
     </fieldset>

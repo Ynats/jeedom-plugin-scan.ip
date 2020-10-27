@@ -6,7 +6,7 @@
 class scan_ip_googlecast {
     
     /**
-    * Nom du Plugin correspondant au nom du fichier présent dans core/subPlugs/*****.php
+    * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     */
     public static $plug = "googlecast";
     public static $ip = "ip";
@@ -33,27 +33,6 @@ class scan_ip_googlecast {
             $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
         }
         return $return;
-    }
-    
-    /**
-    * getIpElement sert à récupérer l'ip d'un élément du plugin par son id
-    *
-    * @param $_id de l'équipement
-    * 
-    * 
-    * @return string ip de l'équipement au format v4
-    */
-    public function getIpElement($_id){
-        
-        $eqLogics = eqLogic::byType(self::$plug); 
-
-        foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) {  
-                return $eqLogic->getConfiguration(self::$ip);
-                break;
-            }
-        }
-        
     }
     
     /**

@@ -150,7 +150,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         
                         <?php
                             scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs éléments (optionnel)");
-                            scan_ip::plugs_printOptionEquiements();
+                            scan_ip::bridges_printOptionEquiements();
                         ?>
  
                     </fieldset>
