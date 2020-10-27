@@ -21,6 +21,18 @@ $('#bt_scanIpNetwork').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=network').dialog('open');
 });
 
+// Sur la partie Equipement
+$('#bt_scanIpEquipement').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{Afficher les équipements}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=equipement').dialog('open');
+});
+
+// Sur la partie Debug
+$('#bt_scanIpDebug').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{Debug}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=debug').dialog('open');
+});
+
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });
@@ -29,7 +41,7 @@ $('#bt_syncEqLogic').off('click').on('click', function () {
 $('#scan_ip_mac_select').change(function(){
     var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
     $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);
-    $("#scan_ip_adressMac").val(scan_ip_CopyPaste);
+    //$("#scan_ip_adressMac").val(scan_ip_CopyPaste);
 });
 
 ////////
@@ -107,27 +119,52 @@ function addCmdToTable(_cmd) {
     if (!isset(_cmd.configuration)) {
         _cmd.configuration = {};
     }
-    
+
     var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
-tr += '<td>';
-tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
-tr += '<div class="row">';
-tr += '<div class="col-sm-6">';
-tr += '<input class="cmdAttr form-control input-sm" data-l1key="name">';
-tr += '</div>';
-tr += '</div>';
-tr += '</td>';
-tr += '<td>';
-if (is_numeric(_cmd.id)) {
-    tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fa fa-cogs"></i></a> ';
-    tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
+    tr += '<td>';
+    tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
+    tr += '<div class="row">';
+    tr += '<div class="col-sm-6">';
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name">';
+    tr += '</div>';
+    tr += '</div>';
+    tr += '</td>';
+    tr += '<td>';
+    if (is_numeric(_cmd.id)) {
+        tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fa fa-cogs"></i></a> ';
+        tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
+    }
+    tr += '</td>';
+    tr += '</tr>';
+    $('#table_cmd tbody').append(tr);
+    $('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
+    if (isset(_cmd.type)) {
+        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
+    }
+    jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 }
-tr += '</td>';
-tr += '</tr>';
-$('#table_cmd tbody').append(tr);
-$('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
-if (isset(_cmd.type)) {
-    $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
+
+function verifEquipement(nb){
+    var cpt = 0;
+    var nbElement = [];
+    
+    for (x = 1; x <= nb; x++) {
+        var val = $('#plug_element_plugin_' + x).find(":selected").val();
+        var split = val.split("|");
+        if(split[0] != "") { nbElement.push(split[0]); }
+    }
+    
+    red = nbElement.reduce((p,c) => (p[c]++ || (p[c]=1),p),{});
+    
+    $.each(red, function( index, value ) {
+        if(value > 1){ 
+            $('#div_alert').showAlert({message: "{{Le plugin "+index+" est associé à "+value+" éléments! Vous ne pouvez pas associer plus d'un élément par plugin sans créer de conflit.}}", level: 'danger'}); 
+        } 
+        else {
+             $('#div_alert').hide();
+        }
+    });
+    
 }
-jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
-}
+
+

@@ -7,12 +7,39 @@
         <span class="reportModeVisible">#name_display#<span class="object_name">#object_name#</span></span>
         <a href="#eqLink#" class="reportModeHidden">#name_display#<span class="object_name">#object_name#</span></a>
     </center>
-
-
+    
     <script>
         $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function () {
             jeedom.cmd.execute({id: $(this).data('cmd_id')});
         }); 
     </script>
+    
+    <div style="text-align: center; width: 100%;">#mac#</div>
+    
+    <div style="border-top: 1px solid grey; width : 100%; margin-top: 5px;"><hr></div>
+    
+    <div>
+        <div style="text-align: center; width: 100%; color: #A9A9A9; font-size: 85%; margin-bottom: -4px;">ip v4</div>
+        <div style="text-align: center; width: 100%; font-weight: bold; font-size: 120%;">#ip_v4#</div>
+    </div>
+    
+    <div style="text-align: center; width: 100%; margin: 15px 0 30px 0;">
+        <div style="margin: 0; left: 50%; margin-right: -50%; position: absolute; transform: translate(-50%, -50%)">
+            <div style="width: 20px; height: 20px; border-radius: 20px; background: #etat_cycle#;"></div>
+        </div>
+    </div>
+    
+    <div style="margin-top:3px;">
+        <div style="text-align: center; width: 100%; color: #A9A9A9; font-size: 85%; margin-bottom: -4px;">Dernier ip v4</div>
+        <div style="text-align: center; width: 100%; #etat_last_ip#">#last_ip_v4#</div>
+    </div>
+    
+    <div style="margin-top:3px;">
+        <div style="text-align: center; width: 100%; color: #A9A9A9; font-size: 85%; margin-bottom: -4px;">Dernière synchro</div>
+        <div style="text-align: center; width: 100%;">#update_date#</div>
+    </div>
+    
+
+    
 
 </div>

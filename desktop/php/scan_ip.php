@@ -27,6 +27,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <br>
                 <span>{{Afficher le Réseau}}</span>
             </div>
+            <div class="cursor logoSecondary" id="bt_scanIpEquipement">
+                <i class="fas fa-sitemap"></i>
+                <br>
+                <span>{{Afficher les équipements}}</span>
+            </div>
+            <div class="cursor logoSecondary" id="bt_scanIpDebug">
+                <i class="fas fa-medkit"></i>
+                <br>
+                <span>{{Debug}}</span>
+            </div>
             <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
                 <i class="fas fa-wrench"></i>
                 <br>
@@ -107,12 +117,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
                         </div>
-
+                        
+                        <?php
+                            scan_ip::vueSubTitle("Associer une adresse MAC");
+                        ?>
+                        
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
-                            <div class="col-sm-3">
+                            <div class="col-sm-5">
                                 <select id="scan_ip_mac_select" style="color: #039be5 !important;" class="form-control">
-                                    <option>Sélectionner parmi les adresses Mac non enregistrées</option>
+                                    <option value="">Sélectionner parmi les adresses Mac non enregistrées</option>
                                     <?php
                                         scan_ip::printSelectOptionAdressMac();
                                     ?>
@@ -122,11 +136,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
-                            <div class="col-sm-3">
-                                <input type="text" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                            <div class="col-sm-5">
+                                <input type="text" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
                             </div>
                         </div>
                         
+                        <?php
+                            scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs éléments (optionnel)");
+                            scan_ip::bridges_printOptionEquiements();
+                        ?>
+ 
                     </fieldset>
                 </form>
             </div>
