@@ -28,7 +28,11 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
-
+    
+    public static $_allBridges = array( "xiaomihome",
+                                        "broadlink",
+                                        "googlecast",
+                                        "homepTalk",);
 
     /*     * ***********************Methode static*************************** */
 
@@ -689,21 +693,12 @@ class scan_ip extends eqLogic {
 # BRIDGES PLUG AND PLAY
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function bridges_all(){
-        $gridges = array(
-            "xiaomihome",
-            "broadlink",
-            "googlecast",
-            );
-        return $gridges;
-    }
-    
     public static function bridges_printPlugs(){
-        foreach (self::bridges_all() as $gridge) {
+        foreach (self::$_allBridges as $gridge) {
             if(self::bridges_pluginExists($gridge)){
                 echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:green;'>(Installé)</span></div>";
             } else {
-                echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:grey;'>(Non installé)</span></div>";
+                echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:orange;'>(Non installé)</span></div>";
             }
             
         }
@@ -723,7 +718,7 @@ class scan_ip extends eqLogic {
     public static function bridges_getElements(){
         $array = array();
         $i = 0;
-        foreach (self::bridges_all() as $bridges) {
+        foreach (self::$_allBridges as $bridges) {
             if(self::bridges_pluginExists($bridges) == TRUE){
                 $mergeArray = self::bridges_getPlugsElements($bridges);
                 if(is_array($mergeArray)){
