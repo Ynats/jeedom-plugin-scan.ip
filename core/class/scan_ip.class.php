@@ -29,6 +29,7 @@ class scan_ip extends eqLogic {
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
+    public static $_timeRefreshMacAddress = 86400 * 7; // Refresh des équipements nons reconnus tous les 7 jours
     
     public static $_allBridges = array( "xiaomihome",
                                         "broadlink",
@@ -239,7 +240,6 @@ class scan_ip extends eqLogic {
                         $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                         $now["route"]["mac"] = $mac;
                     } else {
-                        self::recordMacVendor($mac);
                         $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"]);
                         $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "time" => $scanLine["time"]);
                         $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "time" => $scanLine["time"]);           
@@ -595,6 +595,18 @@ class scan_ip extends eqLogic {
         
     }
     
+    public static function cronDaily() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'cronDaily :. START');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        
+        self::majMacVendorApi();
+        
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'cronDaily :. FIN');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+    }
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # TACHES CRON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -705,7 +717,6 @@ class scan_ip extends eqLogic {
             } else {
                 echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:orange;'>(Non installé)</span></div>";
             }
-            
         }
     }
     
@@ -837,6 +848,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function bridges_pluginExists($_name) {
+        log::add('scan_ip', 'debug', 'bridges_pluginExists :. Lancement');
         $bridgeExists = TRUE;
         try {
             $plugin = plugin::byId($_name);
@@ -853,13 +865,27 @@ class scan_ip extends eqLogic {
 # GET OUI VENDOR MAC
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
+    public static function majMacVendorApi(){
+        log::add('scan_ip', 'debug', 'majMacVendorApi :. Lancement');
+        $records = self::getFileSerialize(); 
+        foreach ($records as $mac => $scanLine) {
+            self::recordMacVendor($mac);
+            sleep(1);
+        }
+        log::add('scan_ip', 'debug', 'majMacVendorApi :. Fin');
+    }
+    
     public static function getMacVendorApi($_mac) {
+        log::add('scan_ip', 'debug', 'getMacVendorApi :. Lancement');
         $url = "https://macvendors.co/api/" . urlencode($_mac);
         $value = json_decode(file_get_contents($url))->result;
         
         if(!empty($value->company)){
             $return["company"] = $value->company;
-            $return["mac_prefix"] = $value->mac_prefix;
+            $return["type"] = $value->type;
+            $return["country"] = $value->country;
+            $return["last"] = time();
+            
             return $return;
         } else {
             return "error";
@@ -867,25 +893,34 @@ class scan_ip extends eqLogic {
     }
 
     public static function recordMacVendor($_mac) {
-        
+        log::add('scan_ip', 'debug', 'recordMacVendor :. Lancement');
         $rest = substr($_mac, 0, 8); 
         $arayVendor = self::getMacRecord();
+        $pass = 0;
         
-        if(empty($arayVendor[$rest])){
+        if($arayVendor[$rest]["company"] == "..." AND (time() - $arayVendor[$rest]["last"]) > self::$_timeRefreshMacAddress ){ 
+            log::add('scan_ip', 'debug', 'recordMacVendor :. Refresh equipement');
             $result = self::getMacVendorApi($_mac);
-   
-            if($result != "error"){
-                $tmp[$rest] = $result;
-                $result = array_merge($arayVendor, $tmp);
-            
-                $fichier = fopen(self::$_serializeMacAddress, 'w');
-                fputs($fichier, serialize($result));
-                fclose($fichier);   
-            }
+            $pass = 1;
+        } elseif(empty($arayVendor[$rest])){
+            log::add('scan_ip', 'debug', 'recordMacVendor :. Search new equipement');
+            $result = self::getMacVendorApi($_mac);
+            $pass = 1;
+        }
+        
+        if($result != "error" AND $pass == 1){
+            log::add('scan_ip', 'debug', 'recordMacVendor :. Mise en cache');
+            $tmp[$rest] = $result;
+            $result = array_merge($arayVendor, $tmp);
+
+            $fichier = fopen(self::$_serializeMacAddress, 'w');
+            fputs($fichier, serialize($result));
+            fclose($fichier);   
         }
     }
     
     public static function showMacVendor($_mac) {
+        log::add('scan_ip', 'debug', 'showMacVendor :. Lancement');
         $rest = substr($_mac, 0, 8); 
         $arayVendor = self::getMacRecord();
         if(!empty($arayVendor[$rest])){
@@ -896,6 +931,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function getMacRecord() {
+        log::add('scan_ip', 'debug', 'getMacRecord :. Lancement');
         if(is_file(self::$_serializeMacAddress)){
             return unserialize(file_get_contents(self::$_serializeMacAddress));
         } else {
