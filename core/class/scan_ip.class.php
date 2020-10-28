@@ -418,7 +418,7 @@ class scan_ip extends eqLogic {
             if(empty($record[$value->mac])){
                 $print .= '<option value="'. $value->mac .'"';
                 if($_selected != NULL AND $_selected == $value->mac) { $print .= ' selected'; }
-                $print .= '>' . $value->mac . ' - ' . $value->ip_v4 . ' | '. self::showMacVendor($value->mac) .'</option>';
+                $print .= '>' . $value->mac . ' | ' . $value->ip_v4 . ' | '. self::showMacVendor($value->mac) .'</option>';
             }
         }  
         echo $print;
