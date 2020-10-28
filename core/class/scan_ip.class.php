@@ -848,7 +848,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function bridges_pluginExists($_name) {
-        log::add('scan_ip', 'debug', 'bridges_pluginExists :. Lancement');
+        //log::add('scan_ip', 'debug', 'bridges_pluginExists :. Lancement');
         $bridgeExists = TRUE;
         try {
             $plugin = plugin::byId($_name);
@@ -920,10 +920,10 @@ class scan_ip extends eqLogic {
     }
     
     public static function showMacVendor($_mac) {
-        log::add('scan_ip', 'debug', 'showMacVendor :. Lancement');
         $rest = substr($_mac, 0, 8); 
         $arayVendor = self::getMacRecord();
         if(!empty($arayVendor[$rest])){
+            log::add('scan_ip', 'debug', 'showMacVendor :. Lancement');
             return $arayVendor[$rest]["company"];
         } else {
             return "...";
@@ -931,7 +931,6 @@ class scan_ip extends eqLogic {
     }
     
     public static function getMacRecord() {
-        log::add('scan_ip', 'debug', 'getMacRecord :. Lancement');
         if(is_file(self::$_serializeMacAddress)){
             return unserialize(file_get_contents(self::$_serializeMacAddress));
         } else {
