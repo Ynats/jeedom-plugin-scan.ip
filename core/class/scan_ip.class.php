@@ -28,6 +28,7 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
+    public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
     
     public static $_allBridges = array( "xiaomihome",
                                         "broadlink",
@@ -238,6 +239,7 @@ class scan_ip extends eqLogic {
                         $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                         $now["route"]["mac"] = $mac;
                     } else {
+                        self::recordMacVendor($mac);
                         $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"]);
                         $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "time" => $scanLine["time"]);
                         $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "time" => $scanLine["time"]);           
@@ -416,7 +418,7 @@ class scan_ip extends eqLogic {
             if(empty($record[$value->mac])){
                 $print .= '<option value="'. $value->mac .'"';
                 if($_selected != NULL AND $_selected == $value->mac) { $print .= ' selected'; }
-                $print .= '>' . $value->mac . ' - ' . $value->ip_v4 . '</option>';
+                $print .= '>' . $value->mac . ' - ' . $value->ip_v4 . ' | '. self::showMacVendor($value->mac) .'</option>';
             }
         }  
         echo $print;
@@ -452,11 +454,8 @@ class scan_ip extends eqLogic {
                     } 
                 }
             }
-            
-            
             $a++;
         }  
-        
        return $return;
     }
 
@@ -526,7 +525,7 @@ class scan_ip extends eqLogic {
         }
 
         return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
-
+        
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -804,7 +803,6 @@ class scan_ip extends eqLogic {
         
     }
                         
-    
     public static function bridges_getEquiementsById(){
         log::add('scan_ip', 'debug', 'bridges_getEquiementsById :. Lancement'); 
         $all = self::bridges_getElements();
@@ -850,7 +848,64 @@ class scan_ip extends eqLogic {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # BRIDGES PLUG AND PLAY
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# GET OUI VENDOR MAC
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+
+    public static function getMacVendorApi($_mac) {
+        $url = "https://macvendors.co/api/" . urlencode($_mac);
+        $value = json_decode(file_get_contents($url))->result;
+        
+        if(!empty($value->company)){
+            $return["company"] = $value->company;
+            $return["mac_prefix"] = $value->mac_prefix;
+            return $return;
+        } else {
+            return "error";
+        }
+    }
+
+    public static function recordMacVendor($_mac) {
+        
+        $rest = substr($_mac, 0, 8); 
+        $arayVendor = self::getMacRecord();
+        
+        if(empty($arayVendor[$rest])){
+            $result = self::getMacVendorApi($_mac);
+   
+            if($result != "error"){
+                $tmp[$rest] = $result;
+                $result = array_merge($arayVendor, $tmp);
+            
+                $fichier = fopen(self::$_serializeMacAddress, 'w');
+                fputs($fichier, serialize($result));
+                fclose($fichier);   
+            }
+        }
+    }
+    
+    public static function showMacVendor($_mac) {
+        $rest = substr($_mac, 0, 8); 
+        $arayVendor = self::getMacRecord();
+        if(!empty($arayVendor[$rest])){
+            return $arayVendor[$rest]["company"];
+        } else {
+            return "...";
+        }
+    }
+    
+    public static function getMacRecord() {
+        if(is_file(self::$_serializeMacAddress)){
+            return unserialize(file_get_contents(self::$_serializeMacAddress));
+        } else {
+            return array();
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# GET OUI VENDOR MAC
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
