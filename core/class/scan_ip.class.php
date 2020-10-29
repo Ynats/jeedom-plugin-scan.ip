@@ -356,15 +356,26 @@ class scan_ip extends eqLogic {
         if($bridge != FALSE){
             for ($index = 1; $index <= $bridge["nb"]; $index++) {
                 $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
+                
                 if($plug_element_plugin != ""){
-                    if(self::bridges_existId(explode("|", $plug_element_plugin)[1]) == TRUE){
-                        if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-                            self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                    
+                    $testBridge = explode("|", $plug_element_plugin);
+                    
+                    if(self::bridges_pluginExists($testBridge[0])){
+                        if(self::bridges_existId($testBridge[1]) == TRUE){
+                            if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                                self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                            }
+                        } else {
+                            $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                            $eqlogic->save();
                         }
                     } else {
+                        log::add('scan_ip', 'debug', 'cmdRefresh :. Suppression du bridge car le plugin "'.$testBridge[0].'" n\'est pas installé');
                         $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
                         $eqlogic->save();
                     }
+                    
                 }
             }
         }
