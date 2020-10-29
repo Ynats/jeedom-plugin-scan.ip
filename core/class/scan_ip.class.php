@@ -35,7 +35,8 @@ class scan_ip extends eqLogic {
                                         "broadlink",
                                         "googlecast",
                                         "homepTalk",
-                                        "camera");
+                                        "camera",
+                                        "networks");
 
     /*     * ***********************Methode static*************************** */
 
