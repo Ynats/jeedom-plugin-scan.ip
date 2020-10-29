@@ -3,14 +3,15 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_idplugin {
+class scan_ip_camera {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "idplugin";
+    public static $plug = "camera";
     public static $ip = "ip";
+    public static $ipStream = "cameraStreamAccessUrl";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -28,7 +29,13 @@ class scan_ip_idplugin {
         
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
+            
+            if(!empty($eqLogic->getConfiguration('applyDevice'))){
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('type');
+            } else {
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug;
+            }
+            
             $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
             $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
             $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
@@ -46,15 +53,37 @@ class scan_ip_idplugin {
     */
     public function majIpElement($_ip ,$_id){
         
+        $record = array(self::$ip => 0, self::$ipStream => 0);
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) { 
+                
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $eqLogic->setConfiguration(self::$ip, $_ip);
+                    $record[self::$ip] = 1;
+                    $old_ipStream = $eqLogic->getConfiguration(self::$ipStream); 
+                    if(preg_match(scan_ip::getRegex("ip_v4"), $old_ipStream, $match)){ 
+                        if(!empty($match[0]) AND $match[0] != $eqLogic->getConfiguration(self::$ip)){
+                            log::add('scan_ip', 'debug', "Bridge camera :. L'ip associée à \"URL de snaphot\" est différent de l'ip associée à la caméra \"" . $eqLogic->getName() . "\" et donc ignoré.");
+                        } 
+                        elseif(!empty($match[0]) AND $match[0] == $eqLogic->getConfiguration(self::$ip)) {
+                            $record[self::$ipStream] = 1;
+                        }
+                    }
+                }
+                
+                if($record[self::$ip] == 1) { 
+                    $eqLogic->setConfiguration(self::$ip, $_ip); 
+                }
+                if($record[self::$ipStream] == 1) {
+                    $change_ipStream = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old_ipStream);
+                    $eqLogic->setConfiguration(self::$ipStream, $change_ipStream);
+                }
+                if($record[self::$ip] == 1){
                     $eqLogic->save(); 
                     break;
-                }   
+                }
+                  
             }
         }
         

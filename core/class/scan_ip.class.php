@@ -34,7 +34,8 @@ class scan_ip extends eqLogic {
     public static $_allBridges = array( "xiaomihome",
                                         "broadlink",
                                         "googlecast",
-                                        "homepTalk",);
+                                        "homepTalk",
+                                        "camera");
 
     /*     * ***********************Methode static*************************** */
 
@@ -410,7 +411,6 @@ class scan_ip extends eqLogic {
     }
     
     public static function printSelectOptionAdressMac($_selected = NULL){
-        log::add('scan_ip', 'debug', 'printSelectOptionAdressMac :. Lancement');
         $record = self::getAlleqLogics();
         $list = (array) self::getJsonTampon();
         $print = "";
@@ -923,7 +923,6 @@ class scan_ip extends eqLogic {
         $rest = substr($_mac, 0, 8); 
         $arayVendor = self::getMacRecord();
         if(!empty($arayVendor[$rest])){
-            log::add('scan_ip', 'debug', 'showMacVendor :. Lancement');
             return $arayVendor[$rest]["company"];
         } else {
             return "...";
