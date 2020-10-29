@@ -36,7 +36,9 @@ class scan_ip extends eqLogic {
                                         "googlecast",
                                         "homepTalk",
                                         "camera",
-                                        "networks");
+                                        "networks",
+                                        "kodi",
+                                        "zigate");
 
     /*     * ***********************Methode static*************************** */
 
