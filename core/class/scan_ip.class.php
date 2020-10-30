@@ -35,6 +35,9 @@ class scan_ip extends eqLogic {
                                         "camera",
                                         "googlecast",
                                         "homepTalk",
+                                        "camera",
+                                        "espeasy",
+                                        "networks",
                                         "Jailbreak",
                                         "JeeOrangeTv",
                                         "kodi",
@@ -662,7 +665,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'prepareJsonFolder :. Lancement');
         if (!is_dir(self::$_folderTampon)) {
             log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . self::$_folderTampon);
-            mkdir(self::$_folderTampon, 0777);
+            mkdir(self::$_folderTampon, 0740);
         }
     }
     
@@ -675,7 +678,7 @@ class scan_ip extends eqLogic {
 
         unlink(self::$_jsonTampon);
         rename(self::$_jsonTamponTemp, self::$_jsonTampon);
-        chmod(self::$_jsonTampon, 0777);
+        chmod(self::$_jsonTampon, 0740);
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -721,7 +724,7 @@ class scan_ip extends eqLogic {
         fputs($fichier, serialize($_data));
         fclose($fichier);
 
-        chmod(self::$_serializeTampon, 0777);
+        chmod(self::$_serializeTampon, 0740);
     }
     
     public static function getFileSerialize(){
