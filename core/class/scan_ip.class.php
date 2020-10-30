@@ -29,7 +29,7 @@ class scan_ip extends eqLogic {
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
-    public static $_timeRefreshMacAddress = 86400 * 7; // Refresh des équipements nons reconnus tous les 7 jours
+    public static $_timeRefreshMacAddress = 7; // Refresh des équipements nons reconnus tous les 7 jours
     
     public static $_allBridges = array( "xiaomihome",
                                         "broadlink",
@@ -920,7 +920,7 @@ class scan_ip extends eqLogic {
         $arayVendor = self::getMacRecord();
         $pass = 0;
         
-        if($arayVendor[$rest]["company"] == "..." AND (time() - $arayVendor[$rest]["last"]) > self::$_timeRefreshMacAddress ){ 
+        if($arayVendor[$rest]["company"] == "..." AND (time() - $arayVendor[$rest]["last"]) > (86400 * self::$_timeRefreshMacAddress) ){ 
             log::add('scan_ip', 'debug', 'recordMacVendor :. Refresh equipement');
             $result = self::getMacVendorApi($_mac);
             $pass = 1;

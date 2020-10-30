@@ -33,6 +33,13 @@ $('#bt_scanIpDebug').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=debug').dialog('open');
 });
 
+// Vendor
+$('#bt_vendorMac').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{MAC Vendor Equipement}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=vendorEquipement').dialog('open');
+});
+
+// Synchro
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });
