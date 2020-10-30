@@ -194,7 +194,7 @@ function verifEquipement(nb){
     
     $.each(red, function( index, value ) {
         if(value > 1){ 
-            $('#div_alert').showAlert({message: "{{Le plugin "+index+" est associé à "+value+" éléments! Vous ne pouvez pas associer plus d'un élément par plugin sans créer de conflit.}}", level: 'danger'}); 
+            $('#div_alert').showAlert({message: "{{Attention cet équipement est associé "+value+" fois au plugin "+index+" ! En validant cette configuration, il est probable que cela génère un conflit.}}", level: 'danger'}); 
         } 
         else {
              $('#div_alert').hide();
