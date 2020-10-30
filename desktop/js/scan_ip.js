@@ -33,8 +33,20 @@ $('#bt_scanIpDebug').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=debug').dialog('open');
 });
 
+// Vendor
+$('#bt_vendorMac').off('click').on('click', function () {
+  $('#md_modal').dialog({title: "{{MAC Vendor Equipement}}"});
+  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=vendorEquipement').dialog('open');
+});
+
+// Synchro
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
+});
+
+// Demande de recherche OUI
+$('#scan_ip_search').off('click').on('click', function () {
+    ouiMacSearch();
 });
 
 // Au changement du menu de sélection on reproduit la valeur dans le champ
@@ -67,13 +79,34 @@ function syncEqLogicWithOpenScanId() {
     });
 }
 
-function recordBtMac(input_mac) {
+//function recordBtMac(input_mac) {
+//    $.ajax({
+//        type: "POST",
+//        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
+//        data: {
+//            action: "recordMacBouton",
+//            mac: input_mac,
+//        },
+//        dataType: 'json',
+//        error: function (request, status, error) {
+//            handleAjaxError(request, status, error);
+//        },
+//        success: function (data) {
+//            if (data.state != 'ok') {
+//                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+//                return;
+//            }
+//            window.location.reload();
+//        }
+//    });
+//}
+
+function ouiMacSearch() {
     $.ajax({
         type: "POST",
         url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
         data: {
-            action: "recordMacBouton",
-            mac: input_mac,
+            action: "ouiMacSearch",
         },
         dataType: 'json',
         error: function (request, status, error) {
@@ -84,9 +117,12 @@ function recordBtMac(input_mac) {
                 $('#div_alert').showAlert({message: data.result, level: 'danger'});
                 return;
             }
-            window.location.reload();
+            
+            $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=vendorEquipement').dialog('open');
         }
     });
+    
+    
 }
 
 function verif_nombre(champ)

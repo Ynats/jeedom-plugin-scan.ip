@@ -31,7 +31,7 @@ $list = 1;
 
 <style>
     .scanTd{
-        padding : 3px 20px !important;
+        padding : 3px 0 3px 15px !important;
     }
     .macPresentActif{
         color: green;
@@ -60,7 +60,7 @@ $list = 1;
     }
 </style>
 
-<div class="col-md-8">
+<div class="col-md-9">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
             <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]->date ?>)</h3>
@@ -71,15 +71,14 @@ $list = 1;
                     <tr style="background-color: grey !important; color: white !important;">
                         <th style="text-align: center; width:30px;">#</th>
                         <th style="text-align: center;" class="scanTd">{{Equipements}}</th>
-                        <th style="width:150px;" class="scanTd">{{Adresse MAC}}</th>
+                        <th style="width:130px;" class="scanTd">{{Adresse MAC}}</th>
                         <th class="scanTd">{{ip}}</th>
                         <th class="scanTd">{{Nom}}</th>
                         <th class="scanTd"></th>
                     </tr>
                 </thead>
                 <tbody>
-<?php
-                    
+<?php         
                     foreach ($ipsReseau["sort"] as $device) {
 
                         if (scan_ip::isOffline($device->time) == 0) {
@@ -87,7 +86,7 @@ $list = 1;
                             if (isset($savingMac[$device->mac]["name"])) {
                                 $name = $savingMac[$device->mac]["name"];
                             } else {
-                                $name = "-";
+                                $name = "| ". scan_ip::showMacVendor($device->mac);
                             }
 
                             if (isset($savingMac[$device->mac]["enable"])) {
@@ -111,7 +110,7 @@ $list = 1;
                             . '<td class="' . $classPresent . '"><span class="' . $classSuivi . '">' . $textPresent . '</span></td>'
                             . '<td class="scanTd ' . $classPresent . '">' . $device->mac . '</td>'
                             . '<td class="scanTd ' . $classPresent . '">' . $device->ip_v4 . '</td>'
-                            . '<td class="scanTd ' . $classPresent . '">' . $name . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '" style="text-overflow: ellipsis;">' . $name . '</td>'
                             . '<td class="scanTd ' . $classPresent . '">' . date("d/m/Y H:i:s", $device->time) . '</td>'
                             . '</tr>';
                         }
@@ -123,7 +122,7 @@ $list = 1;
     </div>
 </div>
 
-<div class="col-md-4">
+<div class="col-md-3">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
             <h3 class="panel-title">Votre Jeedom</h3>
@@ -154,7 +153,7 @@ $list = 1;
     </div>
 </div>
 
-<div class="col-md-4">
+<div class="col-md-3">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
             <h3 class="panel-title">Votre routeur</h3>

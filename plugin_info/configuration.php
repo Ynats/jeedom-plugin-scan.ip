@@ -60,7 +60,7 @@ if (!isConnect()) {
         
         echo scan_ip::printInputSubConfig(); 
     
-        scan_ip::vueSubTitle("{{Plug & Play : Plugins compatibles}}", "config");
+        scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
     ?> 
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
