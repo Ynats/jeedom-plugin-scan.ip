@@ -27,12 +27,12 @@ class scan_ip_Monitoring {
               
         foreach ($eqLogics as $eqLogic) {    
           
-			if ($eqLogic->getConfiguration('maitreesclave') == 'deporte') {
-           	    $return[$eqLogic->getId()]["plugin"] = self::$plug;
-           	    $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('maitreesclave');
-           	    $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
-           	    $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-           	    $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+            if ($eqLogic->getConfiguration('maitreesclave') == 'deporte') {
+                $return[$eqLogic->getId()]["plugin"] = self::$plug;
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('maitreesclave');
+                $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
+                $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
+                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
             }
         }
         return $return;
@@ -52,8 +52,6 @@ class scan_ip_Monitoring {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getConfiguration('maitreesclave') == 'deporte') {
-        log::add('scan_ip', 'debug', 'DEBUGGGGGG'. $eqLogic->getConfiguration('maitreesclave'));
-
                 if ($eqLogic->getId() == $_id) { 
                     if($eqLogic->getConfiguration(self::$ip) != $_ip){
                         $eqLogic->setConfiguration(self::$ip, $_ip);
