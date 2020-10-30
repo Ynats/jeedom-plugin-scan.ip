@@ -57,10 +57,11 @@ class scan_ip extends eqLogic {
 //        log::add('scan_ip', 'debug', 'preSave :. Lancement');
 //    }
 
-    public function postSave() {
+    public function postUpdate() {
+        
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'postSave :. Mise à jour de : ' . $this->getId());
-                
+        log::add('scan_ip', 'debug', 'postUpdate :. Mise à jour de : ' . $this->getId());
+        
         $info = $this->getCmd(null, 'ip_v4');
         if (!is_object($info)) {
             $info = new scan_ipCmd();
@@ -137,6 +138,13 @@ class scan_ip extends eqLogic {
         $refresh->setSubType('other');
         $refresh->save();
         
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+    }
+    
+    public function postSave() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'postSave :. Refresh Command : ' . $this->getId());
+                
         // Mise à jour des données
         self::cmdRefresh($this);
 
