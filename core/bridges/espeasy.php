@@ -11,7 +11,6 @@ class scan_ip_espeasy {
     */
     public static $plug = "espeasy";
     public static $ip = "ip";
-    public static $ipLogic = "eqlogic";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -30,8 +29,8 @@ class scan_ip_espeasy {
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
 
-            if(!empty($eqLogic->getConfiguration('applyDevice'))){
-                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('applyDevice');
+            if(!empty($eqLogic->getConfiguration('icone'))){
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('icone');
             } else {
                 $return[$eqLogic->getId()]["plugin_print"] = self::$plug;
             }
@@ -52,38 +51,16 @@ class scan_ip_espeasy {
     * 
     */
     public function majIpElement($_ip ,$_id){
-        
-        $record = array(self::$ip => 0, self::$ipLogic => 0);
+         
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) { 
-                
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $record[self::$ip] = 1;
-                    $old_ipLogic = $eqLogic->getConfiguration(self::$ipLogic); 
-                    if(preg_match(scan_ip::getRegex("ip_v4"), $old_ipLogic, $match)){ 
-                        if(!empty($match[0]) AND $match[0] != $eqLogic->getConfiguration(self::$ip)){
-                            log::add('scan_ip', 'debug', "Bridge camera :. L'ip associée à \"URL de snaphot\" est différente de l'ip associée à la caméra \"" . $eqLogic->getName() . "\". \"URL de snaphot\" est donc ignoré.");
-                        } 
-                        elseif(!empty($match[0]) AND $match[0] == $eqLogic->getConfiguration(self::$ip)) {
-                            $record[self::$ipLogic] = 1;
-                        }
-                    }
-                }
-                
-                if($record[self::$ip] == 1) { 
-                    $eqLogic->setConfiguration(self::$ip, $_ip); 
-                }
-                if($record[self::$ipLogic] == 1) {
-                    $change_ipLogic = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old_ipLogic);
-                    $eqLogic->setConfiguration(self::$ipLogic, $change_ipLogic);
-                }
-                if($record[self::$ip] == 1){
+                    $eqLogic->setConfiguration(self::$ip, $_ip);
                     $eqLogic->save(); 
                     break;
-                }
-                  
+                }   
             }
         }
         
