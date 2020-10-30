@@ -31,21 +31,20 @@ class scan_ip extends eqLogic {
     public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
     public static $_timeRefreshMacAddress = 7; // Refresh des équipements nons reconnus tous les 7 jours
     
-    public static $_allBridges = array( "broadlink",
-                                        "camera",
-                                        "googlecast",
-                                        "homepTalk",
-                                        "camera",
-                                        "espeasy",
-                                        "networks",
-                                        "Jailbreak",
-                                        "JeeOrangeTv",
-                                        "kodi",
-                                        "Monitoring",
-                                        "networks",
-                                        "webosTv",
-                                        "xiaomihome",
-                                        "zigate");
+    public static $_allBridges = array( "broadlink", 
+                                        "camera", 
+                                        "googlecast", 
+                                        "homepTalk", 
+                                        "camera", 
+                                        "espeasy", 
+                                        "networks", 
+                                        "Jailbreak", 
+                                        "JeeOrangeTv", 
+                                        "kodi", 
+                                        "Monitoring", 
+                                        "webosTv", 
+                                        "xiaomihome", 
+                                        "zigate"); 
 
     /*     * ***********************Methode static*************************** */
 
@@ -899,7 +898,6 @@ class scan_ip extends eqLogic {
         $records = self::getFileSerialize(); 
         foreach ($records as $mac => $scanLine) {
             self::recordMacVendor($mac);
-            sleep(1);
         }
         log::add('scan_ip', 'debug', 'majMacVendorApi :. Fin');
     }
@@ -928,10 +926,12 @@ class scan_ip extends eqLogic {
         $pass = 0;
         
         if($arayVendor[$rest]["company"] == "..." AND (time() - $arayVendor[$rest]["last"]) > (86400 * self::$_timeRefreshMacAddress) ){ 
+            sleep(1);
             log::add('scan_ip', 'debug', 'recordMacVendor :. Refresh equipement');
             $result = self::getMacVendorApi($_mac);
             $pass = 1;
         } elseif(empty($arayVendor[$rest])){
+            sleep(1);
             log::add('scan_ip', 'debug', 'recordMacVendor :. Search new equipement');
             $result = self::getMacVendorApi($_mac);
             $pass = 1;
@@ -948,13 +948,13 @@ class scan_ip extends eqLogic {
         }
     }
     
-    public static function showMacVendor($_mac) {
+    public static function showMacVendor($_mac, $none = "...") {
         $rest = substr($_mac, 0, 8); 
         $arayVendor = self::getMacRecord();
         if(!empty($arayVendor[$rest])){
             return $arayVendor[$rest]["company"];
         } else {
-            return "...";
+            return $none;
         }
     }
     
