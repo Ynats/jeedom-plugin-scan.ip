@@ -81,7 +81,8 @@ class scan_ip_camera {
                 }
                 if($record[self::$ip] == 1){
                     $eqLogic->save(); 
-                    break;
+                    // Retourne le deamon à lancer
+                    return NULL;
                 }
                   
             }

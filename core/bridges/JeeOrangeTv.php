@@ -52,8 +52,9 @@ class scan_ip_JeeOrangeTv {
             if ($eqLogic->getId() == $_id) { 
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
                     $eqLogic->setConfiguration(self::$ip, $_ip);
-                    $eqLogic->save(); 
-                    break;
+                    $eqLogic->save();
+                    // Retourne le deamon à lancer
+                    return NULL;
                 }   
             }
         }

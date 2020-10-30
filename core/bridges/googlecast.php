@@ -51,7 +51,8 @@ class scan_ip_googlecast {
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
                     $eqLogic->setConfiguration(self::$ip, $_ip);
                     $eqLogic->save(); 
-                    break;
+                    // Retourne le deamon à lancer
+                    return NULL;
                 }   
             }
         }

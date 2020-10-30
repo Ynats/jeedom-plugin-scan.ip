@@ -369,6 +369,7 @@ class scan_ip extends eqLogic {
         // Mise à jour de l'élément associé
         
         $bridge = self::bridges_getElements();
+        $deamons = array();
         
         if($bridge != FALSE){
             for ($index = 1; $index <= $bridge["nb"]; $index++) {
@@ -381,7 +382,8 @@ class scan_ip extends eqLogic {
                     if(self::bridges_pluginExists($testBridge[0])){
                         if(self::bridges_existId($testBridge[1]) == TRUE){
                             if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-                                self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                                $add_deamon = self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                                $deamons = array_merge($deamons, $add_deamon);
                             }
                         } else {
                             $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
@@ -393,6 +395,15 @@ class scan_ip extends eqLogic {
                         $eqlogic->save();
                     }
                     
+                }
+            }
+            
+            // Récupération des deamons à lancer
+            $deamons = array_unique($deamons);
+            
+            if(count($deamons) >= 1){
+                foreach ($deamons as $deamon) {
+                    $deamon::deamon_start();
                 }
             }
         }
@@ -786,7 +797,7 @@ class scan_ip extends eqLogic {
         self::bridges_require($plug[0]);
         $class = "scan_ip_".$plug[0];
         ${$plug[0]} = new $class;
-        ${$plug[0]}->majIpElement($_ip, $plug[1]);
+        return ${$plug[0]}->majIpElement($_ip, $plug[1]);
     }
     
     public static function bridges_printSelectOptionEquiements(){

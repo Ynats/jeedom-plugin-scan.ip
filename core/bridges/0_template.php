@@ -53,7 +53,8 @@ class scan_ip_idplugin {
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
                     $eqLogic->setConfiguration(self::$ip, $_ip);
                     $eqLogic->save(); 
-                    break;
+                    // Si besoin de relancer un deamon on retourne self::$plug
+                    return NULL;
                 }   
             }
         }

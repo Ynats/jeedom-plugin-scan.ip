@@ -83,7 +83,11 @@ class scan_ip_homepTalk {
                 }
                 $eqLogic->setConfiguration('members', $newMembers);
             }
-            if($hasChanged) $eqLogic->save(true);
+            if($hasChanged == true) {
+                $eqLogic->save(true);
+                // Retourne le deamon à lancer
+                return NULL;
+            }
         }
         
     }

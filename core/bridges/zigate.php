@@ -53,8 +53,8 @@ class scan_ip_zigate {
         if($match[0] != $_ip) { 
             $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old);
             config::save(self::$ip, $change_ip, self::$plug);
-            
-            self::$plug::deamon_start();
+            // Retourne le deamon à lancer
+            return self::$plug;
         }
     }
     
