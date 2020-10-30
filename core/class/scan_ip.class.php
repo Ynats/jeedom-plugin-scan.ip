@@ -31,13 +31,17 @@ class scan_ip extends eqLogic {
     public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
     public static $_timeRefreshMacAddress = 86400 * 7; // Refresh des équipements nons reconnus tous les 7 jours
     
-    public static $_allBridges = array( "xiaomihome",
-                                        "broadlink",
+    public static $_allBridges = array( "broadlink",
+                                        "camera",
                                         "googlecast",
                                         "homepTalk",
-                                        "camera",
-                                        "networks",
+                                        "Jailbreak",
+                                        "JeeOrangeTv",
                                         "kodi",
+                                        "Monitoring",
+                                        "networks",
+                                        "webosTv",
+                                        "xiaomihome",
                                         "zigate");
 
     /*     * ***********************Methode static*************************** */
