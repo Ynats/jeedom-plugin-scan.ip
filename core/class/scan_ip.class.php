@@ -44,7 +44,8 @@ class scan_ip extends eqLogic {
                                         "webosTv", 
                                         "xiaomihome", 
                                         "zigate",
-                                        "Abeille"); 
+                                        "Abeille",
+                                        "JPI"); 
 
     /*     * ***********************Methode static*************************** */
 
