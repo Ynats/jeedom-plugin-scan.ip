@@ -33,11 +33,6 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                 <br>
                 <span>{{Afficher les équipements}}</span>
             </div>
-            <div class="cursor logoSecondary" id="bt_vendorMac">
-                <i class="fas fa-magic"></i>
-                <br>
-                <span>{{MAC Vendor Equipement}}</span>
-            </div>
             <div class="cursor logoSecondary" id="bt_scanIpDebug">
                 <i class="fas fa-medkit"></i>
                 <br>

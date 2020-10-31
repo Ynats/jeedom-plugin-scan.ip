@@ -28,8 +28,9 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
-    public static $_serializeMacAddress = __DIR__ . "/../../../../plugins/scan_ip/core/json/macaddress.temp";
-    public static $_timeRefreshMacAddress = 7; // Refresh des équipements nons reconnus tous les 7 jours
+    public static $_file_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-oui.txt";
+    public static $_file_iab = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-iab.txt";
+    public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
     
     public static $_allBridges = array( "broadlink",
                                         "camera", 
@@ -236,7 +237,7 @@ class scan_ip extends eqLogic {
             $new = array();
             foreach ($subReseau["subReseau"] as $sub) { 
                 if($sub["enable"] == 1){
-                    $scanResult = self::arpScanShell($sub["name"]);
+                    $scanResult = self::arpScanShell($sub["name"]); 
                     $new = self::arrayCompose($new, $scanResult);
                 }
             }
@@ -261,9 +262,9 @@ class scan_ip extends eqLogic {
                         $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                         $now["route"]["mac"] = $mac;
                     } else {
-                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"]);
-                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "time" => $scanLine["time"]);
-                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "time" => $scanLine["time"]);           
+                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $scanLine["equipement"]);
+                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
+                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);           
                     }
                 }
 
@@ -345,6 +346,7 @@ class scan_ip extends eqLogic {
         if($_type == "ip_v4") { return "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/"; }
         elseif($_type == "mac") { return "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/"; }
         elseif($_type == "sub_reseau") { return "/\d{1,3}\:\s(.+)\:\s/"; }
+        elseif($_type == "()") { return "/(\((.*?)\))/"; }
         else { return NULL; }
     }
     
@@ -492,7 +494,7 @@ class scan_ip extends eqLogic {
             if(empty($record[$value->mac])){
                 $print .= '<option value="'. $value->mac .'"';
                 if($_selected != NULL AND $_selected == $value->mac) { $print .= ' selected'; }
-                $print .= '>' . $value->mac . ' | ' . $value->ip_v4 . ' | '. self::showMacVendor($value->mac) .'</option>';
+                $print .= '>' . $value->mac . ' | ' . $value->ip_v4 . ' | '. $value->equipement .'</option>';
             }
         }  
         echo $print;
@@ -609,17 +611,34 @@ class scan_ip extends eqLogic {
 # APP ARP-SCAN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    public static function ifNotExistFilesOUI(){
+        if(!is_file(self::$_file_iab)){
+            log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
+            exec("bash " . self::$_bash_oui);
+        }
+    }
+    
     public static function arpScanShell($_subReseau){
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
-        exec('sudo arp-scan --interface='.$_subReseau.' --localnet', $output);
-        
+        exec('sudo arp-scan --ouifile=' . self::$_file_oui . ' --iabfile=' . self::$_file_iab . ' --interface=' . $_subReseau . ' --localnet', $output);
+            
         foreach ($output as $scanLine) {
-            if (preg_match(self::getRegex("ip_v4"), $scanLine)) {
-                preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
-                preg_match(self::getRegex("mac"), $scanLine, $sortMac);
-                $mac = strtoupper($sortMac[0]);
+            if (preg_match(self::getRegex("ip_v4"), $scanLine)) { 
+                    preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
+                    preg_match(self::getRegex("mac"), $scanLine, $sortMac);
+                    
+                    $mac = strtoupper($sortMac[0]);
+
+                    $equipement = preg_replace(self::getRegex("ip_v4"), "", $scanLine);
+                    $equipement = preg_replace(self::getRegex("mac"), "", $equipement);
+                    $equipement = preg_replace(self::getRegex("()"), "", $equipement);
+                    $equipement = trim($equipement);
+
+                    if(empty($equipement)){ $return[$mac]["equipement"] = "..."; }
+                    else { $return[$mac]["equipement"] = $equipement; }
+
                 $return[$mac]["ip_v4"] = $sortIp[0];
                 $return[$mac]["time"] = $time;
             }
@@ -674,7 +693,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cronDaily :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
-        self::majMacVendorApi();
+        exec("bash " . self::$_bash_oui);
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
@@ -953,87 +972,7 @@ class scan_ip extends eqLogic {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # BRIDGES PLUG AND PLAY
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# GET OUI VENDOR MAC
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
-    
-    public static function majMacVendorApi(){
-        log::add('scan_ip', 'debug', 'majMacVendorApi :. Lancement');
-        $records = self::getFileSerialize(); 
-        foreach ($records as $mac => $scanLine) {
-            self::recordMacVendor($mac);
-        }
-        log::add('scan_ip', 'debug', 'majMacVendorApi :. Fin');
-    }
-    
-    public static function getMacVendorApi($_mac) {
-        log::add('scan_ip', 'debug', 'getMacVendorApi :. Lancement');
-        $url = "https://macvendors.co/api/" . urlencode($_mac);
-        $value = json_decode(file_get_contents($url))->result;
-        
-        if(!empty($value->company)){
-            $return["company"] = $value->company;
-            $return["type"] = $value->type;
-            $return["country"] = $value->country;
-            $return["last"] = time();
-            
-            return $return;
-        } else {
-            return "error";
-        }
-    }
-
-    public static function recordMacVendor($_mac) {
-        log::add('scan_ip', 'debug', 'recordMacVendor :. Lancement');
-        $rest = substr($_mac, 0, 8); 
-        $arayVendor = self::getMacRecord();
-        $pass = 0;
-        
-        if($arayVendor[$rest]["company"] == "..." AND (time() - $arayVendor[$rest]["last"]) > (86400 * self::$_timeRefreshMacAddress) ){ 
-            sleep(1);
-            log::add('scan_ip', 'debug', 'recordMacVendor :. Refresh equipement');
-            $result = self::getMacVendorApi($_mac);
-            $pass = 1;
-        } elseif(empty($arayVendor[$rest])){
-            sleep(1);
-            log::add('scan_ip', 'debug', 'recordMacVendor :. Search new equipement');
-            $result = self::getMacVendorApi($_mac);
-            $pass = 1;
-        }
-        
-        if($result != "error" AND $pass == 1){
-            log::add('scan_ip', 'debug', 'recordMacVendor :. Mise en cache');
-            $tmp[$rest] = $result;
-            $result = self::arrayCompose($arayVendor, $tmp);
-
-            $fichier = fopen(self::$_serializeMacAddress, 'w');
-            fputs($fichier, serialize($result));
-            fclose($fichier);   
-        }
-    }
-    
-    public static function showMacVendor($_mac, $none = "...") {
-        $rest = substr($_mac, 0, 8); 
-        $arayVendor = self::getMacRecord();
-        if(!empty($arayVendor[$rest])){
-            return $arayVendor[$rest]["company"];
-        } else {
-            return $none;
-        }
-    }
-    
-    public static function getMacRecord() {
-        if(is_file(self::$_serializeMacAddress)){
-            return unserialize(file_get_contents(self::$_serializeMacAddress));
-        } else {
-            return NULL;
-        }
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# GET OUI VENDOR MAC
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 

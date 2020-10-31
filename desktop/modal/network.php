@@ -86,7 +86,7 @@ $list = 1;
                             if (isset($savingMac[$device->mac]["name"])) {
                                 $name = $savingMac[$device->mac]["name"];
                             } else {
-                                $name = "| ". scan_ip::showMacVendor($device->mac);
+                                $name = "| ". $device->equipement;
                             }
 
                             if (isset($savingMac[$device->mac]["enable"])) {

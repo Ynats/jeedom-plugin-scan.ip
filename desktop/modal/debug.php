@@ -57,11 +57,11 @@ if ($subReseau["subReseauEnable"] > 0) {
             <div class="col-md-12">
                 <div class="panel panel-primary" id="div_functionalityPanel">
                     <div class="panel-heading">
-                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet</h3>
+                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt</h3>
                     </div>
                     <div class="panel-body">
                         <?php
-                        scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet");
+                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=" . scan_ip::$_file_oui . " --iabfile=" . scan_ip::$_file_iab);
                         ?>
                     </div>
                 </div>

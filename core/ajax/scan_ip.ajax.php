@@ -25,11 +25,6 @@ try {
     }
     
     ajax::init();
-
-    if (init('action') == 'ouiMacSearch') {
-        scan_ip::majMacVendorApi();
-        ajax::success();
-    }
     
     if (init('action') == 'syncEqLogicWithOpenScanId') {
         scan_ip::syncScanIp();

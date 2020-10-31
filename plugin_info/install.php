@@ -30,13 +30,15 @@ function scan_ip_install() {
 }
 
 function scan_ip_update() {
-
+    
     if (config::byKey('cron_pass', 'scan_ip') == '') {
             config::save('cron_pass', 1, 'scan_ip');
     }
     if (config::byKey('offline_time', 'scan_ip') == '') {
             config::save('offline_time', 4, 'scan_ip');
     }
+    
+    scan_ip::ifNotExistFilesOUI();
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {

@@ -33,12 +33,6 @@ $('#bt_scanIpDebug').off('click').on('click', function () {
   $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=debug').dialog('open');
 });
 
-// Vendor
-$('#bt_vendorMac').off('click').on('click', function () {
-  $('#md_modal').dialog({title: "{{MAC Vendor Equipement}}"});
-  $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=vendorEquipement').dialog('open');
-});
-
 // Synchro
 $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
@@ -101,29 +95,6 @@ function syncEqLogicWithOpenScanId() {
 //    });
 //}
 
-function ouiMacSearch() {
-    $.ajax({
-        type: "POST",
-        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
-        data: {
-            action: "ouiMacSearch",
-        },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                return;
-            }
-            
-            $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=vendorEquipement').dialog('open');
-        }
-    });
-    
-    
-}
 
 function verif_nombre(champ)
 {
