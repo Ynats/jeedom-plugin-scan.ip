@@ -18,7 +18,7 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
-scan_ip::ifNotExistFilesOUI();
+//scan_ip::ifNotExistFilesOUI();
 ?>
 
 <div class="col-md-12">
