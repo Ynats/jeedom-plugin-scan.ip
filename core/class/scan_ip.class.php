@@ -876,7 +876,7 @@ class scan_ip extends eqLogic {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association 1}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<input class="form-control" style="var(--al-warning-color) !important" type="text" value="Aucune association possible car aucun plugin installé n\'est compatible" readonly="">';
+                echo '<input class="form-control" style="color:var(--al-warning-color) !important;" type="text" value="Aucun élément compatible n\'est associé aux bridges." readonly="">';
                 echo '</div>';
                 echo '</div>';
         }
