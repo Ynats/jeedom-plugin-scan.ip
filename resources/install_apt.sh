@@ -10,10 +10,6 @@ echo "********************************************************"
 echo 0 > ${PROGRESS_FILE}
 apt-get update
 sudo apt-get -y install arp-scan
-cd plugins/scan_ip/resources
-get-iab -u http://standards-oui.ieee.org/iab/iab.txt
-get-oui -u http://standards-oui.ieee.org/oui.txt
-cd /
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"
 echo "*             Installation terminée                    *"

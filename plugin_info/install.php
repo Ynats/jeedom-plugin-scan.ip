@@ -27,6 +27,7 @@ function scan_ip_install() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
+    scan_ip::ifNotExistFilesOUI();
 }
 
 function scan_ip_update() {

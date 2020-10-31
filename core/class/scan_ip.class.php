@@ -614,7 +614,7 @@ class scan_ip extends eqLogic {
     public static function ifNotExistFilesOUI(){
         if(!is_file(self::$_file_iab)){
             log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
-            exec("bash " . self::$_bash_oui);
+            exec("sudo bash " . self::$_bash_oui);
         }
     }
     
