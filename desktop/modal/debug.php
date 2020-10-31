@@ -61,7 +61,7 @@ if ($subReseau["subReseauEnable"] > 0) {
                     </div>
                     <div class="panel-body">
                         <?php
-                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=" . scan_ip::$_file_oui . " --iabfile=" . scan_ip::$_file_iab);
+                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt");
                         ?>
                     </div>
                 </div>
