@@ -28,9 +28,7 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
-    public static $_file_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-oui.txt";
-    public static $_file_iab = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-iab.txt";
-    public static $_bash_oui = "plugins/scan_ip/resources/upload.oui.sh";
+    public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
     
     public static $_allBridges = array( "broadlink",
                                         "camera", 
@@ -611,10 +609,10 @@ class scan_ip extends eqLogic {
 # APP ARP-SCAN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function ifNotExistFilesOUI($_dir = "/../../../../"){
+    public static function ifNotExistFilesOUI(){
         if(!is_file(self::$_file_iab)){
             log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
-            shell_exec("sudo bash " . __DIR__ .$_dir.self::$_bash_oui);
+            shell_exec("sudo /bin/bash " . self::$_bash_oui);
         }
     }
     
@@ -860,18 +858,9 @@ class scan_ip extends eqLogic {
         if($allBridges != FALSE){
             $print = $oldEquip = "";
             foreach ($allBridges["array"] as $equipement) {
-//                if($equipement["plugin"] != $oldEquip){ 
-//                    if($oldEquip != ""){ 
-//                        $print .= "</optgroup>";
-//                    }
-//                    $print .= "<optgroup label=\"Plugin ".$equipement["plugin"]."\">";
-//                }
                 $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
                 $oldEquip = $equipement["plugin"];
             }
-
-            //$print .= "</optgroup>";
-
             return $print;
         } else {
             return FALSE;
@@ -931,7 +920,7 @@ class scan_ip extends eqLogic {
     public static function bridges_getAllAssignEquipement($_ouput = NULL){ 
         log::add('scan_ip', 'debug', 'bridges_getAllAssignEquipement :. Lancement');
         $nb = self::bridges_getElements()["nb"];
-        $eqLogics = eqLogic::byType('scan_ip'); 
+        $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) { 
             $mac = $scan_ip->getConfiguration("adress_mac");
             for($i = 1; $i <= $nb; $i++){ 
@@ -942,7 +931,7 @@ class scan_ip extends eqLogic {
             }  
         }
         
-        if($_ouput == "json"){
+        if($_ouput == "json" and !empty($return)){
             return json_encode($return);
         } else {
             return $return;
