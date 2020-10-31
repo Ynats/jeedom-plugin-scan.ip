@@ -450,7 +450,6 @@ class scan_ip extends eqLogic {
 //}    
 //
 //public static function deamon_start() {
-//    
 //}  
 //
 //public static function deamon_stop() {
