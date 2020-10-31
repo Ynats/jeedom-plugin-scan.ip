@@ -10,6 +10,7 @@ echo "********************************************************"
 echo 0 > ${PROGRESS_FILE}
 apt-get update
 sudo apt-get -y install arp-scan
+sudo bash upload.oui.sh
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"
 echo "*             Installation terminée                    *"
