@@ -610,10 +610,8 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public static function ifNotExistFilesOUI(){
-        if(!is_file(self::$_file_iab)){
-            log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
-            shell_exec("sudo /bin/bash " . self::$_bash_oui);
-        }
+        log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
+        shell_exec("sudo /bin/bash " . self::$_bash_oui);
     }
     
     public static function arpScanShell($_subReseau){
