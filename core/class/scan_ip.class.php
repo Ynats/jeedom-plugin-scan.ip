@@ -620,7 +620,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
-        exec('sudo arp-scan --ouifile=' . self::$_file_oui . ' --iabfile=' . self::$_file_iab . ' --interface=' . $_subReseau . ' --localnet', $output);
+        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt', $output);
             
         foreach ($output as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) { 
@@ -691,7 +691,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cronDaily :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
-        exec("bash " . self::$_bash_oui);
+        shell_exec("sudo /bin/bash " . self::$_bash_oui);
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
