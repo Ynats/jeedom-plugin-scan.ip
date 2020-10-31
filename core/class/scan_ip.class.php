@@ -29,8 +29,8 @@ class scan_ip extends eqLogic {
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
-    public static $_file_oui = __DIR__ . "/../../../../ieee-oui.txt";
-    public static $_file_iab = __DIR__ . "/../../../../ieee-iab.txt";
+    public static $_file_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-oui.txt";
+    public static $_file_iab = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-iab.txt";
     
     public static $_allBridges = array( "broadlink",
                                         "camera", 
