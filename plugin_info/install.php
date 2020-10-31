@@ -27,7 +27,8 @@ function scan_ip_install() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    scan_ip::ifNotExistFilesOUI();
+    $resource_path = realpath(dirname(__FILE__) . '/../resources');
+    passthru('sudo /bin/bash ' . $resource_path . "/upload.oui.sh");
 }
 
 function scan_ip_update() {
@@ -39,7 +40,8 @@ function scan_ip_update() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    scan_ip::ifNotExistFilesOUI();
+    $resource_path = realpath(dirname(__FILE__) . '/../resources');
+    passthru('sudo /bin/bash ' . $resource_path . "/upload.oui.sh");
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {

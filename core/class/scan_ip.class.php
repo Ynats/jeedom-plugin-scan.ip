@@ -30,7 +30,7 @@ class scan_ip extends eqLogic {
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_file_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-oui.txt";
     public static $_file_iab = __DIR__ . "/../../../../plugins/scan_ip/resources/ieee-iab.txt";
-    public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
+    public static $_bash_oui = "plugins/scan_ip/resources/upload.oui.sh";
     
     public static $_allBridges = array( "broadlink",
                                         "camera", 
@@ -611,10 +611,10 @@ class scan_ip extends eqLogic {
 # APP ARP-SCAN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function ifNotExistFilesOUI(){
+    public static function ifNotExistFilesOUI($_dir = "/../../../../"){
         if(!is_file(self::$_file_iab)){
             log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
-            exec("sudo bash " . self::$_bash_oui);
+            shell_exec("sudo bash " . __DIR__ .$_dir.self::$_bash_oui);
         }
     }
     
