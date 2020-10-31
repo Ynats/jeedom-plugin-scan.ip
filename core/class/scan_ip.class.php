@@ -886,7 +886,6 @@ class scan_ip extends eqLogic {
                 echo '</div>';
         }
         
-        return $nb;
     }
                         
     public static function bridges_getEquiementsById(){

@@ -203,4 +203,18 @@ function verifEquipement(nb){
     
 }
 
+function hideSelect(NbSelect){
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function(result){
 
+        for (let plug = 0; plug <= NbSelect; plug++) {
+            $.each( result, function( mac, value ) {
+                var current = $('#scan_ip_adressMacTemp').val();
+                if(mac != current){
+
+                    $("#plug_element_plugin_"+plug+" option[value='" + value + "']").hide();
+                }
+            });  
+        }
+
+    });
+}

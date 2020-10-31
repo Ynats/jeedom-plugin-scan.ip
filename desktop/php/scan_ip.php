@@ -6,6 +6,7 @@ $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
+$nbAssociate = scan_ip::bridges_getElements()["nb"];
 ?>
 
 <div class="row row-overflow">
@@ -142,7 +143,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
                             <div class="col-sm-5">
-                                <input type="text" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                                <input type="text" onchange="hideSelect(<?php echo $nbAssociate ?>)" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
                             </div>
                         </div>
                         
@@ -170,6 +171,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
     </div>
 </div>
 
-
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
+
