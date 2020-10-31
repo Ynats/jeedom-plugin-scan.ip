@@ -29,6 +29,8 @@ class scan_ip extends eqLogic {
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
+    public static $_file_oui = __DIR__ . "/../../../../ieee-oui.txt";
+    public static $_file_iab = __DIR__ . "/../../../../ieee-iab.txt";
     
     public static $_allBridges = array( "broadlink",
                                         "camera", 
@@ -618,8 +620,9 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
-        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt', $output);
-            
+        
+        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . self::$_file_oui . ' --iabfile=' . self::$_file_iab, $output);
+        
         foreach ($output as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) { 
                     preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
