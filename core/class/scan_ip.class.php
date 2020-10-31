@@ -729,7 +729,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'prepareJsonFolder :. Lancement');
         if (!is_dir(self::$_folderTampon)) {
             log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . self::$_folderTampon);
-            mkdir(self::$_folderTampon, 0740);
+            mkdir(self::$_folderTampon, 0775);
         }
     }
     
@@ -742,7 +742,7 @@ class scan_ip extends eqLogic {
 
         unlink(self::$_jsonTampon);
         rename(self::$_jsonTamponTemp, self::$_jsonTampon);
-        chmod(self::$_jsonTampon, 0740);
+        chmod(self::$_jsonTampon, 0775);
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
