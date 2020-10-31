@@ -22,6 +22,8 @@ if (!isConnect()) {
     die();
 }
 
+scan_ip::filesExistOUI();
+
 ?>
 <div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
 <form class="form-horizontal">

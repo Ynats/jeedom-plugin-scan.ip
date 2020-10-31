@@ -27,9 +27,6 @@ function scan_ip_install() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    shell_exec("get-iab -u http://standards-oui.ieee.org/iab/iab.txt");
-    shell_exec("get-oui -u http://standards-oui.ieee.org/oui.txt");
-
 }
 
 function scan_ip_update() {
@@ -40,9 +37,6 @@ function scan_ip_update() {
     if (config::byKey('offline_time', 'scan_ip') == '') {
             config::save('offline_time', 4, 'scan_ip');
     }
-    
-    shell_exec("get-iab -u http://standards-oui.ieee.org/iab/iab.txt");
-    shell_exec("get-oui -u http://standards-oui.ieee.org/oui.txt");
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {

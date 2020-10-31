@@ -615,6 +615,15 @@ class scan_ip extends eqLogic {
         shell_exec("sudo /bin/bash " . self::$_bash_oui);
     }
     
+    public static function filesExistOUI(){
+        if(!is_file('./ieee-iab.txt')){
+            shell_exec('get-iab -u http://standards-oui.ieee.org/iab/iab.txt');
+        }
+        if(!is_file('./ieee-oui.txt')){
+            shell_exec('get-oui -u http://standards-oui.ieee.org/oui.txt');
+        }
+    }
+    
     public static function arpScanShell($_subReseau){
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
