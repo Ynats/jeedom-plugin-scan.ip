@@ -45,7 +45,9 @@ class scan_ip extends eqLogic {
                                         "xiaomihome", 
                                         "zigate",
                                         "Abeille",
-                                        "JPI"); 
+                                        "JPI",
+                                        "zigbee"); 
+
 
     /*     * ***********************Methode static*************************** */
 
@@ -313,6 +315,14 @@ class scan_ip extends eqLogic {
         return $return;
     }
     
+    public static function mergeArray($_arrayOld, $_arrayNew){
+        if($_arrayOld == NULL){
+            return $_arrayNew;
+        } else {
+            return array_merge($_arrayOld, $_arrayNew);
+        }
+    }
+    
     public static function getPlageIp($_ip){
         list($a, $b, $c) = explode('.', $_ip);
         return $a . "." . $b . "." . $c;
@@ -369,9 +379,9 @@ class scan_ip extends eqLogic {
         // Mise à jour de l'élément associé
         
         $bridge = self::bridges_getElements();
-        $deamons = array();
         
         if($bridge != FALSE){
+            $deamons = array();
             for ($index = 1; $index <= $bridge["nb"]; $index++) {
                 $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
                 
@@ -383,7 +393,7 @@ class scan_ip extends eqLogic {
                         if(self::bridges_existId($testBridge[1]) == TRUE){
                             if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
                                 $add_deamon = self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
-                                $deamons = array_merge($deamons, $add_deamon);
+                                array_push($deamons, $add_deamon);
                             }
                         } else {
                             $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
@@ -401,8 +411,9 @@ class scan_ip extends eqLogic {
             // Récupération des deamons à lancer
             $deamons = array_unique($deamons);
             
-            if(count($deamons) >= 1){
+            if($deamons[0] != NULL){
                 foreach ($deamons as $deamon) {
+                    log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement du deamon "'.$deamon.'"');
                     $deamon::deamon_start();
                 }
             }
@@ -422,8 +433,26 @@ class scan_ip extends eqLogic {
         $tmp_cmd = $_this->getCmd(null, $_ComName);
         return (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
     }
-            
-            
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEAMON
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+    
+//public static function deamon_info() {
+//    
+//}    
+//
+//public static function deamon_start() {
+//    
+//}  
+//
+//public static function deamon_stop() {
+//    
+//}
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEAMON
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -767,23 +796,23 @@ class scan_ip extends eqLogic {
     public static function bridges_getPlugsElements($_bridges){
         self::bridges_require($_bridges);
         $class = "scan_ip_".$_bridges;
-        ${$_bridges} = new $class;
-        return ${$_bridges}->getAllElements();
+        $Get = new $class;
+        return $Get->getAllElements();
     }
     
     public static function bridges_getElements(){
-        $array = array();
-        $i = 0;
+        $array = NULL;
+        $i = 0; 
         foreach (self::$_allBridges as $bridges) {
             if(self::bridges_pluginExists($bridges) == TRUE){
                 $mergeArray = self::bridges_getPlugsElements($bridges);
                 if(is_array($mergeArray)){
                     $i++;
-                    $array = array_merge($array, $mergeArray); 
+                    $array = self::mergeArray($array, $mergeArray);
                 }
             }
         }
-        if(empty($array[0])){
+        if(!is_array($array)){
             return FALSE;
         } else {
             $return["array"] = $array;
@@ -796,8 +825,8 @@ class scan_ip extends eqLogic {
         $plug = explode("|", $_element);
         self::bridges_require($plug[0]);
         $class = "scan_ip_".$plug[0];
-        ${$plug[0]} = new $class;
-        return ${$plug[0]}->majIpElement($_ip, $plug[1]);
+        $Maj = new $class;
+        return $Maj->majIpElement($_ip, $plug[1]);
     }
     
     public static function bridges_printSelectOptionEquiements(){
@@ -805,7 +834,7 @@ class scan_ip extends eqLogic {
         $allBridges = self::bridges_getElements();
         
         if($allBridges != FALSE){
-            $print = $oldEquip = ""; 
+            $print = $oldEquip = "";
             foreach ($allBridges["array"] as $equipement) {
                 if($equipement["plugin"] != $oldEquip){ 
                     if($oldEquip != ""){ 
@@ -952,7 +981,7 @@ class scan_ip extends eqLogic {
         if($result != "error" AND $pass == 1){
             log::add('scan_ip', 'debug', 'recordMacVendor :. Mise en cache');
             $tmp[$rest] = $result;
-            $result = array_merge($arayVendor, $tmp);
+            $result = self::mergeArray($arayVendor, $tmp);
 
             $fichier = fopen(self::$_serializeMacAddress, 'w');
             fputs($fichier, serialize($result));
@@ -974,7 +1003,7 @@ class scan_ip extends eqLogic {
         if(is_file(self::$_serializeMacAddress)){
             return unserialize(file_get_contents(self::$_serializeMacAddress));
         } else {
-            return array();
+            return NULL;
         }
     }
 
