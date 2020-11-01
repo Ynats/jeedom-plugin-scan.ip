@@ -963,7 +963,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function bridges_startDeamons($_deamons = NULL){
-        if($deamons != NULL){
+        if($_deamons != NULL){
             foreach ($_deamons as $deamon) {
                 log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement du deamon "'.$deamon.'"');
                 $deamon::deamon_start();
