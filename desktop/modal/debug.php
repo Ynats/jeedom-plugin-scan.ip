@@ -18,7 +18,6 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
-scan_ip::cleanAfterUpdate();
 ?>
 
 <div class="col-md-12">
