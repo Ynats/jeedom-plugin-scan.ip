@@ -38,7 +38,7 @@ function scan_ip_update() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    scan_ip::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
+    scan_ip::cleanAfterUpdate();
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {
