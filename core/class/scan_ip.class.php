@@ -1056,9 +1056,13 @@ class scan_ip extends eqLogic {
         if(@file_exists($resources . "install_scan_ip.sh") == TRUE){
             unlink($resources . "install_scan_ip.sh");
         }
-        if(@file_exists($resources . "unpload_oui.sh") == TRUE){
-            unlink($resources . "unpload_oui.sh");
+        if(@file_exists($resources . "upload_oui.sh") == TRUE){
+            unlink($resources . "upload_oui.sh");
         }
+        if(@file_exists($resources . "Autre") == TRUE){
+            unlink($resources . "Autre");
+        }
+        
     }
             
     
