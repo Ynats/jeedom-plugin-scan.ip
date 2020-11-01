@@ -266,6 +266,10 @@ class scan_ip extends eqLogic {
                         $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                         $now["route"]["mac"] = $mac;
                     } else {
+                        
+                        if(!empty($scanLine["equipement"])){ $equipement = $scanLine["equipement"]; }
+                        else{ $equipement = "..."; }
+                        
                         $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $scanLine["equipement"]);
                         $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
                         $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);           
@@ -611,7 +615,7 @@ class scan_ip extends eqLogic {
                     preg_match(self::getRegex("mac"), $scanLine, $sortMac);
                     
                     $mac = strtoupper($sortMac[0]);
-
+                    
                     $equipement = preg_replace(self::getRegex("ip_v4"), "", $scanLine);
                     $equipement = preg_replace(self::getRegex("mac"), "", $equipement);
                     $equipement = preg_replace(self::getRegex("()"), "", $equipement);
