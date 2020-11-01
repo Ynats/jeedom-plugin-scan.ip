@@ -47,6 +47,19 @@ if (!isConnect('admin')) {
     </div>
 </div>
 
+<div class="col-md-12">
+    <div class="panel panel-primary" id="div_functionalityPanel">
+        <div class="panel-heading">
+            <h3 class="panel-title"># get-iab -u http://standards-oui.ieee.org/iab/iab.txt</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip::printShell("get-iab -u http://standards-oui.ieee.org/iab/iab.txt");
+            ?>
+        </div>
+    </div>
+</div>
+
 <?php
 $subReseau = scan_ip::getSubReseauEnable();
 if ($subReseau["subReseauEnable"] > 0) {

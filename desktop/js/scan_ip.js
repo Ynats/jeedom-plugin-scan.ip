@@ -73,29 +73,6 @@ function syncEqLogicWithOpenScanId() {
     });
 }
 
-//function recordBtMac(input_mac) {
-//    $.ajax({
-//        type: "POST",
-//        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
-//        data: {
-//            action: "recordMacBouton",
-//            mac: input_mac,
-//        },
-//        dataType: 'json',
-//        error: function (request, status, error) {
-//            handleAjaxError(request, status, error);
-//        },
-//        success: function (data) {
-//            if (data.state != 'ok') {
-//                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-//                return;
-//            }
-//            window.location.reload();
-//        }
-//    });
-//}
-
-
 function verif_nombre(champ)
 {
     var chiffres = new RegExp("[0-9]");

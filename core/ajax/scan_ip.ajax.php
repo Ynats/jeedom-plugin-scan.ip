@@ -30,6 +30,11 @@ try {
         scan_ip::syncScanIp();
         ajax::success();
     }
+    
+    if (init('action') == 'recordMacBouton') {
+        scan_ip::DownloadOui();
+        ajax::success();
+    }
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

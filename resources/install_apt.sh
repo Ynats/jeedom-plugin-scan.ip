@@ -1,4 +1,5 @@
-PROGRESS_FILE=/tmp/dependancy_scan_ip_in_progress
+PROGRESS_FILE=/tmp/scan_ip/in_progress
+OUI_FILE=/tmp/scan_ip/dependancy
 if [ ! -z $1 ]; then
 	PROGRESS_FILE=$1
 fi
@@ -10,7 +11,8 @@ echo "********************************************************"
 echo 0 > ${PROGRESS_FILE}
 apt-get update
 sudo apt-get -y install arp-scan
-sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f /var/www/html/plugins/scan_ip/resources/oui.txt
+echo 70 > ${PROGRESS_FILE}
+sudo apt-get install libwww-perl
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"
 echo "*             Installation terminée                    *"

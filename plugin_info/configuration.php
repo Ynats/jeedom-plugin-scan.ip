@@ -34,7 +34,7 @@ $paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{S'il n'est pas installé cliquer sur Relancer l'installation. Une fois terminé, ré-ouvrez la fenêtre pour savoir si cela a résolu le problème.}}"></i></sup>
+                <sup><i class="fa fa-question-circle tooltips" title="{{Ce fihier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
             <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?></div>
         </div>
@@ -104,6 +104,28 @@ function verifCadence(declic){
     else {
         $('#div_alert_config').hide();
     }
+}
+
+
+function recordBtMac() {
+    $.ajax({
+        type: "POST",
+        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
+        data: {
+            action: "recordMacBouton",
+        },
+        dataType: 'json',
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            window.location.reload();
+        }
+    });
 }
     
     

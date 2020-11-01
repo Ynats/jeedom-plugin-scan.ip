@@ -28,7 +28,7 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
-    public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f /var/www/html/plugins/scan_ip/resources/oui.txt";
+    public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     
     public static $_allBridges = array( "Abeille",
@@ -444,25 +444,7 @@ class scan_ip extends eqLogic {
         $tmp_cmd = $_this->getCmd(null, $_ComName);
         return (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
     }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# DEAMON
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
-    
-//public static function deamon_info() {
-//    
-//}    
-//
-//public static function deamon_start() {
-//}  
-//
-//public static function deamon_stop() {
-//    
-//}
-    
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# DEAMON
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
+           
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -660,7 +642,7 @@ class scan_ip extends eqLogic {
         if(is_file(self::$_file_oui) == TRUE){
             return "<span style='color:green'>Installé</span>";
         } else {
-            return "<span style='color:orange'>Manquant</span>";
+            return '<a class="btn btn-danger btn-sm" onclick= "recordBtMac()" style="position:relative;top:-5px;"><i class="fas fa-paperclip"></i> Fichier Manquant. Cliquez ici pour le télécharger.</a>';
         }
     }
     
@@ -698,7 +680,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cronDaily :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
-        shell_exec(self::$_bash_oui);
+        self::DownloadOui();
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
@@ -809,7 +791,7 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
 //    public static function bridges_allBridges(){ // Ynats
-//        $all = scandir("../core/bridges");
+//        $all = scandir(__DIR__ . "/../../../../plugins/scan_ip/core/bridges/");
 //        foreach ($all as $bridge) {
 //            if(!in_array($bridge, self::$_exceptionBridges()) AND $bridge != "." AND $bridge != ".."){
 //                $return[] = str_replace(".php", "", $bridge);
@@ -993,32 +975,51 @@ class scan_ip extends eqLogic {
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
    
+    public static function DownloadOui(){
+        shell_exec(self::$_bash_oui);
+    }
+    
     public static function dependancy_info() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'dependancy_info :. Lancement');
+        $error = 0;
         $return = array();
+        $return['state'] = 'nok';
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
-        if (self::arpVersion() == "arp-scan not found" OR is_file(scan_ip::$_file_oui) == FALSE) {
-            $return['state'] = 'nok';
-        } else {
+        if (self::arpVersion() != "arp-scan not found") {
             $return['state'] = 'ok';
         }
         
-        log::add('scan_ip', 'debug', 'dependancy_info :. ' . $return['state']);
         return $return;
     }
 
     public static function dependancy_install() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'dependancy_install :. Lancement');
         log::remove(__CLASS__ . '_update');
         return array('script' => dirname(__FILE__) . '/../../resources/install_#stype#.sh ' . jeedom::getTmpFolder('scan_ip') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
     
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEAMON
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+    
+    public static function deamon_info() {
+        
+    }   
+
+    public static function deamon_start() {
+        
+    }  
+
+    public static function deamon_stop() {
+
+    }
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEAMON
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
 }
