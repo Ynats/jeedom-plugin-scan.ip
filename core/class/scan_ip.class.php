@@ -1056,11 +1056,51 @@ class scan_ip extends eqLogic {
         if(@file_exists($resources . "install_scan_ip.sh") == TRUE){
             unlink($resources . "install_scan_ip.sh");
         }
-        if(@file_exists($resources . "upload_oui.sh") == TRUE){
-            unlink($resources . "upload_oui.sh");
+        if(@file_exists($resources . "upload.oui.sh") == TRUE){
+            unlink($resources . "upload.oui.sh");
         }
         if(@file_exists($resources . "Autre") == TRUE){
             unlink($resources . "Autre");
+        }
+        
+        if($_path == NULL){
+             $bridge = __DIR__ . "/../../../../plugins/scan_ip/core/bridges/";
+        } else {
+            $bridge = $_path."plugins/scan_ip/core/bridges/";
+        }
+        if(@file_exists($bridge . "template.php") == TRUE){
+            unlink($bridge . "template.php");
+        }
+        
+        if($_path == NULL){
+             $json = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
+        } else {
+            $json = $_path."plugins/scan_ip/core/json/";
+        }
+        if(@file_exists($json . "macaddress.temp") == TRUE){
+            unlink($json . "macaddress.temp");
+        }
+        
+        if($_path == NULL){
+             $subPlugs = __DIR__ . "/../../../../plugins/scan_ip/core/subPlugs/";
+        } else {
+            $subPlugs = $_path."plugins/scan_ip/core/subPlugs/";
+        }
+        if(@is_dir($subPlugs)){
+            if(@file_exists($subPlugs . "broadlink.php") == TRUE){
+                unlink($subPlugs . "broadlink.php");
+            }
+            if(@file_exists($subPlugs . "googlecast.php") == TRUE){
+                unlink($subPlugs . "googlecast.php");
+            }
+            if(@file_exists($subPlugs . "template.php") == TRUE){
+                unlink($subPlugs . "template.php");
+            }
+            if(@file_exists($subPlugs . "xiaomihome.php") == TRUE){
+                unlink($subPlugs . "xiaomihome.php");
+            }
+        
+            mkdir($subPlugs);
         }
         
     }
