@@ -1000,7 +1000,7 @@ class scan_ip extends eqLogic {
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
         
-        if (self::arpVersion() == "arp-scan not found") {
+        if (self::arpVersion() == "arp-scan not found" OR is_file(scan_ip::$_file_oui) == FALSE) {
             $return['state'] = 'nok';
         } else {
             $return['state'] = 'ok';
