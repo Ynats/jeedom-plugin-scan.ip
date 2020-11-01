@@ -37,15 +37,10 @@ scan_ip::cleanAfterUpdate();
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Ce fihier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
+                <sup><i class="fa fa-question-circle tooltips" title="{{Ce fichier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
-            <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?></div>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Mis à jour le}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour du référentiel. Sans problème de config, celui-ci est mis à jour tous les 7 jours.}}"></i></sup>
-            </label>
-            <div class="col-lg-2"><?php echo scan_ip::printDateFile(scan_ip::$_file_oui) ?></div>
+            <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            </div>
         </div>
         
 <?php

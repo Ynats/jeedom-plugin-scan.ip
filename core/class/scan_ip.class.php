@@ -649,11 +649,11 @@ class scan_ip extends eqLogic {
         }
     }
     
-    public static function printDateFile($_filename){
+    public static function getDateFile($_filename){
         if (@file_exists($_filename)) {
-            return "<span style='color:green'>".date("d/m/Y", filemtime($_filename))."</span>";
+            return date("d/m/Y", filemtime($_filename));
         } else {
-            return "<span style='color:orange'>Non présent</span>";
+            return NULL;
         }
         
     }
