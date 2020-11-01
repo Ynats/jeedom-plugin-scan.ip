@@ -270,9 +270,9 @@ class scan_ip extends eqLogic {
                         if(!empty($scanLine["equipement"])){ $equipement = $scanLine["equipement"]; }
                         else{ $equipement = "..."; }
                         
-                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $scanLine["equipement"]);
-                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
-                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);           
+                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $equipement);
+                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $equipement, "time" => $scanLine["time"]);
+                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $equipement, "time" => $scanLine["time"]);           
                     }
                 }
 
