@@ -517,7 +517,12 @@ class scan_ip extends eqLogic {
                 for ($index = 1; $index <= $bridge["nb"]; $index++) {
                     if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
                         $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
-                        $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a></div>";
+                        if(!empty($allEquipementsPlugs[$split[1]]["name"])){
+                            $equipement = $allEquipementsPlugs[$split[1]]["name"];
+                        } else {
+                            $equipement = "";
+                        }
+                        $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$equipement."</a></div>";
                     } 
                 }
             }

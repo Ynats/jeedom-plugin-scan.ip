@@ -33,7 +33,7 @@ scan_ip::cleanAfterUpdate();
     <fieldset>
         
 <?php
-        scan_ip::vueSubTitle("{{Base de donnée OUI}}", "config");
+        scan_ip::vueSubTitle("{{Base de données OUI}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
