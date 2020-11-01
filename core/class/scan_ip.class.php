@@ -513,7 +513,6 @@ class scan_ip extends eqLogic {
                 for ($index = 1; $index <= $bridge["nb"]; $index++) {
                     if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
                         $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
-
                         $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$allEquipementsPlugs[$split[1]]["name"]."</a></div>";
                     } 
                 }
@@ -618,7 +617,7 @@ class scan_ip extends eqLogic {
                     $equipement = preg_replace(self::getRegex("()"), "", $equipement);
                     $equipement = trim($equipement);
 
-                    if(empty($equipement)){ $return[$mac]["equipement"] = "..."; }
+                    if($equipement == ""){ $return[$mac]["equipement"] = "..."; }
                     else { $return[$mac]["equipement"] = $equipement; }
 
                 $return[$mac]["ip_v4"] = $sortIp[0];

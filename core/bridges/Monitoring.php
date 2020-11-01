@@ -24,7 +24,8 @@ class scan_ip_Monitoring {
     */
     public function getAllElements(){
         $eqLogics = eqLogic::byType(self::$plug);
-              
+        $return = NULL;
+        
         foreach ($eqLogics as $eqLogic) {    
           
             if ($eqLogic->getConfiguration('maitreesclave') == 'deporte') {
