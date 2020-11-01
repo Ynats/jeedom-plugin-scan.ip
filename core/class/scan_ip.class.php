@@ -1082,22 +1082,22 @@ class scan_ip extends eqLogic {
         }
         
         if($_path == NULL){
-             $subPlugs = __DIR__ . "/../../../../plugins/scan_ip/core/subPlugs/";
+             $subPlugs = __DIR__ . "/../../../../plugins/scan_ip/core/subPlugs";
         } else {
             $subPlugs = $_path."plugins/scan_ip/core/subPlugs/";
         }
         if(@is_dir($subPlugs)){
-            if(@file_exists($subPlugs . "broadlink.php") == TRUE){
-                unlink($subPlugs . "broadlink.php");
+            if(@file_exists($subPlugs . "/broadlink.php") == TRUE){
+                unlink($subPlugs . "/broadlink.php");
             }
-            if(@file_exists($subPlugs . "googlecast.php") == TRUE){
-                unlink($subPlugs . "googlecast.php");
+            if(@file_exists($subPlugs . "/googlecast.php") == TRUE){
+                unlink($subPlugs . "/googlecast.php");
             }
-            if(@file_exists($subPlugs . "template.php") == TRUE){
-                unlink($subPlugs . "template.php");
+            if(@file_exists($subPlugs . "/template.php") == TRUE){
+                unlink($subPlugs . "/template.php");
             }
-            if(@file_exists($subPlugs . "xiaomihome.php") == TRUE){
-                unlink($subPlugs . "xiaomihome.php");
+            if(@file_exists($subPlugs . "/xiaomihome.php") == TRUE){
+                unlink($subPlugs . "/xiaomihome.php");
             }
         
             mkdir($subPlugs);
