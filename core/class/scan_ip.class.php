@@ -28,27 +28,31 @@ class scan_ip extends eqLogic {
     public static $_jsonTamponTemp = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.temp";
     public static $_jsonTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json";
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
-    public static $_bash_oui = __DIR__ . "/../../../../plugins/scan_ip/resources/upload.oui.sh";
-    public static $_file_oui = __DIR__ . "/../../../../ieee-oui.txt";
-    public static $_file_iab = __DIR__ . "/../../../../ieee-iab.txt";
+    public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f /var/www/html/plugins/scan_ip/resources/oui.txt";
+    public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     
-    public static $_allBridges = array( "broadlink",
-                                        "camera", 
-                                        "googlecast", 
-                                        "homepTalk",  
-                                        "espeasy", 
-                                        "networks", 
+    public static $_allBridges = array( "Abeille",
+                                        "JPI", 
                                         "Jailbreak", 
-                                        "JeeOrangeTv", 
-                                        "kodi", 
+                                        "JeeOrangeTv",  
                                         "Monitoring", 
-                                        "webosTv", 
-                                        "xiaomihome", 
+                                        "broadlink", 
+                                        "camera", 
+                                        "espeasy", 
+                                        "googlecast", 
+                                        "harmonyhub", 
+                                        "homepTalk", 
+                                        "kodi", 
+                                        "networks",
+                                        "nut",
+                                        "onkyo",
+                                        "pjlink",
+                                        "synologyapi",
+                                        "vmware",
+                                        "webosTv",
+                                        "xiaomihome",
                                         "zigate",
-                                        "Abeille",
-                                        "JPI",
-                                        "zigbee"); 
-
+                                        "zigbee");  
 
     /*     * ***********************Methode static*************************** */
 
@@ -610,26 +614,12 @@ class scan_ip extends eqLogic {
 # APP ARP-SCAN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function ifNotExistFilesOUI(){
-        log::add('scan_ip', 'debug', 'ifNotExistFilesOUI :. Chargement des fichiers OUI');
-        shell_exec("sudo /bin/bash " . self::$_bash_oui);
-    }
-    
-    public static function filesExistOUI(){
-        if(!is_file('./ieee-iab.txt')){
-            shell_exec('get-iab -u http://standards-oui.ieee.org/iab/iab.txt');
-        }
-        if(!is_file('./ieee-oui.txt')){
-            shell_exec('get-oui -u http://standards-oui.ieee.org/oui.txt');
-        }
-    }
-    
     public static function arpScanShell($_subReseau){
         log::add('scan_ip', 'debug', 'arpScanShell :. Lancement');
         $time = time();
         $return = array();
         
-        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . self::$_file_oui . ' --iabfile=' . self::$_file_iab, $output);
+        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . self::$_file_oui, $output);
         
         foreach ($output as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) { 
@@ -663,6 +653,14 @@ class scan_ip extends eqLogic {
         } else {
           log::add('scan_ip', 'error', 'sudo: arp-scan: command not found');
           return("arp-scan not found");
+        }
+    }
+    
+    public static function printFileOuiExist(){
+        if(is_file(self::$_file_oui) == TRUE){
+            return "<span style='color:green'>Installé</span>";
+        } else {
+            return "<span style='color:orange'>Manquant</span>";
         }
     }
     
@@ -700,7 +698,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cronDaily :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
-        shell_exec("sudo /bin/bash " . self::$_bash_oui);
+        shell_exec(self::$_bash_oui);
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
@@ -810,13 +808,30 @@ class scan_ip extends eqLogic {
 # BRIDGES PLUG AND PLAY
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function bridges_printPlugs(){
-        foreach (self::$_allBridges as $gridge) {
-            if(self::bridges_pluginExists($gridge)){
-                echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:green;'>(Installé)</span></div>";
-            } else {
-                echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:orange;'>(Non installé)</span></div>";
+//    public static function bridges_allBridges(){ // Ynats
+//        $all = scandir("../core/bridges");
+//        foreach ($all as $bridge) {
+//            if(!in_array($bridge, self::$_exceptionBridges()) AND $bridge != "." AND $bridge != ".."){
+//                $return[] = str_replace(".php", "", $bridge);
+//            }
+//        }
+//        return $return;
+//    }
+    
+    public static function bridges_printPlugs($_nb = 100, $_start = 1){     
+        $i =1;
+        $allBridges = self::$_allBridges;
+        natcasesort($allBridges);
+        foreach ($allBridges as $gridge) {    
+            
+            if($i > $_start AND $i < ($_start + $_nb)) {
+                if(self::bridges_pluginExists($gridge)){
+                    echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:green;'>(Installé)</span></div>";
+                } else {
+                    echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:orange;'>(Non installé)</span></div>";
+                }
             }
+            $i++;
         }
     }
     
@@ -877,10 +892,13 @@ class scan_ip extends eqLogic {
         
     }
     
-    public static function bridges_printOptionEquiements(){
+    public static function bridges_printOptionEquiements($_max = 5){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
         $nb = self::bridges_getElements()["nb"];
+        if($nb > $_max){ 
+            $nb = 5;
+        }
         
         if($selection != FALSE){
             for ($index = 1; $index <= $nb; $index++) {

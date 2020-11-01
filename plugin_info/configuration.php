@@ -21,15 +21,26 @@ if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
-
-scan_ip::filesExistOUI();
+// Brigde affachés par paquet de ...
+$paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
 
 ?>
 <div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
 <form class="form-horizontal">
     <fieldset>
+        
 <?php
-    scan_ip::vueSubTitle("{{Cadence de rafraichissement}}", "config");
+        scan_ip::vueSubTitle("{{Librairie OUI}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Fichier présent}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{S'il n'est pas installé cliquer sur Relancer l'installation. Une fois terminé, ré-ouvrez la fenêtre pour savoir si cela a résolu le problème.}}"></i></sup>
+            </label>
+            <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?></div>
+        </div>
+        
+<?php
+        scan_ip::vueSubTitle("{{Cadence de rafraichissement}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
@@ -63,11 +74,18 @@ scan_ip::filesExistOUI();
         echo scan_ip::printInputSubConfig(); 
     
         scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
+      
     ?> 
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs(); ?>
+                <?php echo scan_ip::bridges_printPlugs($paquetBridges, 1); ?>
+            </div>
+            <div class="col-lg-2">
+                <?php echo scan_ip::bridges_printPlugs($paquetBridges, $paquetBridges); ?>
+            </div>
+            <div class="col-lg-2">
+                <?php echo scan_ip::bridges_printPlugs($paquetBridges, ($paquetBridges*2)-1); ?>
             </div>
         </div>
     </fieldset>

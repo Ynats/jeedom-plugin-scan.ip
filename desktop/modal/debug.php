@@ -18,7 +18,7 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
-//scan_ip::ifNotExistFilesOUI();
+ 
 ?>
 
 <div class="col-md-12">
@@ -57,11 +57,11 @@ if ($subReseau["subReseauEnable"] > 0) {
             <div class="col-md-12">
                 <div class="panel panel-primary" id="div_functionalityPanel">
                     <div class="panel-heading">
-                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt</h3>
+                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt</h3>
                     </div>
                     <div class="panel-body">
                         <?php
-                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=ieee-oui.txt --iabfile=ieee-iab.txt");
+                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
                         ?>
                     </div>
                 </div>

@@ -58,7 +58,7 @@ class scan_ip_vmware {
                         $eqLogic->setConfiguration(self::$ip, $_ip);
                         $eqLogic->save(); 
                         // Si besoin de relancer un deamon on retourne self::$plug
-						ajax::success($eqLogic->refreshViaBouttonSynchroniser(self::$ip)); //resynchroniser sinon toujours Hors ligne
+			ajax::success($eqLogic->refreshViaBouttonSynchroniser(self::$ip)); //resynchroniser sinon toujours Hors ligne
                         return NULL;
                     }
                 }   
