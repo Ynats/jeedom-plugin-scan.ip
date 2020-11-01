@@ -1100,7 +1100,7 @@ class scan_ip extends eqLogic {
                 unlink($subPlugs . "/xiaomihome.php");
             }
         
-            mkdir($subPlugs);
+            rmdir($subPlugs);
         }
         
     }
