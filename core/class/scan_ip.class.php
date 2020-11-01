@@ -329,14 +329,17 @@ class scan_ip extends eqLogic {
                 return array_merge($_arrayOld, $_arrayNew); 
             }
         } else {
-            if($_arrayOld == NULL){ 
+            if(($_arrayOld == NULL OR empty($_arrayOld[0])) AND $_arrayNew != NULL){ 
                 $array = array();
                 array_push($array, $_arrayNew); 
                 return $array;
             } 
-            else { 
+            elseif($_arrayNew != NULL){  
                 $return = array_push($_arrayOld, $_arrayNew);  
                 return array_unique($return);
+            }
+            else {   
+                return $_arrayOld;
             }
         } 
     }
@@ -398,9 +401,9 @@ class scan_ip extends eqLogic {
         // Mise à jour de l'élément associé
         
         $bridge = self::bridges_getElements();
+        $deamons = NULL;
         
         if($bridge != FALSE){
-            $deamons = NULL;
             for ($index = 1; $index <= $bridge["nb"]; $index++) {
                 $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
                 
@@ -840,7 +843,7 @@ class scan_ip extends eqLogic {
                 }
             }
         }
-        if(!is_array($array)){
+        if(!is_array($array) AND $array != NULL){
             return FALSE;
         } else {
             $return["array"] = $array;

@@ -24,6 +24,7 @@ class scan_ip_Abeille {
     */
     public function getAllElements(){
 
+        $return = NULL;
         $zigateNb = config::byKey('zigateNb', self::$plug);
 
         for($i = 1; $i <= $zigateNb; $i++){
