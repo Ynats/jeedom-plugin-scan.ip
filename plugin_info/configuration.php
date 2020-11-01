@@ -24,19 +24,28 @@ if (!isConnect()) {
 // Brigde affachés par paquet de ...
 $paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
 
+scan_ip::cleanAfterUpdate();
+
+
 ?>
 <div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
 <form class="form-horizontal">
     <fieldset>
         
 <?php
-        scan_ip::vueSubTitle("{{Librairie OUI}}", "config");
+        scan_ip::vueSubTitle("{{Base de donnée OUI}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Ce fihier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
             <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?></div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Mis à jour le}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour du référentiel. Sans problème de config, celui-ci est mis à jour tous les 7 jours.}}"></i></sup>
+            </label>
+            <div class="col-lg-2"><?php echo scan_ip::printDateFile(scan_ip::$_file_oui) ?></div>
         </div>
         
 <?php

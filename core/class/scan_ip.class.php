@@ -1053,8 +1053,8 @@ class scan_ip extends eqLogic {
         if(@file_exists($resources . "ieee-iab.txt") == TRUE){
             unlink($resources . "ieee-iab.txt.bak");
         }
-        if(@file_exists($resources . "install_scan.ip") == TRUE){
-            unlink($resources . "install_scan.ip");
+        if(@file_exists($resources . "install_scan.ip.sh") == TRUE){
+            unlink($resources . "install_scan.ip.sh");
         }
         if(@file_exists($resources . "unpload_oui.sh") == TRUE){
             unlink($resources . "unpload_oui.sh");

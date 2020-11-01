@@ -26,10 +26,7 @@ function scan_ip_install() {
     if (config::byKey('offline_time', 'scan_ip') == '') {
             config::save('offline_time', 4, 'scan_ip');
     }
-
-    if(!is_file(dirname(__FILE__) . '/../../../plugins/scan_ip/resources/oui.txt')){
-        shell_exec(scan_ip::$_bash_oui);
-    }  
+    
 }
 
 function scan_ip_update() {
@@ -41,9 +38,7 @@ function scan_ip_update() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    if(!is_file(dirname(__FILE__) . '/../../../plugins/scan_ip/resources/oui.txt')){
-        shell_exec($scan_ip::$_bash_oui);
-    }
+    scan_ip::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {
