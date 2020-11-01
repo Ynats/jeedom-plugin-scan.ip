@@ -642,11 +642,20 @@ class scan_ip extends eqLogic {
     }
     
     public static function printFileOuiExist(){
-        if(is_file(self::$_file_oui) == TRUE){
+        if(@file_exists(self::$_file_oui) == TRUE){
             return "<span style='color:green'>Installé</span>";
         } else {
             return '<a class="btn btn-danger btn-sm" onclick= "recordBtMac()" style="position:relative;top:-5px;"><i class="fas fa-paperclip"></i> Fichier Manquant. Cliquez ici pour le télécharger.</a>';
         }
+    }
+    
+    public static function printDateFile($_filename){
+        if (@file_exists($_filename)) {
+            return "<span style='color:green'>".date("d/m/Y", filemtime($_filename))."</span>";
+        } else {
+            return "<span style='color:orange'>Non présent</span>";
+        }
+        
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1024,6 +1033,35 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # DEAMON
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+    
+    public static function cleanAfterUpdate($_path = NULL){   
+        if($_path == NULL){
+             $resources = __DIR__ . "/../../../../plugins/scan_ip/resources/";
+        } else {
+            $resources = $_path."plugins/scan_ip/resources/";
+        }
+       
+        if(@file_exists($resources . "ieee-oui.txt") == TRUE){
+            unlink($resources . "ieee-oui.txt");
+        }
+        if(@file_exists($resources . "ieee-oui.txt") == TRUE){
+            unlink($resources . "ieee-oui.txt.bak");
+        }
+        if(@file_exists($resources . "ieee-iab.txt") == TRUE){
+            unlink($resources . "ieee-iab.txt");
+        }
+        if(@file_exists($resources . "ieee-iab.txt") == TRUE){
+            unlink($resources . "ieee-iab.txt.bak");
+        }
+        if(@file_exists($resources . "install_scan.ip") == TRUE){
+            unlink($resources . "install_scan.ip");
+        }
+        if(@file_exists($resources . "unpload_oui.sh") == TRUE){
+            unlink($resources . "unpload_oui.sh");
+        }
+    }
+            
+    
     
 }
 
