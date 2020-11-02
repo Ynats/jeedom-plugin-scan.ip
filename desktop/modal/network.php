@@ -80,8 +80,14 @@ $list = 1;
                 <tbody>
 <?php         
                     foreach ($ipsReseau["sort"] as $device) {
-
-                        if (scan_ip::isOffline($device->time) == 0) {
+ 
+                        if(empty($savingMac[$device->mac]["offline_time"])){
+                            $offline_time = NULL;
+                        } else {
+                            $offline_time = $savingMac[$device->mac]["offline_time"];
+                        }
+                        
+                        if (scan_ip::isOffline($offline_time, $device->time) == 0) {
                             
                             if (isset($savingMac[$device->mac]["name"])) {
                                 $name = $savingMac[$device->mac]["name"];

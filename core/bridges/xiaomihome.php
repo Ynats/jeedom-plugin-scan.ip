@@ -24,6 +24,7 @@ class scan_ip_xiaomihome {
     */
     public function getAllElements(){
 
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) { 

@@ -7,6 +7,9 @@ sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
 $nbAssociate = scan_ip::bridges_getElements()["nb"];
+
+
+
 ?>
 
 <div class="row row-overflow">
@@ -76,13 +79,15 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
         </ul>
         <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
             <div role="tabpanel" class="tab-pane active" id="eqlogictab">
+                
+                <div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
                 <br/>
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Nom de l'appareil à suivre}}</label>
                             <div class="col-sm-3">
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
+                                <input type="text" class="eqLogicAttr form-control" onchange="timeCron()" data-l1key="id" style="display : none;" />
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de la configuration}}"/>
                             </div>
                         </div>
@@ -92,9 +97,9 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                                 <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                                     <option value="">{{Aucun}}</option>
                                     <?php
-                                    foreach (jeeObject::all() as $object) {
-                                        echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
-                                    }
+                                        foreach (jeeObject::all() as $object) {
+                                            echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
+                                        }
                                     ?>
                                 </select>
                             </div>
@@ -103,11 +108,11 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                             <label class="col-sm-3 control-label">{{Catégorie}}</label>
                             <div class="col-sm-9">
                                 <?php
-                                foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
-                                    echo '<label class="checkbox-inline">';
-                                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
-                                    echo '</label>';
-                                }
+                                    foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
+                                        echo '<label class="checkbox-inline">';
+                                        echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
+                                        echo '</label>';
+                                    }
                                 ?>
                             </div>
                         </div>
@@ -118,10 +123,10 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
                         </div>
-                        
-                        <?php
-                            scan_ip::vueSubTitle("Associer une adresse MAC");
-                        ?>
+            
+<?php
+                        scan_ip::vueSubTitle("Associer une adresse MAC");
+?>
                         
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
@@ -139,6 +144,38 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                             <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
                             <div class="col-sm-5">
                                 <input type="text" onchange="hideSelect(<?php echo $nbAssociate ?>)" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Constructeur}}</label>
+                            <div class="col-lg-5">
+                                <input type="text" id="ConstrunctorMac" class="form-control" style="color: #039be5 !important;" readonly="">
+                            </div>
+                        </div>
+                        
+<?php
+                        scan_ip::vueSubTitle("On Line ou Off line ?");
+?>                        
+
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est condeillé d'avoir au moins 2 raffraichissements minimum'}}"></i></sup></label>
+                            <div class="col-lg-5">
+                                <input type="text" id="cronPass" data-cron="" class="form-control" style="color: #039be5 !important;" readonly="">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Présumé hors-ligne au bout de }} <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à 4 minutes}}"></i></sup>
+                            </label>
+                            <div class="col-lg-5">
+                                <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="offline_time">
+                                    <option value="2">{{2 minutes}}</option>
+                                    <option value="3">{{3 minutes}}</option>
+                                    <option value="4">{{4 minutes}}</option>
+                                    <option value="5">{{5 minutes}}</option>
+                                    <option value="6">{{6 minutes}}</option>
+                                    <option value="7">{{7 minutes}}</option>
+                                </select> 
                             </div>
                         </div>
                         

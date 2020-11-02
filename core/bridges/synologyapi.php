@@ -25,6 +25,8 @@ class scan_ip_synologyapi {
     */
     public function getAllElements(){
 
+        $return = NULL;
+        
         for($i = 1; $i <= 3; $i++){
              if(!empty(config::byKey("Syno".$i.self::$ip, self::$plug))) {
 

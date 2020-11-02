@@ -25,6 +25,7 @@ class scan_ip_camera {
     */
     public function getAllElements(){
 
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) {    

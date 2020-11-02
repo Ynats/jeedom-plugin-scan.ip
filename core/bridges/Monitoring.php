@@ -23,8 +23,9 @@ class scan_ip_Monitoring {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-        $eqLogics = eqLogic::byType(self::$plug);
+        
         $return = NULL;
+        $eqLogics = eqLogic::byType(self::$plug);
         
         foreach ($eqLogics as $eqLogic) {    
           

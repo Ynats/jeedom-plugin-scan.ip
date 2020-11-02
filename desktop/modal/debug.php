@@ -71,3 +71,16 @@ if ($subReseau["subReseauEnable"] > 0) {
     }
 }
 ?>
+
+<div class="col-md-12">
+    <div class="panel panel-primary" id="div_functionalityPanel">
+        <div class="panel-heading">
+            <h3 class="panel-title"># Serialize</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip::printArray(scan_ip::getFileSerialize());
+            ?>
+        </div>
+    </div>
+</div>

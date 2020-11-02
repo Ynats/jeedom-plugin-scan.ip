@@ -24,14 +24,8 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    ajax::init();
+    echo json_encode(config::byKey('cron_pass', 'scan_ip', 1));
     
-    if (init('action') == 'syncEqLogicWithOpenScanId') {
-        scan_ip::syncScanIp();
-        ajax::success();
-    }
-    
-    throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
     ajax::error(displayException($e), $e->getCode());

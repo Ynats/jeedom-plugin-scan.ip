@@ -258,7 +258,8 @@ class scan_ip extends eqLogic {
 
                 if(empty($old) OR count($old) == 0){ $now = $new; } 
                 else { $now = self::arrayCompose($old, $new); } 
-
+                
+                $now = self::cleanArraySerialize($now);
                 self::createFileSerialize($now);
 
                 foreach ($now as $mac => $scanLine) {
@@ -266,13 +267,9 @@ class scan_ip extends eqLogic {
                         $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                         $now["route"]["mac"] = $mac;
                     } else {
-                        
-                        if(!empty($scanLine["equipement"])){ $equipement = $scanLine["equipement"]; }
-                        else{ $equipement = "..."; }
-                        
-                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $equipement);
-                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $equipement, "time" => $scanLine["time"]);
-                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $equipement, "time" => $scanLine["time"]);           
+                        $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $scanLine["equipement"]);
+                        $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
+                        $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);         
                     }
                 }
 
@@ -295,6 +292,16 @@ class scan_ip extends eqLogic {
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
     }
+    
+    public static function cleanArraySerialize($_array){
+        $return = NULL;
+        foreach ($_array as $mac => $scanLine) {
+            if(!empty($scanLine["ip_v4"]) AND !empty($scanLine["time"]) AND !empty($scanLine["equipement"]) AND !empty($mac)){
+                $return[$mac] = $scanLine;
+            }
+        }
+        return $return;
+    }
      
     public static function searchByMac($_searchMac){ 
         log::add('scan_ip', 'debug', 'searchByMac :. Lancement');
@@ -302,6 +309,7 @@ class scan_ip extends eqLogic {
         if(!empty($sort["byMac"]->{$_searchMac}->ip_v4)){
             $return["ip_v4"] = $sort["byMac"]->{$_searchMac}->ip_v4;
             $return["time"] = $sort["byMac"]->{$_searchMac}->time;
+            $return["equipement"] = $sort["byMac"]->{$_searchMac}->equipement;
             return $return;
         } else {
             return NULL;
@@ -372,12 +380,14 @@ class scan_ip extends eqLogic {
         foreach ($eqLogics as $scan_ip) {
             $return[$scan_ip->getConfiguration("adress_mac")]["name"] = $scan_ip->name;
             $return[$scan_ip->getConfiguration("adress_mac")]["enable"] = $scan_ip->getIsEnable();
+            $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", 4);
         }
         return $return;
     }
     
-    public static function isOffline($_time){
-        $expire = time() - (60 * config::byKey('offline_time', 'scan_ip', 4));
+    public static function isOffline($_expire = NULL, $_time){ // Ynats
+        if($_expire == NULL){ $_expire = 4; }
+        $expire = time() - (60 * $_expire);
         if($expire <= $_time){ return 0; } 
         else { return 1; }
     }
@@ -388,8 +398,7 @@ class scan_ip extends eqLogic {
         $offline_time = $eqlogic->getConfiguration("offline_time");
         
         
-        if(self::isOffline($device["time"]) == 0){
-            
+        if(self::isOffline($offline_time, $device["time"]) == 0){
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
             $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
             if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
@@ -554,6 +563,10 @@ class scan_ip extends eqLogic {
     public static function printShell($_shell){
         $output = shell_exec($_shell);
         echo "<pre style='background-color: #1b2426 !important; color: white !important;'>".$output."</pre>";
+    }
+    
+    public static function printArray($_array){
+        echo "<pre style='background-color: #1b2426 !important; color: white !important;'>".print_r($_array, true)."</pre>";
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

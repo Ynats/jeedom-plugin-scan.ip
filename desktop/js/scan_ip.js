@@ -158,7 +158,6 @@ function hideSelect(NbSelect){
             $.each( result, function( mac, value ) {
                 var current = $('#scan_ip_adressMacTemp').val();
                 if(mac != current){
-
                     $("#plug_element_plugin_"+plug+" option[value='" + value + "']").hide();
                 }
             });  
@@ -166,3 +165,30 @@ function hideSelect(NbSelect){
 
     });
 }
+
+function timeCron(){
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.time_cron.php", function(result){
+        $("#cronPass").attr('data-cron', result); 
+        $("#cronPass").val("La cadence de rafraichissment se fait toutes les " +result + " minutes");
+        verifCadence();
+    });
+}
+
+
+function verifCadence(){
+    var offline_time = $("#offline_time").val();
+    var cron_pass = $("#cronPass").attr('data-cron');
+    var delta = offline_time / cron_pass;
+    
+    if(delta < 2){ 
+        $('#div_alert_config').showAlert({message: "{{Si vous valider cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
+    } 
+    else {
+        $('#div_alert_config').hide();
+    }
+}
+
+$('#offline_time').change(function(){
+    verifCadence();
+});
+    

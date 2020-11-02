@@ -22,7 +22,9 @@ class scan_ip_broadlink {
     */
     public function getAllElements(){
 
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
+        
         foreach ($eqLogics as $eqLogic) { 
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
             $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('device');
