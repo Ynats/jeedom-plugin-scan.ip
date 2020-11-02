@@ -61,7 +61,7 @@ class scan_ip_script {
                 if ($cmd->getId() == $_id) {
                     $cliRequest = $cmd->getConfiguration('request');
                     if (!empty($cliRequest) AND preg_match(scan_ip::getRegex("ip_v4"),$cliRequest,$old)) {
-                        if($match[0] != $_ip) {
+                        if($old[0] != $_ip) {
                             $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $cliRequest);
                             $cmd->setConfiguration('request',$change_ip);
                             try {
