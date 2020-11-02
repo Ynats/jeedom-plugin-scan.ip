@@ -849,7 +849,7 @@ class scan_ip extends eqLogic {
         natcasesort($allBridges);
         foreach ($allBridges as $gridge) {    
             
-            if($i > $_start AND $i < ($_start + $_nb)) {
+            if($i > $_start AND $i <= ($_start + $_nb)) {
                 if(self::bridges_pluginExists($gridge)){
                     echo "<div><span style='font-weight: bold;'>".$gridge."</span> <span style='color:green;'>(Installé)</span></div>";
                 } else {

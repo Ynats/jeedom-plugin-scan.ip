@@ -22,7 +22,7 @@ if (!isConnect()) {
     die();
 }
 // Brigde affachés par paquet de ...
-$paquetBridges = ceil(count(scan_ip::$_allBridges)/3)+1;
+$paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
 
 scan_ip::cleanAfterUpdate();
 
