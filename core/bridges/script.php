@@ -22,7 +22,7 @@ class scan_ip_script {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) {
