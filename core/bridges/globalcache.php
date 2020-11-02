@@ -3,14 +3,14 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_networks {
+class scan_ip_globalcache {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "networks";
-    public static $ip = "ip";
+    public static $plug = "globalcache";
+    public static $ip = "logicalId";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -23,16 +23,15 @@ class scan_ip_networks {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-
         $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('pingMode');
+            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getconfiguration('type');
             $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
             $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getLogicalId(self::$ip);
         }
         return $return;
     }
@@ -51,10 +50,11 @@ class scan_ip_networks {
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $eqLogic->setConfiguration(self::$ip, $_ip);
+                $cmdLogicalId = $eqLogic->getLogicalId(self::$ip);
+                if($cmdLogicalId != $_ip){
+                    $eqLogic->setLogicalId($_ip);
                     $eqLogic->save(); 
-                    // Retourne le deamon à lancer
+                    // Si besoin de relancer un deamon on retourne self::$plug
                     return NULL;
                 }   
             }

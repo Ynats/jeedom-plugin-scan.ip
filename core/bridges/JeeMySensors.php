@@ -3,14 +3,14 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_networks {
+class scan_ip_JeeMySensors {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "networks";
-    public static $ip = "ip";
+    public static $plug = "JeeMySensors";
+    public static $ip = "ip_gw";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -23,16 +23,17 @@ class scan_ip_networks {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-
         $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
-        foreach ($eqLogics as $eqLogic) {    
-            $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('pingMode');
-            $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
-            $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+        foreach ($eqLogics as $eqLogic) {   
+            if ($eqLogic->getConfiguration('type_gw') == 'lan' ) {
+                $return[$eqLogic->getId()]["plugin"] = self::$plug;
+                $return[$eqLogic->getId()]["plugin_print"] = self::$plug;
+                $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
+                $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
+                $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+            }
         }
         return $return;
     }
@@ -50,12 +51,15 @@ class scan_ip_networks {
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $eqLogic->setConfiguration(self::$ip, $_ip);
-                    $eqLogic->save(); 
-                    // Retourne le deamon à lancer
-                    return NULL;
+            if ($eqLogic->getConfiguration('type_gw') == 'lan' ) {
+
+                if ($eqLogic->getId() == $_id) { 
+                    if($eqLogic->getConfiguration(self::$ip) != $_ip){
+                        $eqLogic->setConfiguration(self::$ip, $_ip);
+                        $eqLogic->save(); 
+                        // Si besoin de relancer un deamon on retourne self::$plug
+                        return NULL;
+                    }
                 }   
             }
         }

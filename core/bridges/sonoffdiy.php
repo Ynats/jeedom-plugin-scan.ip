@@ -3,14 +3,14 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_networks {
+class scan_ip_sonoffdiy {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "networks";
-    public static $ip = "ip";
+    public static $plug = "sonoffdiy";
+    public static $ip = "adresse_ip";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -24,12 +24,11 @@ class scan_ip_networks {
     */
     public function getAllElements(){
 
-        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('pingMode');
+            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('device');
             $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
             $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
             $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
@@ -46,7 +45,7 @@ class scan_ip_networks {
     * 
     */
     public function majIpElement($_ip ,$_id){
-        
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
@@ -55,7 +54,7 @@ class scan_ip_networks {
                     $eqLogic->setConfiguration(self::$ip, $_ip);
                     $eqLogic->save(); 
                     // Retourne le deamon à lancer
-                    return NULL;
+                    return self::$plug;
                 }   
             }
         }
