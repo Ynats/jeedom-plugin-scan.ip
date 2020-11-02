@@ -38,16 +38,10 @@ $('#bt_syncEqLogic').off('click').on('click', function () {
   syncEqLogicWithOpenScanId();
 });
 
-// Demande de recherche OUI
-$('#scan_ip_search').off('click').on('click', function () {
-    ouiMacSearch();
-});
-
 // Au changement du menu de sélection on reproduit la valeur dans le champ
 $('#scan_ip_mac_select').change(function(){
     var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
     $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);
-    //$("#scan_ip_adressMac").val(scan_ip_CopyPaste);
 });
 
 ////////
