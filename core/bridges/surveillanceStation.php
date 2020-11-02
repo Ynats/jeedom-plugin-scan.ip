@@ -23,7 +23,7 @@ class scan_ip_surveillanceStation {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-
+        $return = NULL;
          if(!empty(config::byKey(self::$ip, self::$plug))) {
 
             $return[self::$plug.$i]["plugin"] = self::$plug;
