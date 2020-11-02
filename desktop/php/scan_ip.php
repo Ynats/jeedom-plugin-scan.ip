@@ -163,16 +163,20 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                         </div>
                         
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Présumé hors-ligne au bout de }} <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à 4 minutes}}"></i></sup>
+                            <label class="col-lg-3 control-label">{{Présumé hors-ligne au bout de }} <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_offline_time ?> {{minutes}}"></i></sup>
                             </label>
                             <div class="col-lg-5">
                                 <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="offline_time">
                                     <option value="2">{{2 minutes}}</option>
                                     <option value="3">{{3 minutes}}</option>
-                                    <option value="4">{{4 minutes}}</option>
+                                    <option value="4">{{4 minutes (recommandé)}}</option>
                                     <option value="5">{{5 minutes}}</option>
                                     <option value="6">{{6 minutes}}</option>
                                     <option value="7">{{7 minutes}}</option>
+                                    <option value="8">{{8 minutes}}</option>
+                                    <option value="9">{{9 minutes}}</option>
+                                    <option value="10">{{10 minutes}}</option>
+                                    <option value="15">{{15 minutes}}</option>
                                 </select> 
                             </div>
                         </div>
@@ -200,7 +204,16 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
 
     </div>
 </div>
+<script>
+    
+    
+console.log($('.eqLogicAttr[data-l2key=offline_time]').value());
 
+
+if(!$("#offline_time option:selected").length){
+    $("#offline_time option[value='4']").attr('selected', 'selected');
+}
+</script>
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
 

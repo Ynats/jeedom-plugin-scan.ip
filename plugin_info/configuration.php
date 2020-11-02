@@ -22,7 +22,7 @@ if (!isConnect()) {
     die();
 }
 // Brigde affachés par paquet de ...
-$paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
+$paquetBridges = ceil(count(scan_ip::$_allBridges)/3)+1;
 
 scan_ip::cleanAfterUpdate();
 
@@ -46,13 +46,13 @@ scan_ip::cleanAfterUpdate();
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à 1 minute}}"></i></sup>
+                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_cron_pass ?> {{minute}}"></i></sup>
             </label>
             <div class="col-lg-2">
                 <select class="configKey form-control" id="cron_pass" data-l1key="cron_pass">
-                    <option value="3">{{3 minutes}}</option>
+                    <option value="1">{{1 minute (recommandé)}}</option>
                     <option value="2">{{2 minutes}}</option>
-                    <option value="1">{{1 minute}}</option>
+                    <option value="3">{{3 minutes}}</option>
                 </select> 
             </div>
         </div>
@@ -63,7 +63,6 @@ scan_ip::cleanAfterUpdate();
         echo scan_ip::printInputSubConfig(); 
     
         scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
-      
     ?> 
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>

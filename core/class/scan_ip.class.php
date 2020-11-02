@@ -30,6 +30,8 @@ class scan_ip extends eqLogic {
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
+    public static $_defaut_cron_pass = 1;
+    public static $_defaut_offline_time = 4;
     
     public static $_allBridges = array( "Abeille",
                                         "JPI", 
@@ -67,17 +69,19 @@ class scan_ip extends eqLogic {
 //        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
 //        log::add('scan_ip', 'debug', 'preInsert :. Lancement');
 //    }
-//
-//    public function postInsert() {
-//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-//        log::add('scan_ip', 'debug', 'postInsert :. Lancement');
-//    }
-//
 //    public function preSave() {
 //        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
 //        log::add('scan_ip', 'debug', 'preSave :. Lancement');
 //    }
 
+    public function postInsert() {
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+        log::add('scan_ip', 'debug', 'postInsert :. Lancement');
+        
+        $this->setConfiguration("offline_time", self::$_defaut_offline_time);
+        $this->save();
+    }
+    
     public function postUpdate() {
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -175,11 +179,6 @@ class scan_ip extends eqLogic {
 //    public function preUpdate() {
 //        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
 //        log::add('scan_ip', 'debug', 'preUpdate :. lancement');
-//    }
-//
-//    public function postUpdate() {
-//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-//        log::add('scan_ip', 'debug', 'postUpdate :. lancement');
 //    }
 //
 //    public function preRemove() {
@@ -387,12 +386,12 @@ class scan_ip extends eqLogic {
         foreach ($eqLogics as $scan_ip) {
             $return[$scan_ip->getConfiguration("adress_mac")]["name"] = $scan_ip->name;
             $return[$scan_ip->getConfiguration("adress_mac")]["enable"] = $scan_ip->getIsEnable();
-            $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", 4);
+            $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", self::$_defaut_offline_time);
         }
         return $return;
     }
     
-    public static function isOffline($_expire = NULL, $_time){ // Ynats
+    public static function isOffline($_expire = NULL, $_time){
         if($_expire == NULL){ $_expire = 4; }
         $expire = time() - (60 * $_expire);
         if($expire <= $_time){ return 0; } 
@@ -402,7 +401,7 @@ class scan_ip extends eqLogic {
     public static function cmdRefresh($eqlogic){
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
-        $offline_time = $eqlogic->getConfiguration("offline_time");
+        $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
         
         
         if(self::isOffline($offline_time, $device["time"]) == 0){
@@ -471,7 +470,11 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-
+    
+    public static function valuesEquip($_id){ // Ynats
+        
+    }
+    
     public static function excludeSubReseau($_string){
         if($_string == "lo"){ return FALSE; }
         elseif(preg_match('/(tun)[0-9]*/', $_string)){ return FALSE; }
