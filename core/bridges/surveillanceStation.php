@@ -27,16 +27,16 @@ class scan_ip_surveillanceStation {
         $return = NULL;
         if(!empty(config::byKey(self::$ip, self::$plug))) {
 
-            $return[self::$plug.$i]["plugin"] = self::$plug;
-            $return[self::$plug.$i]["plugin_print"] = self::$plug;
-            $return[self::$plug.$i]["name"] = "SurveillanceStation";
-            $return[self::$plug.$i]["id"] = self::$ip;
+            $return[self::$plug]["plugin"] = self::$plug;
+            $return[self::$plug]["plugin_print"] = self::$plug;
+            $return[self::$plug]["name"] = "SurveillanceStation";
+            $return[self::$plug]["id"] = self::$ip;
                 
             $value = config::byKey(self::$ip, self::$plug);
             if(preg_match(scan_ip::getRegex("ip_v4"), $value, $match)){
-                $return[self::$plug.$i]["ip_v4"] = $match[0];
+                $return[self::$plug]["ip_v4"] = $match[0];
             } else {
-                $return[self::$plug.$i]["ip_v4"] = NULL;
+                $return[self::$plug]["ip_v4"] = NULL;
             }
         }
         return $return;
