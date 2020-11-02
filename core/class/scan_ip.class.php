@@ -917,16 +917,13 @@ class scan_ip extends eqLogic {
         
     }
     
-    public static function bridges_printOptionEquiements($_max = 5){
+    public static function bridges_printOptionEquiements($_nb = 10){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
         $nb = self::bridges_getElements()["nb"];
-        if($nb > $_max){ 
-            $nb = 5;
-        }
         
         if($selection != FALSE){
-            for ($index = 1; $index <= $nb; $index++) {
+            for ($index = 1; $index <= $_nb; $index++) {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
