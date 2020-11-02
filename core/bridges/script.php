@@ -22,6 +22,7 @@ class scan_ip_script {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
+        
         $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
@@ -30,7 +31,7 @@ class scan_ip_script {
             foreach ($eqLogic->getCmd() as $cmd) {
                 $cliRequest = $cmd->getConfiguration('request');
                 $cmdId = $cmd->getId();
-			    if (!empty($cmd->getConfiguration('request')) AND preg_match(scan_ip::getRegex("ip_v4"),$cliRequest,$match)) {
+		if (!empty($cmd->getConfiguration('request')) AND preg_match(scan_ip::getRegex("ip_v4"),$cliRequest,$match)) {
                     $return[self::$plug.$cmdId]["plugin"] = self::$plug;
                     $return[self::$plug.$cmdId]["plugin_print"] = self::$plug . " :: " . $eqName;
                     $return[self::$plug.$cmdId]["name"] = $cmd->getName();
@@ -40,7 +41,7 @@ class scan_ip_script {
             }
         }
         return $return;
-
+        
     }
     
     
@@ -61,14 +62,13 @@ class scan_ip_script {
                     $cliRequest = $cmd->getConfiguration('request');
                     if (!empty($cliRequest) AND preg_match(scan_ip::getRegex("ip_v4"),$cliRequest,$old)) {
                         if($match[0] != $_ip) {
-           					 $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $cliRequest);
-                             $cmd->setConfiguration('request',$change_ip);
-                             try {
-                                 $cmd->save();
-                             } catch (Exception $e) {
+                            $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $cliRequest);
+                            $cmd->setConfiguration('request',$change_ip);
+                            try {
+                                $cmd->save();
+                            } catch (Exception $e) {
                                  log::add('scan_ip', 'error', 'Erreur lors de la sauvegarde du script : '.$cmd->getName().' ('.$_id. ').');
-                             }                             
-                          
+                            }                             
                         }
                         return NULL;
                     }

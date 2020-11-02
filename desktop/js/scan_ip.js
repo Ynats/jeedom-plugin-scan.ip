@@ -160,14 +160,24 @@ function hideSelect(NbSelect){
     });
 }
 
-function timeCron(){
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.time_cron.php", function(result){
-        $("#cronPass").attr('data-cron', result); 
-        $("#cronPass").val("La cadence de rafraichissment se fait toutes les " +result + " minutes");
-        verifCadence();
+function getConstructorByMac(){
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.by_mac.php", function(result){
+        $.each( result, function( mac, value ) {
+            var current = $('#scan_ip_adressMacTemp').val();
+            if(mac == current){
+                $("#ConstrunctorMac").val(value["equipement"]);
+            }
+        });  
     });
 }
 
+function timeCron(){
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.time_cron.php", function(result){
+        $("#cronPass").attr('data-cron', result); 
+        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " +result + " minutes");
+        verifCadence();
+    });
+}
 
 function verifCadence(){
     var offline_time = $("#offline_time").val();
@@ -184,5 +194,6 @@ function verifCadence(){
 
 $('#offline_time').change(function(){
     verifCadence();
+    getConstructorByMac();
 });
     

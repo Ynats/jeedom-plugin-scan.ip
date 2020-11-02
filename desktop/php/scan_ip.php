@@ -144,12 +144,12 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                                 <input type="text" onchange="hideSelect(<?php echo $nbAssociate ?>);" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
                             </div>
                         </div>
-<!--                        <div class="form-group">
+                        <div class="form-group">
                             <label class="col-lg-3 control-label">{{Constructeur}}</label>
                             <div class="col-lg-5">
                                 <input type="text" id="ConstrunctorMac" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
-                        </div>-->
+                        </div>
                         
 <?php
                         scan_ip::vueSubTitle("On Line ou Off line ?");

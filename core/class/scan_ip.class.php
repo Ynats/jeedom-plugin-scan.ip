@@ -33,12 +33,16 @@ class scan_ip extends eqLogic {
     
     public static $_allBridges = array( "Abeille",
                                         "JPI", 
-                                        "Jailbreak", 
+                                        "Jailbreak",
+                                        "JeeMySensors",
                                         "JeeOrangeTv",  
                                         "Monitoring", 
-                                        "broadlink", 
+                                        "Nut_free",
+                                        "broadlink",
                                         "camera", 
-                                        "espeasy", 
+                                        "espeasy",
+                                        "fullyKiosK",
+                                        "globalcache",
                                         "googlecast", 
                                         "harmonyhub", 
                                         "homepTalk", 
@@ -47,6 +51,9 @@ class scan_ip extends eqLogic {
                                         "nut",
                                         "onkyo",
                                         "pjlink",
+                                        "script",
+                                        "sonoffdiy",
+                                        "surveillanceStation",
                                         "synologyapi",
                                         "vmware",
                                         "webosTv",
@@ -713,7 +720,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cronDaily :. START');
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
-        self::DownloadOui();
+        self::downloadOui();
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
@@ -1008,7 +1015,7 @@ class scan_ip extends eqLogic {
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
    
-    public static function DownloadOui(){
+    public static function downloadOui(){
         shell_exec(self::$_bash_oui);
     }
     
