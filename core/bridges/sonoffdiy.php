@@ -45,7 +45,7 @@ class scan_ip_sonoffdiy {
     * 
     */
     public function majIpElement($_ip ,$_id){
-        
+        $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
