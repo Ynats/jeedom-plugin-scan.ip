@@ -3,13 +3,13 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_fullyKiosK {
+class scan_ip_Nut_free {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "fullyKiosK";
+    public static $plug = "Nut_free";
     public static $ip = "addressip";
     
     /**
@@ -23,7 +23,7 @@ class scan_ip_fullyKiosK {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-        
+
         $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
