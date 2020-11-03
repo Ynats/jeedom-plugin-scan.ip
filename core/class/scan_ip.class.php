@@ -55,6 +55,7 @@ class scan_ip extends eqLogic {
                                         "pjlink",
                                         "script",
                                         "sonoffdiy",
+                                        "sshcommander",
                                         "surveillanceStation",
                                         "synologyapi",
                                         "vmware",
@@ -140,17 +141,16 @@ class scan_ip extends eqLogic {
         $info->save();
 
 
-        $refresh = $this->getCmd(null, 'on_line');
-        if (!is_object($refresh)) {
-            $refresh = new scan_ipCmd();
-            $refresh->setName(__('Online', __FILE__));
+        $info = $this->getCmd(null, 'on_line');
+        if (!is_object($info)) {
+            $info = new scan_ipCmd();
+            $info->setName(__('Online', __FILE__));
         }
-        $refresh->setEqLogic_id($this->getId());
-        $refresh->setLogicalId('on_line');
-        $refresh->setType('info');
-        $refresh->setSubType('binary');
-        $refresh->save();
-        
+        $info->setEqLogic_id($this->getId());
+        $info->setLogicalId('on_line');
+        $info->setType('info');
+        $info->setSubType('binary');
+        $info->save();
         
         $refresh = $this->getCmd(null, 'refresh');
         if (!is_object($refresh)) {
@@ -162,6 +162,24 @@ class scan_ip extends eqLogic {
         $refresh->setType('action');
         $refresh->setSubType('other');
         $refresh->save();
+       
+        $wol = $this->getCmd(null, 'wol');
+        if($this->getConfiguration("enable_wol") == 1){  // Ynats
+            if (!is_object($wol)) {
+                $wol = new scan_ipCmd();
+                $wol->setName(__('WoL', __FILE__));
+            }
+            $wol->setEqLogic_id($this->getId());
+            $wol->setLogicalId('wol');
+            $wol->setType('action');
+            $wol->setSubType('other');
+            $wol->save();
+        } else {
+            if (is_object($wol)) {
+                    $wol->remove();
+            }
+            ajax::success(utils::o2a($this)); // Ynats
+        }
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
@@ -399,6 +417,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function cmdRefresh($eqlogic){
+
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
         $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
@@ -475,11 +494,7 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-    
-    public static function valuesEquip($_id){ // Ynats
-        
-    }
-    
+
     public static function excludeSubReseau($_string){
         if($_string == "lo"){ return FALSE; }
         elseif(preg_match('/(tun)[0-9]*/', $_string)){ return FALSE; }
@@ -606,9 +621,18 @@ class scan_ip extends eqLogic {
 
         $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
         if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
-
-        $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this);
-        $replace["#update_date#"] = self::getCommande('update_date', $this);
+        
+        if(!empty(self::getCommande('last_ip_v4', $this))){
+            $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this);
+        } else {
+            $replace["#last_ip_v4#"] = "...";
+        }
+        
+        if(!empty(self::getCommande('update_date', $this))){
+            $replace["#update_date#"] = self::getCommande('update_date', $this);
+        } else {
+            $replace["#update_date#"] = "...";
+        }
 
         $replace["#mac#"] = $this->getConfiguration("adress_mac");
 
@@ -623,7 +647,13 @@ class scan_ip extends eqLogic {
         } else {
             $replace["#etat_last_ip#"] = '';
         }
-
+        
+        $wol = $this->getCmd(null,'wol');
+        $replace['#cmdWol#'] = (is_object($wol)) ? $wol->getId() : '';
+        
+        if($this->getConfiguration("enable_wol") == 0){ $replace['#enableWol#'] = "display:none;"; }
+        else { $replace['#enableWol#'] = ""; }
+        
         return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
         
     }
@@ -989,7 +1019,6 @@ class scan_ip extends eqLogic {
         } else {
             return $return;
         }
-        
     }
     
     public static function bridges_pluginExists($_name) {
@@ -1014,7 +1043,25 @@ class scan_ip extends eqLogic {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # BRIDGES PLUG AND PLAY
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+  
+    public static function wakeOnLan($_mac){
+        log::add('scan_ip', 'debug', 'wakeOnLan :. wakeonlan '.$_mac);
+        shell_exec("sudo wakeonlan ".$_mac);
+        log::add('scan_ip', 'debug', 'etherwake :. etherwake '.$_mac);
+        shell_exec("sudo /usr/sbin/etherwake ".$_mac);
+    }
+    
+    public static function wakeOnLanByCmd($_eqlogic){ 
+        log::add('scan_ip', 'debug', 'wakeOnLanByCmd :. Lancement');
+        $mac = $_eqlogic->getConfiguration("adress_mac");
+        if(preg_match(self::getRegex("mac"), $mac)){
+            self::wakeOnLan($mac);
+        } else {
+            
+        }
+    }
+  
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # INSTALL & DEPENDENCY
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -1029,11 +1076,15 @@ class scan_ip extends eqLogic {
         $return['state'] = 'nok';
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
-        
+
         if (self::arpVersion() != "arp-scan not found") {
-            $return['state'] = 'ok';
+            if (exec('which etherwake | wc -l') == 1 || exec('which wakeonlan | wc -l') == 1) {
+                if (exec(" dpkg --get-selections | grep -v deinstall | grep -E 'wakeonlan|etherwake' | wc -l") == 2) {
+                    $return['state'] = 'ok';
+                }
+            }
         }
-        
+
         return $return;
     }
 
@@ -1050,17 +1101,17 @@ class scan_ip extends eqLogic {
 # DEAMON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
     
-    public static function deamon_info() {
-        
-    }   
-
-    public static function deamon_start() {
-        
-    }  
-
-    public static function deamon_stop() {
-
-    }
+//    public static function deamon_info() {
+//        
+//    }   
+//
+//    public static function deamon_start() {
+//        
+//    }  
+//
+//    public static function deamon_stop() {
+//
+//    }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # DEAMON
@@ -1160,11 +1211,17 @@ class scan_ipCmd extends cmd {
     public function execute($_options = array()) {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'execute :. Lancement');
+        
         $eqlogic = $this->getEqLogic();
         switch ($this->getLogicalId()) { //vérifie le logicalid de la commande 			
             case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
                 scan_ip::cmdRefresh($eqlogic);
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+                break;
+            case 'wol': 
+                log::add('scan_ip', 'debug', 'execute :. Lancement de la commande wol : #ID#' . $eqlogic->getId());
+                scan_ip::wakeOnLanByCmd($eqlogic);
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
         }

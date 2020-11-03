@@ -123,7 +123,7 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                         </div>
             
 <?php
-                        scan_ip::vueSubTitle("Associer une adresse MAC");
+                        scan_ip::vueSubTitle("{{Associer une adresse MAC}}");
 ?>
                         
                         <div class="form-group">
@@ -152,7 +152,7 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                         </div>
                         
 <?php
-                        scan_ip::vueSubTitle("On Line ou Off line ?");
+                        scan_ip::vueSubTitle("{{On Line ou Off line ?}}");
 ?>                        
 
                         <div class="form-group">
@@ -177,6 +177,20 @@ $nbAssociate = scan_ip::bridges_getElements()["nb"];
                                     <option value="9">{{9 minutes}}</option>
                                     <option value="10">{{10 minutes}}</option>
                                     <option value="15">{{15 minutes}}</option>
+                                </select> 
+                            </div>
+                        </div>
+                        
+<?php
+                        scan_ip::vueSubTitle("{{Réveiller votre équipement à distance ?}}");
+?> 
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement soit compatible et/ou que l'option ait bien été activé pour que cela fonctionne}}"></i></sup>
+                            </label>
+                            <div class="col-lg-5">
+                                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="enable_wol">
+                                    <option value="0">{{Désactiver la commande WoL sur cet équipement}}</option>
+                                    <option value="1">{{Activer la commande WoL sur cet équipement}}</option>
                                 </select> 
                             </div>
                         </div>
