@@ -67,13 +67,13 @@ scan_ip::cleanAfterUpdate();
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs($paquetBridges, 1); ?>
+                <?php echo scan_ip::bridges_printPlugs($paquetBridges, 0); ?>
             </div>
             <div class="col-lg-2">
                 <?php echo scan_ip::bridges_printPlugs($paquetBridges, $paquetBridges); ?>
             </div>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs($paquetBridges, ($paquetBridges*2)-1); ?>
+                <?php echo scan_ip::bridges_printPlugs($paquetBridges, ($paquetBridges*2)); ?>
             </div>
         </div>
     </fieldset>

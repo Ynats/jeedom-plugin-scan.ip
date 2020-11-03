@@ -39,7 +39,7 @@ class scan_ip extends eqLogic {
                                         "JeeMySensors",
                                         "JeeOrangeTv",  
                                         "Monitoring", 
-                                        //"Nut_free",
+                                        "Nut_free",
                                         "broadlink",
                                         "camera", 
                                         "espeasy",
