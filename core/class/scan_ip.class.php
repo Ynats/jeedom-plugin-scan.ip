@@ -455,8 +455,13 @@ class scan_ip extends eqLogic {
         // Mise à jour de l'élément associé
         ///////////////////////////////////////////
         
-        $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
-        $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+        if(!empty($device["time"])) {
+            $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
+            $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+        } else {
+            $eqlogic->checkAndUpdateCmd('update_time', NULL);
+            $eqlogic->checkAndUpdateCmd('update_date', NULL);
+        }
         
         $eqlogic->toHtml('dashboard');
         $eqlogic->refreshWidget();
