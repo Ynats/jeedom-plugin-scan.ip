@@ -177,9 +177,9 @@ class scan_ip extends eqLogic {
             $wol->save();
         } else {
             if (is_object($wol)) {
-                    $wol->remove();
-            }
-            ajax::success(utils::o2a($this)); // Ynats
+                $wol->remove();
+                ajax::success(utils::o2a($this));
+            } 
         }
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -225,11 +225,11 @@ class scan_ip extends eqLogic {
 
     /*     * **********************Getteur Setteur*************************** */
     
-    public static function getSubReseauEnable() {
+    public static function getSubReseauEnable($_ipRoute = NULL) {
         log::add('scan_ip', 'debug', 'getSubReseauEnable :. Lancement');
         
         $a = $return["subReseauEnable"] = 0;
-        foreach (self::scanSubReseau() as $sub) { 
+        foreach (self::scanSubReseau($_ipRoute) as $sub) { 
             $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
             $return["subReseau"][$a]["name"] = $sub["name"];
             $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $return["subReseauEnable"];
@@ -245,24 +245,32 @@ class scan_ip extends eqLogic {
     public static function syncScanIp(){
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
+        
         self::scanReseau();
-        $eqLogics = eqLogic::byType('scan_ip');
+        $eqLogics = eqLogic::byType('scan_ip'); // Ynats
         foreach ($eqLogics as $scan_ip) {
             if ($scan_ip->getIsEnable() == 1) {
                 log::add('scan_ip', 'debug', 'syncScanIp :. cmdRefresh('.$scan_ip->getId().')');
                 self::cmdRefresh($scan_ip);
             }
         }  
+        
+        log::add('scan_ip', 'debug', 'syncScanIp :. Fin du scan du réseau');
+        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
     
     public static function scanReseau(){
+        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
         log::add('scan_ip', 'debug', 'scanReseau :. Lancement');
         
-        $subReseau = self::getSubReseauEnable();
         $ipRoute = self::getIpRoute();
-        $infoJeedom = self::getInfoJeedom($ipRoute);
+        $subReseau = self::getSubReseauEnable($ipRoute);
         
-        if($subReseau["subReseauEnable"] > 0){
+        if($subReseau["subReseauEnable"] > 0) {
+        
+            $infoJeedom = self::getInfoJeedom($ipRoute);
+
+            
             $new = array();
             foreach ($subReseau["subReseau"] as $sub) { 
                 if($sub["enable"] == 1){
@@ -272,18 +280,15 @@ class scan_ip extends eqLogic {
             }
             if(count($new) == 0){
                 log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
-                log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
-                log::add('scan_ip', 'debug', serialize($new));
-                log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
                 exit();
             } 
             else {
-            
+
                 $old = self::getFileSerialize();
 
                 if(empty($old) OR count($old) == 0){ $now = $new; } 
                 else { $now = self::arrayCompose($old, $new); } 
-                
+
                 $now = self::cleanArraySerialize($now);
                 self::createFileSerialize($now);
 
@@ -300,22 +305,19 @@ class scan_ip extends eqLogic {
 
                 ksort($now["sort"]);
             }
-        }
-        else {
-            log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
-            log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
-            log::add('scan_ip', 'debug', serialize($subReseau["subReseau"]));
-            log::add('scan_ip', 'debug', "-----------------------------------------------------------------------------------------------------");
-        }
+            
 
-        $now["jeedom"] = $infoJeedom; 
-        $now["infos"]["version_arp"] = self::arpVersion();
-        $now["infos"]["time"] = time();
-        $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
+            $now["jeedom"] = $infoJeedom; 
+            $now["infos"]["version_arp"] = self::arpVersion();
+            $now["infos"]["time"] = time();
+            $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
+
+            self::recordInJson(json_encode($now));
         
-        self::recordInJson(json_encode($now));
+        }
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
+        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
     }
     
     public static function cleanArraySerialize($_array){
@@ -372,8 +374,8 @@ class scan_ip extends eqLogic {
                 return $array;
             } 
             elseif($_arrayNew != NULL){  
-                $return = array_push($_arrayOld, $_arrayNew);  
-                return array_unique($return);
+                array_push($_arrayOld, $_arrayNew);  
+                return array_unique($_arrayOld);
             }
             else {   
                 return $_arrayOld;
@@ -407,6 +409,7 @@ class scan_ip extends eqLogic {
             $return[$scan_ip->getConfiguration("adress_mac")]["enable"] = $scan_ip->getIsEnable();
             $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", self::$_defaut_offline_time);
         }
+        log::add('scan_ip', 'debug', 'getAlleqLogics :. "' . $scan_ip->name .'"');
         return $return;
     }
     
@@ -422,14 +425,12 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"));
         $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
-        
-        
+              
         if(self::isOffline($offline_time, $device["time"]) == 0){
             $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
             $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
             if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
-            $eqlogic->checkAndUpdateCmd('on_line', 1);
-            
+            $eqlogic->checkAndUpdateCmd('on_line', 1); 
         } else {
             $eqlogic->checkAndUpdateCmd('on_line', 0);
             $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
@@ -439,11 +440,32 @@ class scan_ip extends eqLogic {
         ///////////////////////////////////////////
         // Mise à jour de l'élément associé
         
-        $bridge = self::bridges_getElements();
+        self::majElementsAssocies($eqlogic, $device);
+        
+        // Mise à jour de l'élément associé
+        ///////////////////////////////////////////
+        
+        if(!empty($device["time"])) {
+            $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
+            $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+        } else {
+            $eqlogic->checkAndUpdateCmd('update_time', NULL);
+            $eqlogic->checkAndUpdateCmd('update_date', NULL);
+        }
+        
+        $eqlogic->toHtml('dashboard');
+        $eqlogic->refreshWidget();
+    }
+    
+    public static function majElementsAssocies($eqlogic, $device){
+        log::add('scan_ip', 'debug', 'majElementsAssocies :. Lancement');
         $deamons = NULL;
         
-        if($bridge != FALSE){
-            for ($index = 1; $index <= $bridge["nb"]; $index++) {
+        $bridges = self::bridges_getElements();
+        
+        if($bridges != FALSE){ 
+            for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
+                
                 $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
                 
                 if($plug_element_plugin != ""){
@@ -464,27 +486,13 @@ class scan_ip extends eqLogic {
                         log::add('scan_ip', 'debug', 'cmdRefresh :. Suppression du bridge car le plugin "'.$testBridge[0].'" n\'est pas installé');
                         $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
                         $eqlogic->save();
-                    }
-                    
+                    } 
                 }
-            }
+                
+            }  
             
             self::bridges_startDeamons($deamons);
         }
-        
-        // Mise à jour de l'élément associé
-        ///////////////////////////////////////////
-        
-        if(!empty($device["time"])) {
-            $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
-            $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
-        } else {
-            $eqlogic->checkAndUpdateCmd('update_time', NULL);
-            $eqlogic->checkAndUpdateCmd('update_date', NULL);
-        }
-        
-        $eqlogic->toHtml('dashboard');
-        $eqlogic->refreshWidget();
     }
     
     public static function getCommande($_ComName, $_this){
@@ -519,6 +527,7 @@ class scan_ip extends eqLogic {
     }
     
     public static function printSelectOptionAdressMac($_selected = NULL){
+        log::add('scan_ip', 'debug', 'printSelectOptionAdressMac :. Lancement');
         $record = self::getAlleqLogics();
         $list = (array) self::getJsonTampon();
         $print = "";
@@ -554,7 +563,7 @@ class scan_ip extends eqLogic {
             $bridge = self::bridges_getElements();
             
             if($bridge != FALSE){
-                for ($index = 1; $index <= $bridge["nb"]; $index++) {
+                for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
                     if(!empty($scan_ip->getConfiguration("plug_element_plugin_".$index))){
                         $split = explode("|", $scan_ip->getConfiguration("plug_element_plugin_".$index));
                         if(!empty($allEquipementsPlugs[$split[1]]["name"])){
@@ -675,24 +684,28 @@ class scan_ip extends eqLogic {
         
         foreach ($output as $scanLine) {
             if (preg_match(self::getRegex("ip_v4"), $scanLine)) { 
+                
                     preg_match(self::getRegex("ip_v4"), $scanLine, $sortIp); 
                     preg_match(self::getRegex("mac"), $scanLine, $sortMac);
                     
                     $mac = strtoupper($sortMac[0]);
                     
-                    $equipement = preg_replace(self::getRegex("ip_v4"), "", $scanLine);
-                    $equipement = preg_replace(self::getRegex("mac"), "", $equipement);
-                    $equipement = preg_replace(self::getRegex("()"), "", $equipement);
-                    $equipement = trim($equipement);
-
-                    if($equipement == ""){ $return[$mac]["equipement"] = "..."; }
-                    else { $return[$mac]["equipement"] = $equipement; }
-
-                $return[$mac]["ip_v4"] = $sortIp[0];
-                $return[$mac]["time"] = $time;
+                    $return[$mac]["equipement"] = self::getEquipement($scanLine);
+                    $return[$mac]["ip_v4"] = $sortIp[0];
+                    $return[$mac]["time"] = $time;
             }
         } 
+        
         return $return;
+    }
+    
+    public static function getEquipement($_scanLine){
+        $equipement = preg_replace(self::getRegex("ip_v4"), "", $_scanLine);
+        $equipement = preg_replace(self::getRegex("mac"), "", $equipement);
+        $equipement = preg_replace(self::getRegex("()"), "", $equipement);
+        $equipement = trim($equipement);
+        if($equipement == ""){ return "..."; }
+        else { return $equipement; }
     }
     
     public static function arpVersion(){
@@ -774,14 +787,12 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     
     public static function recordInJson($_json) {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'recordInJson :.  Lancement');
         
         self::prepareJsonFolder();
         self::createJsonFile($_json);
 
         log::add('scan_ip', 'debug', 'recordInJson :. Enregistrement du Json : ' . self::$_jsonTampon);
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
     
     public static function getJsonTampon() {
@@ -818,10 +829,15 @@ class scan_ip extends eqLogic {
 # GESTION DES SOUS-RESEAUX
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
     
-    public static function scanSubReseau(){ 
+    public static function scanSubReseau($_ipRoute = NULL){ 
         log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
         
-        $ipRoute = self::getIpRoute();
+        if($_ipRoute != NULL){
+            $ipRoute = $_ipRoute;
+        } else {
+            $ipRoute = self::getIpRoute();
+        }
+        
         exec('sudo ip a', $list);
         $i = 0;
         
@@ -955,14 +971,13 @@ class scan_ip extends eqLogic {
     public static function bridges_printOptionEquiements(){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
-        $nb = self::bridges_getElements()["nb"];
         
         if($selection != FALSE){
             for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement('.$nb.')" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
+                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement('. self::$_defaut_bridges_by_equipement .')" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
                 echo '<option value="">Sélectionnez un élément</option>';
                 echo $selection;
                 echo '</select>';
@@ -1003,11 +1018,10 @@ class scan_ip extends eqLogic {
     
     public static function bridges_getAllAssignEquipement($_ouput = NULL){ 
         log::add('scan_ip', 'debug', 'bridges_getAllAssignEquipement :. Lancement');
-        $nb = self::bridges_getElements()["nb"];
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) { 
             $mac = $scan_ip->getConfiguration("adress_mac");
-            for($i = 1; $i <= $nb; $i++){ 
+            for($i = 1; $i <= self::$_defaut_bridges_by_equipement; $i++){ 
                 $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i);
                 if(!empty($plug)) {
                     $return[$mac][] = $plug;

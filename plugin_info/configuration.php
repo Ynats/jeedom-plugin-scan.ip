@@ -103,8 +103,4 @@ function recordBtMac() {
     });
 }
 
-$('#cron_pass').change(function(){
-    verifCadence('change');
-});
-
 </script>

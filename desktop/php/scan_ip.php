@@ -154,7 +154,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 ?>                        
 
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est condeillé d'avoir au moins 2 raffraichissements minimum'}}"></i></sup></label>
+                            <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est conseillé d'avoir au moins 2 raffraichissements minimum'}}"></i></sup></label>
                             <div class="col-lg-5">
                                 <input type="text" id="cronPass" data-cron="" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
