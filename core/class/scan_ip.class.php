@@ -44,6 +44,7 @@ class scan_ip extends eqLogic {
                                         "broadlink",
                                         "camera", 
                                         "espeasy",
+                                        "ewejee",
                                         "fullyKiosK",
                                         "globalcache",
                                         "googlecast", 
