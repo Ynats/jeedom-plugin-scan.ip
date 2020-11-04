@@ -6,8 +6,6 @@ $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
-//$nbAssociate = scan_ip::bridges_getElements()["nb"];
-
 ?>
 
 <div class="row row-overflow">
