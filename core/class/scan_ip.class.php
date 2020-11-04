@@ -32,6 +32,7 @@ class scan_ip extends eqLogic {
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_defaut_cron_pass = 1;
     public static $_defaut_offline_time = 4;
+    public static $_defaut_bridges_by_equipement = 10;
     
     public static $_allBridges = array( "Abeille",
                                         "JPI", 
@@ -951,13 +952,13 @@ class scan_ip extends eqLogic {
         
     }
     
-    public static function bridges_printOptionEquiements($_nb = 10){
+    public static function bridges_printOptionEquiements(){
         
         $selection = scan_ip::bridges_printSelectOptionEquiements();
         $nb = self::bridges_getElements()["nb"];
         
         if($selection != FALSE){
-            for ($index = 1; $index <= $_nb; $index++) {
+            for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
