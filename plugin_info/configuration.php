@@ -22,7 +22,7 @@ if (!isConnect()) {
     die();
 }
 // Brigde affachés par paquet de ...
-$paquetBridges = ceil(count(scan_ip::$_allBridges)/3);
+$paquetBridges = ceil(count(scan_ip::getJsonBridges())/3);
 
 scan_ip::cleanAfterUpdate();
 
@@ -58,7 +58,7 @@ scan_ip::cleanAfterUpdate();
         </div>
         
     <?php
-        scan_ip::vueSubTitle("{{Plage(s) à scanner}}", "config");
+        scan_ip::vueSubTitle("{{Spécifier des plages à scanner (avancé)}}", "config");
         
         echo scan_ip::printInputSubConfig(); 
     

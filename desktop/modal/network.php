@@ -19,10 +19,10 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-$ipsReseau = (array) scan_ip::getJsonTampon();
+$ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
 if (empty($ipsReseau)) {
     scan_ip::syncScanIp();
-    $ipsReseau = (array) scan_ip::getJsonTampon();
+    $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
 }
 $savingMac = scan_ip::getAlleqLogics();
 
@@ -63,7 +63,7 @@ $list = 1;
 <div class="col-md-9">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
-            <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]->date ?>)</h3>
+            <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]["date"] ?>)</h3>
         </div>
         <div class="panel-body">
             <table style="width: 100%; margin: -5px -5px 10px 5px;">
@@ -81,22 +81,22 @@ $list = 1;
 <?php         
                     foreach ($ipsReseau["sort"] as $device) {
  
-                        if(empty($savingMac[$device->mac]["offline_time"])){
+                        if(empty($savingMac[$device["mac"]]["offline_time"])){
                             $offline_time = NULL;
                         } else {
-                            $offline_time = $savingMac[$device->mac]["offline_time"];
+                            $offline_time = $savingMac[$device["mac"]]["offline_time"];
                         }
                         
-                        if (scan_ip::isOffline($offline_time, $device->time) == 0) {
+                        if (scan_ip::isOffline($offline_time, $device["time"]) == 0) {
                             
-                            if (isset($savingMac[$device->mac]["name"])) {
-                                $name = $savingMac[$device->mac]["name"];
+                            if (isset($savingMac[$device["mac"]]["name"])) {
+                                $name = $savingMac[$device["mac"]]["name"];
                             } else {
-                                $name = "| ". $device->equipement;
+                                $name = "| ". $device["equipement"];
                             }
 
-                            if (isset($savingMac[$device->mac]["enable"])) {
-                                if ($savingMac[$device->mac]["enable"] == 1) {
+                            if (isset($savingMac[$device["mac"]]["enable"])) {
+                                if ($savingMac[$device["mac"]]["enable"] == 1) {
                                     $classPresent = "macPresentActif";
                                     $textPresent = "Enregistré";
                                     $classSuivi = "spanScanIp EnableScanIp";
@@ -114,10 +114,10 @@ $list = 1;
                             echo '<tr>'
                             . '<td style="text-align:center;" class="' . $classPresent . '">' . $list++ . '</td>'
                             . '<td class="' . $classPresent . '"><span class="' . $classSuivi . '">' . $textPresent . '</span></td>'
-                            . '<td class="scanTd ' . $classPresent . '">' . $device->mac . '</td>'
-                            . '<td class="scanTd ' . $classPresent . '">' . $device->ip_v4 . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '">' . $device["mac"] . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '">' . $device["ip_v4"] . '</td>'
                             . '<td class="scanTd ' . $classPresent . '" style="text-overflow: ellipsis;">' . $name . '</td>'
-                            . '<td class="scanTd ' . $classPresent . '">' . date("d/m/Y H:i:s", $device->time) . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '">' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
                             . '</tr>';
                         }
                     }
@@ -134,24 +134,24 @@ $list = 1;
             <h3 class="panel-title">Votre Jeedom</h3>
         </div>
         <div class="panel-body">
-        <?php if($ipsReseau["jeedom"]->name != "") { ?>
+        <?php if($ipsReseau["jeedom"]["name"] != "") { ?>
             <div>
                 <label class="col-sm-5 control-label">Nom : </label>
-                <div><?php echo $ipsReseau["jeedom"]->name ?></div> 
+                <div><?php echo $ipsReseau["jeedom"]["name"] ?></div> 
             </div>
         <?php } ?>
             <div>
                 <label class="col-sm-5 control-label">ip : </label>
-                <div><?php echo $ipsReseau["jeedom"]->ip_v4 ?></div> 
+                <div><?php echo $ipsReseau["jeedom"]["ip_v4"] ?></div> 
             </div>
             <div>
                 <label class="col-sm-5 control-label">Adresse MAC : </label>
-                <div><?php echo $ipsReseau["jeedom"]->mac ?></div>
+                <div><?php echo $ipsReseau["jeedom"]["mac"]?></div>
             </div>
-            <?php if (gethostbyaddr($ipsReseau["jeedom"]->ip_v4) != $ipsReseau["jeedom"]->ip_v4) { ?>            
+            <?php if(gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) != $ipsReseau["jeedom"]["ip_v4"]) { ?>            
                 <div>
                     <label class="col-sm-5 control-label">Host Name : </label>
-                    <div><?php echo gethostbyaddr($ipsReseau["jeedom"]->ip_v4) ?></div>
+                    <div><?php echo gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) ?></div>
                 </div>
             <?php } ?> 
         </div>
@@ -167,11 +167,11 @@ $list = 1;
         <div class="panel-body">
             <div>
                 <label class="col-sm-5 control-label">ip : </label>
-                <div><?php echo $ipsReseau["route"]->ip_v4 ?></div>
+                <div><?php echo $ipsReseau["route"]["ip_v4"] ?></div>
             </div>
             <div>
                 <label class="col-sm-5 control-label">Adresse MAC : </label>
-                <div><?php echo $ipsReseau["route"]->mac ?></div>
+                <div><?php echo $ipsReseau["route"]["mac"] ?></div>
             </div>
         </div>
         <br />

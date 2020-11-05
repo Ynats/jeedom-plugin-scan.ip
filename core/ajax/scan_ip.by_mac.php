@@ -24,7 +24,7 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    echo json_encode(scan_ip::getJsonTampon()->byMac);
+    echo json_encode(scan_ip::getJson(scan_ip::$_jsonMapping)["byMac"]);
     
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

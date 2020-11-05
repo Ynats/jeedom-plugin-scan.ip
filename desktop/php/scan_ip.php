@@ -217,14 +217,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
     </div>
 </div>
 <script>
-    
-    
-console.log($('.eqLogicAttr[data-l2key=offline_time]').value());
 
+    if(!$("#offline_time option:selected").length){
+        $("#offline_time option[value='4']").attr('selected', 'selected');
+    }
 
-if(!$("#offline_time option:selected").length){
-    $("#offline_time option[value='4']").attr('selected', 'selected');
-}
 </script>
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>

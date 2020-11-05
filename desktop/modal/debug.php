@@ -69,17 +69,32 @@ if ($subReseau["subReseauEnable"] > 0) {
             <?php
         }
     }
-}
+} 
+else {
 ?>
-
+            <div class="col-md-12">
+                <div class="panel panel-primary" id="div_functionalityPanel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"># sudo arp-scan --localnet --ouifile=ieee-oui.txt</h3>
+                    </div>
+                    <div class="panel-body">
+                        <?php
+                            scan_ip::printShell("sudo arp-scan --localnet --ouifile=".scan_ip::$_file_oui);
+                        ?>
+                    </div>
+                </div>
+            </div>
+<?php 
+} 
+?>
 <div class="col-md-12">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
-            <h3 class="panel-title"># Serialize</h3>
+            <h3 class="panel-title"># Mapping</h3>
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printArray(scan_ip::getFileSerialize());
+                scan_ip::printArray(scan_ip::getJson(scan_ip::$_jsonEquipement));
             ?>
         </div>
     </div>
