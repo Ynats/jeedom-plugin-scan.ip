@@ -30,6 +30,7 @@ class scan_ip extends eqLogic {
     public static $_serializeTampon = __DIR__ . "/../../../../plugins/scan_ip/core/json/serialize.temp";
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
+    public static $_file_lock =  __DIR__ . "/../../../../plugins/scan_ip/resources/lock";
     public static $_defaut_cron_pass = 1;
     public static $_defaut_offline_time = 4;
     public static $_defaut_bridges_by_equipement = 10;
@@ -168,7 +169,7 @@ class scan_ip extends eqLogic {
         $refresh->save();
        
         $wol = $this->getCmd(null, 'wol');
-        if($this->getConfiguration("enable_wol") == 1){  // Ynats
+        if($this->getConfiguration("enable_wol") == 1){ 
             if (!is_object($wol)) {
                 $wol = new scan_ipCmd();
                 $wol->setName(__('WoL', __FILE__));
@@ -250,7 +251,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
         
         self::scanReseau();
-        $eqLogics = eqLogic::byType('scan_ip'); // Ynats
+        $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {
             if ($scan_ip->getIsEnable() == 1) {
                 log::add('scan_ip', 'debug', 'syncScanIp :. cmdRefresh('.$scan_ip->getId().')');
@@ -749,24 +750,39 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public static function cron() {
-
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'CRON :. START');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            
+  
         $cronConfig = config::byKey('cron_pass', 'scan_ip', 1);
-        log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
+
         
         if((date('i') % $cronConfig) == 0) {
-          log::add('scan_ip', 'debug', 'cron :. Lancement');
-          self::syncScanIp();
+            
+            if(self::lockProcess() == TRUE){
+                
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+                log::add('scan_ip', 'debug', 'CRON :. START');
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+                
+                log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
+                
+                self::syncScanIp();
+                self::unlockProcess();
+                
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+                log::add('scan_ip', 'debug', 'CRON :. FIN');
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            } else {
+                log::add('scan_ip', 'debug', '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                log::add('scan_ip', 'debug', '!! cron :. Annulé parce qu\'il y a déjà un processus en cours');
+                log::add('scan_ip', 'debug', '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            } 
+            
         } else {
-            log::add('scan_ip', 'debug', 'cron :. Annulé');
+            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            log::add('scan_ip', 'debug', 'cron :. Annulé :. Configuration Minute : '. $cronConfig);
+            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         }
         
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'CRON :. FIN');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+
         
     }
     
@@ -788,6 +804,29 @@ class scan_ip extends eqLogic {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DU JSON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    
+    public static function lockProcess(){ // Ynats
+        if(file_exists(self::$_file_lock)) {
+            if((time() - filemtime (self::$_file_lock)) > 180){
+                self::unlockProcess();
+            } else {
+               return FALSE; 
+            }
+        } else {
+            fopen(self::$_file_lock, "w");
+            chmod(self::$_file_lock, 0777);
+            return TRUE;
+        }
+    }
+    
+    public static function unlockProcess(){
+        if(file_exists(self::$_file_lock)) {
+            unlink(self::$_file_lock);
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
     
     public static function recordInJson($_json) {
         log::add('scan_ip', 'debug', 'recordInJson :.  Lancement');

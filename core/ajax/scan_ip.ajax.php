@@ -27,8 +27,14 @@ try {
     ajax::init();
     
     if (init('action') == 'syncEqLogicWithOpenScanId') {
-        scan_ip::syncScanIp();
+        
+        if(scan_ip::lockProcess() == TRUE){
+            scan_ip::syncScanIp();
+            scan_ip::unlockProcess();  
+        }
+        
         ajax::success();
+        
     }
     
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
