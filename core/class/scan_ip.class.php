@@ -162,7 +162,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'postSave :. Refresh Command : ' . $this->getId());
                 
         // Mise à jour des données
-        self::cmdRefresh($this);
+        self::cmdRefresh($this, self::getJson(self::$_jsonMapping));
 
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
@@ -266,9 +266,14 @@ class scan_ip extends eqLogic {
                     $now["route"]["ip_v4"] = $scanLine["ip_v4"];
                     $now["route"]["mac"] = $mac;
                 } else {
-                    $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array("ip_v4" => $scanLine["ip_v4"], "mac" => $mac, "time" => $scanLine["time"], "equipement" => $scanLine["equipement"]);
+                    $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array(
+                            "ip_v4" => $scanLine["ip_v4"], 
+                            "mac" => $mac, 
+                            "time" => $scanLine["time"], 
+                            "equipement" => $scanLine["equipement"]
+                    );
                     $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
-                    $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);         
+                    $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);   
                 }
             }
 
@@ -284,6 +289,14 @@ class scan_ip extends eqLogic {
         
         log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
         log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
+    }
+    
+    public static function getCleanForSortTable($_string){ // Ynats en cours
+        if (preg_match(self::getRegex("ip_v4"), $_string)) { 
+            return str_replace(".", "", $_string);
+        } else {
+            return strtolower($_string);
+        }
     }
     
     public static function cleanArrayEquipement($_array){

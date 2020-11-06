@@ -29,7 +29,10 @@ $list = 1;
     .scanTd{
         padding : 3px 0 !important;
     }
-   
+    .scanHender{
+        cursor: pointer !important;
+        width: 100%;
+    }
 </style>
 
 <div class="col-md-12">
@@ -38,24 +41,24 @@ $list = 1;
             <h3 class="panel-title">Etat de tous les équipements enregistrés</h3>
         </div>
         <div class="panel-body">
-            <table style="width: 100%; margin: -5px -5px 10px 5px;">
+            <table style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_equipement">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
-                        <th style="text-align: center; width:20px;">#</th>
-                        <th style="width:40px;"></th>
-                        <th style="width:250px;" class="scanTd">{{Nom}}</th>
-                        <th style="width:150px;" class="scanTd">{{Adresse MAC}}</th>
-                        <th style="width:125px;">{{ip}}</th>
-                        <th style="width:125px;">{{Dernière ip}}</th>
-                        <th style="width:170px;">{{Mis à jour}}</th>
-                        <th style="width:150px;">{{Statut}}</th>
+                        <th data-sort="int" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
+                        <th data-sort="string" style="width:40px;"></th>
+                        <th data-sort="string" style="width:250px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Nom}}</span></th>
+                        <th data-sort="string" style="width:150px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Adresse MAC}}</span></th>
+                        <th data-sort="int" style="width:125px;"><span class="scanHender"><b class="caret"></b> {{ip}}</span></th>
+                        <th data-sort="int" style="width:125px;"><span class="scanHender"><b class="caret"></b> {{Dernière ip}}</span></th>
+                        <th data-sort="string" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Mis à jour}}</span></th>
+                        <th data-sort="string" style="width:150px;"><span class="scanHender"><b class="caret"></b> {{Statut}}</span></th>
                         <th>{{Elément plugin associé}}</th>
                     </tr>
                 </thead>
                 <tbody>
 <?php
                     foreach ($allEquipements as $equipement) {
-                        
+           
                         if($equipement["on_line"] == 0 AND $equipement["ip_v4"] == ""){ 
                             $color = "red"; 
                             $equipement["ip_v4"] = "..."; 
@@ -73,17 +76,23 @@ $list = 1;
                             $statutColor = "color:orange";
                         } else { $style_last = ""; }
                         
+                        $ipSort = scan_ip::getCleanForSortTable($equipement["ip_v4"]);
+                        $last_ipSort = scan_ip::getCleanForSortTable($equipement["last_ip_v4"]);
+                        $statutSort = scan_ip::getCleanForSortTable($statut);
+                        $plug_element_pluginSort = scan_ip::getCleanForSortTable($equipement["plug_element_plugin"]);
+                        
                         echo '<tr>'
                             . '<td style="text-align:center;" class="">' . $list++ . '</td>'
                             . '<td style="padding-left:10px;">' . scan_ip::getCycle("15px", $color) . '</td>'
                             . '<td class="scanTd">' . $equipement["link"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
-                            . '<td class="scanTd">' . $equipement["ip_v4"] . '</td>'
-                            . '<td class="scanTd" style="'.$style_last.'">' . $equipement["last_ip_v4"] . '</td>'
+                            . '<td class="scanTd"><span style="display:none;">' . $ipSort . '</span>' . $equipement["ip_v4"] . '</td>'
+                            . '<td class="scanTd" style="'.$style_last.'"><span style="display:none;">' . $last_ipSort . '</span>' . $equipement["last_ip_v4"] . '</td>'
                             . '<td class="scanTd">' . $equipement["update_date"] . '</td>'
-                            . '<td class="scanTd" style="'.$statutColor.'">' . $statut . '</td>'
-                            . '<td class="scanTd"">' . $equipement["plug_element_plugin"] . '</td>'
+                            . '<td class="scanTd" style="'.$statutColor.'"><span style="display:none;">' . $statutSort . '</span>' . $statut . '</td>'
+                            . '<td class="scanTd""><span style="display:none;">' . $plug_element_pluginSort . '</span>' . $equipement["plug_element_plugin"] . '</td>'
                             . '</tr>';
+                        
                     }
 ?>
                 </tbody>
@@ -92,5 +101,10 @@ $list = 1;
     </div>
 </div>
 
+<script>
+    $(document).ready(function($) { 
+     $("#scan_ip_equipement").stupidtable();
+    }); 
+</script>  
 
-<?php include_file('core', 'plugin.template', 'js'); ?>
+<?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>

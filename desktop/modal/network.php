@@ -24,6 +24,7 @@ if (empty($ipsReseau)) {
     scan_ip::syncScanIp();
     $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
 }
+
 $savingMac = scan_ip::getAlleqLogics();
 
 $list = 1;
@@ -33,11 +34,15 @@ $list = 1;
     .scanTd{
         padding : 3px 0 3px 15px !important;
     }
+    .scanHender{
+        cursor: pointer !important;
+        width: 100%;
+    }
     .macPresentActif{
         color: green;
     }
     .macPresentInactif{
-        color: red;
+        color: #FF4500;
     }
     .macAbsent{
         color: grey;
@@ -50,14 +55,15 @@ $list = 1;
         text-align: center;
     }
     .EnableScanIp{
-        background-color: green;
+        color: green;
     }
     .DisableScanIp{
-        background-color: red;
+        color: #FF4500;
     }
     .NoneScanIp{
-        background-color: #A9A9A9;
+        color: grey;
     }
+    
 </style>
 
 <div class="col-md-9">
@@ -66,15 +72,15 @@ $list = 1;
             <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]["date"] ?>)</h3>
         </div>
         <div class="panel-body">
-            <table style="width: 100%; margin: -5px -5px 10px 5px;">
+            <table style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_network">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
-                        <th style="text-align: center; width:30px;">#</th>
-                        <th style="text-align: center;" class="scanTd">{{Equipements}}</th>
-                        <th style="width:130px;" class="scanTd">{{Adresse MAC}}</th>
-                        <th class="scanTd">{{ip}}</th>
-                        <th class="scanTd">{{Nom}}</th>
-                        <th class="scanTd"></th>
+                        <th data-sort="int" style="cursor: pointer; text-align: center;"><span class="scanHender"><b class="caret"></b></span></th>
+                        <th data-sort="int" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
+                        <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Adresse MAC}}</span></th>
+                        <th data-sort="int" class="scanTd"><span class="scanHender"><b class="caret"></b> {{ip}}</span></th>
+                        <th data-sort="string" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Nom}}</span></th>
+                        <th data-sort="string" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Date de mise à jour}}</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,32 +97,42 @@ $list = 1;
                             
                             if (isset($savingMac[$device["mac"]]["name"])) {
                                 $name = $savingMac[$device["mac"]]["name"];
+                                $nameSort = scan_ip::getCleanForSortTable($savingMac[$device["mac"]]["name"]);
                             } else {
                                 $name = "| ". $device["equipement"];
+                                $nameSort = scan_ip::getCleanForSortTable($device["sort_table"]["equipement"]);
                             }
+                            
+                            $ipSort = scan_ip::getCleanForSortTable($device["ip_v4"]);
 
                             if (isset($savingMac[$device["mac"]]["enable"])) {
                                 if ($savingMac[$device["mac"]]["enable"] == 1) {
                                     $classPresent = "macPresentActif";
-                                    $textPresent = "Enregistré";
+                                    $textPresent = '<i class="fas fa-check"></i>';
                                     $classSuivi = "spanScanIp EnableScanIp";
+                                    $title = "Cet équipement est enregistré et activé";
+                                    $lineSort = 2;
                                 } else {
                                     $classPresent = "macPresentInactif";
-                                    $textPresent = "Désactivé";
+                                    $textPresent = '<i class="fas fa-exclamation-circle"></i>';
                                     $classSuivi = "spanScanIp DisableScanIp";
+                                    $title = "Cet équipement est enregistré mais pas activé";
+                                    $lineSort = 1;
                                 }
                             } else {
                                 $classPresent = "macAbsent";
-                                $textPresent = "Non enregistré";
+                                $textPresent = '<i class="fas fa-info-circle"></i>';
                                 $classSuivi = "spanScanIp NoneScanIp";
+                                $title = "Cet équipement n'est pas enregistré";
+                                $lineSort = 0;
                             }
 
                             echo '<tr>'
                             . '<td style="text-align:center;" class="' . $classPresent . '">' . $list++ . '</td>'
-                            . '<td class="' . $classPresent . '"><span class="' . $classSuivi . '">' . $textPresent . '</span></td>'
+                            . '<td class="' . $classPresent . '" title="' . $title .'"><span style="display:none;">' . $lineSort . '</span><span class="' . $classSuivi . '">' . $textPresent . '</span></td>'
                             . '<td class="scanTd ' . $classPresent . '">' . $device["mac"] . '</td>'
-                            . '<td class="scanTd ' . $classPresent . '">' . $device["ip_v4"] . '</td>'
-                            . '<td class="scanTd ' . $classPresent . '" style="text-overflow: ellipsis;">' . $name . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '"><span style="display:none;">' . $ipSort . '</span>' . $device["ip_v4"] . '</td>'
+                            . '<td class="scanTd ' . $classPresent . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $nameSort . '</span>' . $name . '</td>'
                             . '<td class="scanTd ' . $classPresent . '">' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
                             . '</tr>';
                         }
@@ -178,4 +194,10 @@ $list = 1;
     </div>
 </div>
 
-<?php include_file('core', 'plugin.template', 'js'); ?>
+ <script>
+   $(document).ready(function($) { 
+    $("#scan_ip_network").stupidtable();
+   }); 
+  </script>  
+
+<?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>
