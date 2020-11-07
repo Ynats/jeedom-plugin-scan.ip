@@ -32,6 +32,8 @@ class scan_ip extends eqLogic {
     
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
+    public static $_bash_iab = "sudo get-iab -u http://standards-oui.ieee.org/iab/iab.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/iab.txt";
+    public static $_file_iab =  __DIR__ . "/../../../../plugins/scan_ip/resources/iab.txt";
     public static $_file_lock =  __DIR__ . "/../../../../plugins/scan_ip/resources/lock";
     public static $_defaut_cron_pass = 1;
     public static $_defaut_offline_time = 4;
@@ -215,6 +217,10 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
         
+        if($_mapping == NULL){
+            $_mapping = self::getJson(self::$_jsonMapping);
+        }
+        
         self::scanReseau();
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {
@@ -311,6 +317,11 @@ class scan_ip extends eqLogic {
      
     public static function searchByMac($_searchMac, $_mapping = NULL){ 
         log::add('scan_ip', 'debug', 'searchByMac :. Lancement');
+        
+        if($_mapping == NULL){
+            $_mapping = self::getJson(self::$_jsonMapping);
+        }
+        
         if(!empty($_mapping["byMac"][$_searchMac]["ip_v4"])){
             $return["ip_v4"] = $_mapping["byMac"][$_searchMac]["ip_v4"];
             $return["time"] = $_mapping["byMac"][$_searchMac]["time"];
@@ -398,9 +409,14 @@ class scan_ip extends eqLogic {
         else { return 1; }
     }
     
-    public static function cmdRefresh($eqlogic, $_mapping){
+    public static function cmdRefresh($eqlogic, $_mapping = NULL){
 
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
+        
+        if($_mapping == NULL){
+            $_mapping = self::getJson(self::$_jsonMapping);
+        }
+
         $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"), $_mapping);
         $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
               
@@ -648,9 +664,9 @@ class scan_ip extends eqLogic {
         $return = array();
         
         if($_subReseau == NULL){
-            exec('sudo arp-scan --localnet --ouifile=' . self::$_file_oui, $output);
+            exec('sudo arp-scan --localnet --ouifile=' . self::$_file_oui. ' --iabfile=' .  self::$_file_iab, $output );
         } else {
-            exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . self::$_file_oui, $output);
+            exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . self::$_file_oui. ' --iabfile=' .  self::$_file_iab, $output);
         }
         
         foreach ($output as $scanLine) {
@@ -676,7 +692,7 @@ class scan_ip extends eqLogic {
         $equipement = preg_replace(self::getRegex("()"), "", $equipement);
         $equipement = trim($equipement);
         if($equipement == ""){ return "..."; }
-        else { return $equipement; }
+        else { return utf8_encode($equipement); }
     }
     
     public static function arpVersion(){
@@ -759,6 +775,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         
         self::downloadOui();
+        self::downloadIab();
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'cronDaily :. FIN');
@@ -1089,7 +1106,19 @@ class scan_ip extends eqLogic {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
    
     public static function downloadOui(){
-        shell_exec(self::$_bash_oui);
+        try {
+            shell_exec(self::$_bash_oui);
+        } catch (Exception $e) {
+            log::add('scan_ip', 'debug', 'downloadOui :. ' .  $e->getMessage());
+        }
+    }
+    
+    public static function downloadIab(){
+        try {
+            shell_exec(self::$_bash_iab);
+        } catch (Exception $e) {
+            log::add('scan_ip', 'debug', 'downloadOui :. ' .  $e->getMessage());
+        }
     }
     
     public static function dependancy_info() {
@@ -1241,7 +1270,8 @@ class scan_ipCmd extends cmd {
         switch ($this->getLogicalId()) { //vérifie le logicalid de la commande 			
             case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
-                scan_ip::cmdRefresh($eqlogic);
+                $mapping = scan_ip::getJson(self::$_jsonMapping);
+                scan_ip::cmdRefresh($eqlogic, $mapping);
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
             case 'wol': 
