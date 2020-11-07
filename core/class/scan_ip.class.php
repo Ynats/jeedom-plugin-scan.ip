@@ -697,7 +697,7 @@ class scan_ip extends eqLogic {
         $equipement = preg_replace(self::getRegex("()"), "", $equipement);
         $equipement = trim($equipement);
         if($equipement == ""){ return "..."; }
-        else { return $equipement; }
+        else { return utf8_encode($equipement); }
     }
     
     public static function arpVersion(){
