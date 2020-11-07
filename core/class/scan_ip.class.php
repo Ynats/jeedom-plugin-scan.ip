@@ -697,7 +697,7 @@ class scan_ip extends eqLogic {
         $equipement = preg_replace(self::getRegex("()"), "", $equipement);
         $equipement = trim($equipement);
         if($equipement == ""){ return "..."; }
-        else { return utf8_encode($equipement); }
+        else { return $equipement; }
     }
     
     public static function arpVersion(){
@@ -774,18 +774,18 @@ class scan_ip extends eqLogic {
         
     }
     
-    public static function cronDaily() {
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'cronDaily :. START');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        
-        self::downloadOui();
-        self::downloadIab();
-        
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        log::add('scan_ip', 'debug', 'cronDaily :. FIN');
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-    }
+//    public static function cronDaily() {
+//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+//        log::add('scan_ip', 'debug', 'cronDaily :. START');
+//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+//        
+//        self::downloadOui();
+//        self::downloadIab();
+//        
+//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+//        log::add('scan_ip', 'debug', 'cronDaily :. FIN');
+//        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+//    }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # TACHES CRON
