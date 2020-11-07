@@ -29,6 +29,7 @@ class scan_ip extends eqLogic {
     public static $_jsonBridges = __DIR__ . "/../../../../plugins/scan_ip/core/json/bridges.json";
     public static $_jsonMapping = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping";
     public static $_jsonEquipement = __DIR__ . "/../../../../plugins/scan_ip/core/json/equipements";
+    public static $_jsonCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/core/json/commentMac";
     
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
@@ -297,7 +298,7 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
     }
     
-    public static function getCleanForSortTable($_string){ // Ynats en cours
+    public static function getCleanForSortTable($_string){
         if (preg_match(self::getRegex("ip_v4"), $_string)) { 
             return str_replace(".", "", $_string);
         } else {
@@ -601,6 +602,10 @@ class scan_ip extends eqLogic {
     
     public static function printArray($_array){
         echo "<pre style='background-color: #1b2426 !important; color: white !important;'>".print_r($_array, true)."</pre>";
+    }
+    
+    public static function majNetworkCommentaires($_array){
+        self::createJsonFile(self::$_jsonCommentairesEquipement, $_array);
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -931,7 +936,7 @@ class scan_ip extends eqLogic {
         }
     }
     
-    public static function getJsonBridges(){ // Ynats
+    public static function getJsonBridges(){
         return json_decode(file_get_contents(self::$_jsonBridges),true);
     }
     

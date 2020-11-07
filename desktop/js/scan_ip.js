@@ -147,7 +147,6 @@ function verifEquipement(nb){
 
 function hideSelect(NbSelect){
     $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function(result){
-console.log(NbSelect);
         for (let plug = 0; plug <= NbSelect; plug++) {
             $.each( result, function( mac, tableau ) {
                 $.each( tableau, function( key, value ) {
