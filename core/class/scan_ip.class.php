@@ -1272,6 +1272,9 @@ class scan_ip extends eqLogic {
         if(@file_exists($json . "serialize.temp") == TRUE){
             unlink($json . "serialize.temp");
         }
+        if(@file_exists($json . "bridges.json") == TRUE){
+            unlink($json . "bridges.json");
+        }
         
         if($_path == NULL){
              $subPlugs = __DIR__ . "/../../../../plugins/scan_ip/core/subPlugs";
