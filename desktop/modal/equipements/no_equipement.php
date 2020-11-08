@@ -39,7 +39,7 @@
                             . '<td class="scanTd""><span style="display:none;">' . scan_ip::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                             . '<td class="scanTd"><span style="display:none;">' . scan_ip::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
-                            . '<td class="scanTd ' . $device["time"] . '">' . date("d/m/Y H:i:s", $equipement["time"]) . '</td>'
+                            . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["time"]) . '</td>'
                             . '</tr>';
                     }
 ?>

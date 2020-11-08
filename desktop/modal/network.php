@@ -158,7 +158,7 @@ foreach ($arrayCommentMac as $tempCommentMac) {
                             $nameSort = scan_ip::getCleanForSortTable($savingMac[$device["mac"]]["name"]);
                         } else {
                             $name = "| ". $device["equipement"];
-                            $nameSort = scan_ip::getCleanForSortTable($device["sort_table"]["equipement"]);
+                            $nameSort = scan_ip::getCleanForSortTable($device["equipement"]);
                         }
 
                         if (scan_ip::isOffline($offline_time, $device["time"]) == 0) {

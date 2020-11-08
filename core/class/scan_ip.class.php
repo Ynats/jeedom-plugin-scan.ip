@@ -561,7 +561,20 @@ class scan_ip extends eqLogic {
         
         foreach ($ipsReseau["sort"] as $device) {
             if (empty($savingMac[$device["mac"]]["name"])) {
-                $return[] = array("name" => $device["equipement"], "mac" => $device["mac"], "ip_v4" => $device["ip_v4"], "comment" => $commentMac[$device["mac"]], "time" => $device["time"]);
+                
+                if(!empty($commentMac[$device["mac"]])){
+                    $comment = $commentMac[$device["mac"]];
+                } else {
+                    $comment = NULL;
+                }
+                
+                $return[] = array(
+                    "name" => $device["equipement"], 
+                    "mac" => $device["mac"], 
+                    "ip_v4" => $device["ip_v4"], 
+                    "comment" => $comment, 
+                    "time" => $device["time"]
+                );
             }
         }
         
