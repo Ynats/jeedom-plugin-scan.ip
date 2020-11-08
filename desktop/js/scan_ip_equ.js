@@ -110,3 +110,35 @@ $('#scan_ip_mac_select').change(function () {
     var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
     $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);
 });
+
+function addCmdToTable(_cmd) {
+    if (!isset(_cmd)) {
+        var _cmd = {configuration: {}};
+    }
+    if (!isset(_cmd.configuration)) {
+        _cmd.configuration = {};
+    }
+
+    var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">';
+    tr += '<td>';
+    tr += '<span class="cmdAttr" data-l1key="id" style="display:none;"></span>';
+    tr += '<div class="row">';
+    tr += '<div class="col-sm-6">';
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="name">';
+    tr += '</div>';
+    tr += '</div>';
+    tr += '</td>';
+    tr += '<td>';
+    if (is_numeric(_cmd.id)) {
+        tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fa fa-cogs"></i></a> ';
+        tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fa fa-rss"></i> {{Tester}}</a>';
+    }
+    tr += '</td>';
+    tr += '</tr>';
+    $('#table_cmd tbody').append(tr);
+    $('#table_cmd tbody tr:last').setValues(_cmd, '.cmdAttr');
+//    if (isset(_cmd.type)) {
+//        $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
+//    }
+    jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
+}
