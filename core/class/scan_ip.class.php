@@ -220,10 +220,14 @@ class scan_ip extends eqLogic {
         
         // Si json pas au bon endroit
         if(is_dir(__DIR__ . "/../../../../plugins/scan_ip/core/json")){
-            exec("sudo rmdir -R ". __DIR__ . "/../../../../plugins/scan_ip/data");
-            exec("sudo chmod 777 ". __DIR__ . "/../../../../plugins/scan_ip/data");
+            if(!is_dir(__DIR__ . "/../../../../plugins/scan_ip/data")){
+                exec("sudo mkdir ". __DIR__ . "/../../../../plugins/scan_ip/data");
+            }
+            if(!is_dir(__DIR__ . "/../../../../plugins/scan_ip/data/json")){
+                exec("sudo mkdir ". __DIR__ . "/../../../../plugins/scan_ip/data/json");
+            }
+            exec("sudo chmod 777 -R ". __DIR__ . "/../../../../plugins/scan_ip/data");
             exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
-            exec("sudo chmod -R 777 ". __DIR__ . "/../../../../plugins/scan_ip/data/json");
         }
         
         if($_mapping == NULL){
