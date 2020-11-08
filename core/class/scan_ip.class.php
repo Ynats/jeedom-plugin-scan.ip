@@ -219,8 +219,8 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
         
         // Si json pas au bon endroit
-        if(is_file(__DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json")){
-            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
+        if(@is_file(__DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json")){
+            shell_exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
         }
         
         if($_mapping == NULL){
