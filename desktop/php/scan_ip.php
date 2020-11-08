@@ -25,12 +25,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
             <div class="cursor logoSecondary" id="bt_scanIpNetwork">
                 <i class="fas fa-sitemap"></i>
                 <br>
-                <span>{{Afficher le Réseau}}</span>
+                <span>{{Réseau}}</span>
             </div>
             <div class="cursor logoSecondary" id="bt_scanIpEquipement">
                 <i class="fas fa-sitemap"></i>
                 <br>
-                <span>{{Afficher les équipements}}</span>
+                <span>{{Equipements}}</span>
             </div>
             <div class="cursor logoSecondary" id="bt_scanIpDebug">
                 <i class="fas fa-medkit"></i>
@@ -76,8 +76,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
         <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
             <div role="tabpanel" class="tab-pane active" id="eqlogictab">
                 
-                <div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
-                <br/>
+                <br />
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
@@ -216,13 +215,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
     </div>
 </div>
-<script>
 
-    if(!$("#offline_time option:selected").length){
-        $("#offline_time option[value='4']").attr('selected', 'selected');
-    }
-
-</script>
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
+<?php include_file('desktop', 'scan_ip_equ', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
 

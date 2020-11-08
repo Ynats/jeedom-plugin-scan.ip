@@ -25,11 +25,11 @@ class scan_ip extends eqLogic {
     
     public static $_widgetPossibility = array('custom' => true);
     
-    public static $_folderJson = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
-    public static $_jsonBridges = __DIR__ . "/../../../../plugins/scan_ip/core/json/bridges.json";
-    public static $_jsonMapping = __DIR__ . "/../../../../plugins/scan_ip/core/json/mapping";
-    public static $_jsonEquipement = __DIR__ . "/../../../../plugins/scan_ip/core/json/equipements";
-    public static $_jsonCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/core/json/commentMac";
+    public static $_folderJson = __DIR__ . "/../../../../plugins/scan_ip/data/json/";
+    public static $_jsonBridges = __DIR__ . "/../../../../plugins/scan_ip/data/json/bridges.json";
+    public static $_jsonMapping = __DIR__ . "/../../../../plugins/scan_ip/data/json/mapping";
+    public static $_jsonEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json/equipements";
+    public static $_jsonCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json/commentMac";
     
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
@@ -50,7 +50,7 @@ class scan_ip extends eqLogic {
 //        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
 //        log::add('scan_ip', 'debug', 'preSave :. Lancement');
 //    }
-
+    
     public function postInsert() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'postInsert :. Lancement');
@@ -217,6 +217,14 @@ class scan_ip extends eqLogic {
     public static function syncScanIp($_mapping = NULL){
         log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
+        
+        // Si json pas au bon endroit
+        if(is_dir(__DIR__ . "/../../../../plugins/scan_ip/core/json")){
+            exec("sudo rmdir -R ". __DIR__ . "/../../../../plugins/scan_ip/data");
+            exec("sudo chmod 777 ". __DIR__ . "/../../../../plugins/scan_ip/data");
+            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
+            exec("sudo chmod -R 777 ". __DIR__ . "/../../../../plugins/scan_ip/data/json");
+        }
         
         if($_mapping == NULL){
             $_mapping = self::getJson(self::$_jsonMapping);
@@ -513,7 +521,7 @@ class scan_ip extends eqLogic {
                 $return .= '<div class="form-group"">';
                 $return .= '<label class="col-sm-4 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';
                 $return .= '<div class="col-sm-2">';
-                $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
+                $return .= '<input type="checkbox" class="configKey" data-l1key="sub_enable_'.md5($sub["name"]).'" style="border: 1px solid var(--link-color) !important;"><span style="font-weight: bold;">'.$sub["ip_v4"].'</span>';
                 $return .= '</div>';
                 $return .= '</div>';
             }
@@ -534,6 +542,33 @@ class scan_ip extends eqLogic {
             }
         }  
         echo $print;
+    }
+    
+    public static function showNoEquipements(){
+        $return = NULL;
+        
+        $arrayCommentMac = self::getJson(scan_ip::$_jsonCommentairesEquipement);
+        
+        foreach ($arrayCommentMac as $tempCommentMac) {
+            $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
+        }
+        
+        $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
+
+        if (empty($ipsReseau)) {
+            self::syncScanIp();
+            $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
+        }
+        
+        $savingMac = self::getAlleqLogics();
+        
+        foreach ($ipsReseau["sort"] as $device) {
+            if (empty($savingMac[$device["mac"]]["name"])) {
+                $return[] = array("name" => $device["equipement"], "mac" => $device["mac"], "ip_v4" => $device["ip_v4"], "comment" => $commentMac[$device["mac"]], "time" => $device["time"]);
+            }
+        }
+        
+        return $return;
     }
     
     public static function showEquipements(){
@@ -608,6 +643,24 @@ class scan_ip extends eqLogic {
         self::createJsonFile(self::$_jsonCommentairesEquipement, $_array);
     }
     
+    public static function addEquipementsTab($_array){ 
+        foreach ($_array as $equ) {
+            self::createElement($equ[0]["mac"]);
+        }
+    }
+    
+    public static function createElement($_mac) { // Ynats
+        $eqLogic = new scan_ip();
+        $eqLogic->setEqType_name("scan_ip");
+        $eqLogic->setIsEnable(0);
+        $eqLogic->setIsVisible(1);
+        $eqLogic->setName($_mac);
+        $eqLogic->setConfiguration('adress_mac', $_mac);
+        $eqLogic->save();
+    }  
+        
+    
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # ELEMENTS DE VUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -751,7 +804,7 @@ class scan_ip extends eqLogic {
                 log::add('scan_ip', 'debug', '_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_');
                 
                 log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
-                
+                 
                 self::syncScanIp(self::getJson(self::$_jsonMapping));
                 self::unlockProcess();
                 

@@ -1,0 +1,112 @@
+
+if (!$("#offline_time option:selected").length) {
+    $("#offline_time option[value='4']").attr('selected', 'selected');
+}
+
+function hideSelect(NbSelect) {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+        for (let plug = 0; plug <= NbSelect; plug++) {
+            $.each(result, function (mac, tableau) {
+                $.each(tableau, function (key, value) {
+                    var current = $('#scan_ip_adressMacTemp').val();
+                    if (mac != current) {
+                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
+                    }
+                });
+            });
+        }
+
+    });
+}
+
+$('#offline_time').change(function () {
+    verifCadence();
+    getConstructorByMac();
+});
+
+function getConstructorByMac() {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.by_mac.php", function (result) {
+        $.each(result, function (mac, value) {
+            var current = $('#scan_ip_adressMacTemp').val();
+            if (mac == current) {
+                $("#ConstrunctorMac").val(value["equipement"]);
+            }
+        });
+    });
+}
+
+function verifCadence() {
+    var offline_time = $("#offline_time").val();
+    var cron_pass = $("#cronPass").attr('data-cron');
+    var delta = offline_time / cron_pass;
+
+    if (delta < 2) {
+        $('#div_alert').showAlert({message: "{{Si vous valider cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
+    } else {
+        $('#div_alert').hide();
+    }
+}
+
+function timeCron() {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.time_cron.php", function (result) {
+        $("#cronPass").attr('data-cron', result);
+        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " + result + " minutes");
+        verifCadence();
+    });
+}
+
+function verifEquipement(nb) {
+    var cpt = 0;
+    var nbElement = [];
+
+    for (x = 1; x <= nb; x++) {
+        var val = $('#plug_element_plugin_' + x).find(":selected").val();
+        var split = val.split("|");
+        if (split[0] != "") {
+            nbElement.push(split[0]);
+        }
+    }
+
+    red = nbElement.reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
+
+    $.each(red, function (index, value) {
+        if (value > 1) {
+            $('#div_alert').showAlert({message: "{{Attention cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'danger'});
+        } else {
+            $('#div_alert').hide();
+        }
+    });
+
+}
+
+// Synchro
+$('#bt_syncEqLogic').off('click').on('click', function () {
+    syncEqLogicWithOpenScanId();
+});
+
+function syncEqLogicWithOpenScanId() {
+    $.ajax({
+        type: "POST",
+        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
+        data: {
+            action: "syncEqLogicWithOpenScanId",
+        },
+        dataType: 'json',
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            if (data.state != 'ok') {
+                $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                return;
+            }
+            window.location.reload();
+        }
+    });
+}
+
+// Au changement du menu de sélection on reproduit la valeur dans le champ
+$('#scan_ip_mac_select').change(function () {
+    var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
+    $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);
+});

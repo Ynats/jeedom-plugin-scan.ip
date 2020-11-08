@@ -20,6 +20,7 @@ if (!isConnect('admin')) {
 }
 
 $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
+
 if (empty($ipsReseau)) {
     scan_ip::syncScanIp();
     $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
@@ -32,7 +33,6 @@ foreach ($arrayCommentMac as $tempCommentMac) {
     $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
 }
 
-$list = 1;
 ?>
 
 <style>
@@ -139,11 +139,12 @@ $list = 1;
                         <th data-sort="int" class="scanTd" style="width:110px;"><span class="scanHender"><b class="caret"></b> {{ip}}</span></th>
                         <th data-sort="string" class="scanTd" style="width:375px;"><span class="scanHender"><b class="caret"></b> {{Nom}}</span></th>
                         <th data-sort="string" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Commentaire}}</span></th>
-                        <th data-sort="string" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Date de mise à jour}}</span></th>
+                        <th data-sort="int" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Date de mise à jour}}</span></th>
                     </tr>
                 </thead>
                 <tbody>
 <?php         
+                    $list = 1;
                     foreach ($ipsReseau["sort"] as $device) {
  
                         if(empty($savingMac[$device["mac"]]["offline_time"])){
@@ -159,8 +160,6 @@ $list = 1;
                             $name = "| ". $device["equipement"];
                             $nameSort = scan_ip::getCleanForSortTable($device["sort_table"]["equipement"]);
                         }
-
-                        $ipSort = scan_ip::getCleanForSortTable($device["ip_v4"]);
 
                         if (scan_ip::isOffline($offline_time, $device["time"]) == 0) {
                             $colorOnLine = "#50aa50";
@@ -207,10 +206,10 @@ $list = 1;
                         . '<td class="scanTd" title="' . $titleOnLine .'"><span style="display:none;">' . $lineSortOnline . '</span>' . scan_ip::getCycle("15px", $colorOnLine) . '</td>'
                         . '<td class="scanTd ' . $classPresent . '" style="style="text-align:center !important;" title="' . $titleEquipement .'"><span style="display:none;">' . $lineSortEquipement . '</span><span class="' . $classSuivi . '">' . $textPresent . '</span></td>'
                         . '<td class="scanTd ' . $classPresent . '">' . $device["mac"] . '</td>'
-                        . '<td class="scanTd ' . $classPresent . '"><span style="display:none;">' . $ipSort . '</span>' . $device["ip_v4"] . '</td>'
+                        . '<td class="scanTd ' . $classPresent . '"><span style="display:none;">' . scan_ip::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
                         . '<td class="scanTd ' . $classPresent . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $nameSort . '</span>' . $name . '</td>'
                         . '<td class="scanTd ' . $classPresent . '"><span style="display:none;">' . $printCommentSort . '</span><input type="text" id="input_' . $list . '" data-mac="' . $device["mac"] . '" value="'.$printComment.'" class="form-control" style="width:100%;"></td>'
-                        . '<td class="scanTd ' . $classPresent . '">' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
+                        . '<td class="scanTd ' . $classPresent . '"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
                         . '</tr>';
                     }
 ?>
@@ -222,41 +221,11 @@ $list = 1;
 
 <script>
     
-   $(document).ready(function($) { 
-       $("#scan_ip_network").stupidtable();
-   });
-   
-   $("#btSaveCommentaires").click(function() {
-        var commentaires = [];
-        for (var i=1; i<=<?php echo $list ?>; i++) {
-            var val = $("#input_" + i).val();
-            if(val){
-                var mac = $("#input_" + i).attr('data-mac'); 
-                commentaires.push([{mac : mac}, {val : val}]); 
-            }
-        }
-        
-        $.ajax({
-            type: "POST",
-            url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
-            data: {
-                action: "recordCommentaires",
-                data : commentaires,
-            },
-            dataType: 'json',
-            error: function (request, status, error) {
-                handleAjaxError(request, status, error);
-            },
-            success: function (data) {
-                if (data.state != 'ok') {
-                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    return;
-                }
-                window.location.reload();
-            }
-        });
-   });
-
+    $("#btSaveCommentaires").click(function() {
+        btSaveCommentaires(<?php echo $list ?>);
+    });
+    
 </script>
 
+<?php include_file('desktop', 'scan_ip_network', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>

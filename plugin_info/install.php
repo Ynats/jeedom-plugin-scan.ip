@@ -40,6 +40,13 @@ function scan_ip_update() {
     
     scan_ip::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
     
+    if(is_dir(__DIR__ . "/../../../plugins/scan_ip/core/json")){
+            exec("sudo rmdir -R ". __DIR__ . "/../../../plugins/scan_ip/data");
+            exec("sudo chmod 777 ". __DIR__ . "/../../../plugins/scan_ip/data");
+            exec("sudo mv " . __DIR__ . "/../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
+            exec("sudo chmod -R 777 ". __DIR__ . "/../../../plugins/scan_ip/data/json");
+        }    
+    
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
         try {
             $scan_ip->save();

@@ -44,6 +44,13 @@ try {
         
     }
     
+    elseif (init('action') == 'addEquipement') {
+        
+        scan_ip::addEquipementsTab(init('data'));
+        ajax::success();
+        
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
