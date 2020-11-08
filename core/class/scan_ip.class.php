@@ -220,7 +220,7 @@ class scan_ip extends eqLogic {
         
         // Si json pas au bon endroit
         if(is_file(__DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json")){
-            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data");
+            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
         }
         
         if($_mapping == NULL){
