@@ -224,7 +224,7 @@ class scan_ip extends eqLogic {
                 exec("sudo mkdir ". __DIR__ . "/../../../../plugins/scan_ip/data");
             }
             exec("sudo chmod 777 -R ". __DIR__ . "/../../../../plugins/scan_ip/data");
-            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
+            exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data");
         }
         
         if($_mapping == NULL){

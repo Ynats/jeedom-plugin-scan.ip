@@ -45,7 +45,7 @@ function scan_ip_update() {
                 exec("sudo mkdir ". __DIR__ . "/../../../../plugins/scan_ip/data");
             }
             exec("sudo chmod 777 -R ". __DIR__ . "/../../../plugins/scan_ip/data");
-            exec("sudo mv " . __DIR__ . "/../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
+            exec("sudo mv " . __DIR__ . "/../../../plugins/scan_ip/core/json " . __DIR__ . "/../../../../plugins/scan_ip/data");
         }    
     
     foreach (scan_ip::byType('scan_ip') as $scan_ip) {
