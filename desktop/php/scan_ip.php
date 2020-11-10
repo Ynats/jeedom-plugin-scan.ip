@@ -32,11 +32,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <br>
                 <span>{{Equipements}}</span>
             </div>
+<?php if(scan_ip::getConfigMode() == "debug"){ ?>
             <div class="cursor logoSecondary" id="bt_scanIpDebug">
                 <i class="fas fa-medkit"></i>
                 <br>
                 <span>{{Debug}}</span>
             </div>
+<?php  }  ?>
             <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
                 <i class="fas fa-wrench"></i>
                 <br>
@@ -148,8 +150,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         
+                    <div id="show_off_line"<?php scan_ip::showEquCadence() ?>>                        
 <?php
-                        scan_ip::vueSubTitle("{{On Line ou Off line ?}}");
+                        scan_ip::vueSubTitle("{{On Line ou Off line ? (Mode avancé)}}");
 ?>                        
 
                         <div class="form-group">
@@ -177,6 +180,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 </select> 
                             </div>
                         </div>
+                    </div>
                         
 <?php
                         scan_ip::vueSubTitle("{{Réveiller votre équipement à distance ?}}");

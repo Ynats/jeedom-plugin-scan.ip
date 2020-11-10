@@ -51,6 +51,10 @@ class scan_ip extends eqLogic {
 //        log::add('scan_ip', 'debug', 'preSave :. Lancement');
 //    }
     
+    public static function getConfigMode() {
+        return config::byKey('mode_plugin', 'scan_ip', "normal");
+    }
+    
     public function postInsert() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'postInsert :. Lancement');
@@ -618,6 +622,14 @@ class scan_ip extends eqLogic {
             $a++;
         }  
        return $return;
+    }
+
+    public static function showEquCadence() {
+        if (self::getConfigMode() == "debug") {
+            echo "";
+        } else {
+            echo " style='display:none;'";
+        }
     }
 
     public static function vueSubTitle($_titre, $_from = "devices"){

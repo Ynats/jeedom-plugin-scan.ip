@@ -29,10 +29,21 @@ scan_ip::cleanAfterUpdate();
 
 ?>
 <form class="form-horizontal">
+    
+    <div class="form-group">
+        <div class="col-lg-2" style="right:15px; position: absolute;">
+            <select onchange="scan_ip_mode_plugin()" class="configKey form-control" data-l1key="mode_plugin" id="scan_ip_mode">
+                <option value="normal">{{Mode normal}}</option>
+                <option value="advanced">{{Mode avancé}}</option>
+                <option value="debug">{{Mode debug}}</option>
+            </select>
+        </div>
+    </div>
+    
     <fieldset>
-        
+    <div id="show_oui" style="display:none;">        
 <?php
-        scan_ip::vueSubTitle("{{Base de données OUI}}", "config");
+        scan_ip::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
@@ -41,7 +52,7 @@ scan_ip::cleanAfterUpdate();
             <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
             </div>
         </div>
-        
+    </div>
 <?php
         scan_ip::vueSubTitle("{{Cadence de rafraichissement}}", "config");
 ?>
@@ -57,12 +68,14 @@ scan_ip::cleanAfterUpdate();
                 </select> 
             </div>
         </div>
-        
-    <?php
-        scan_ip::vueSubTitle("{{Spécifier des plages à scanner (avancé)}}", "config");
-        
-        echo scan_ip::printInputSubConfig(); 
     
+    <div id="show_sous_reseau" style="display:none;">     
+    <?php
+        scan_ip::vueSubTitle("{{Spécifier des plages à scanner (Mode avancé)}}", "config");
+        echo scan_ip::printInputSubConfig(); 
+    ?> 
+    </div>
+    <?php
         scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
     ?> 
         <div class="form-group">

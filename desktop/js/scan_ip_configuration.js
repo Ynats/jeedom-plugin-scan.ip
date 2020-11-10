@@ -19,3 +19,23 @@ function recordBtMac() {
         }
     });
 }
+
+function scan_ip_mode_plugin() { 
+    var mode = $( "#scan_ip_mode" ).val();
+    if(mode == "normal"){
+        $('#show_oui').hide();
+        $('#show_sous_reseau').hide();
+    } 
+    else if(mode == "advanced"){
+        $('#show_oui').hide();
+        $('#show_sous_reseau').show();
+    }
+    else if(mode == "debug"){
+        $('#show_oui').show();
+        $('#show_sous_reseau').show();
+    }
+}
+
+setTimeout(function(){
+    scan_ip_mode_plugin();
+}, 150);
