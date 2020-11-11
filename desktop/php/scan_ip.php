@@ -34,10 +34,15 @@ foreach ($eqLogics as $eqLogic) {
                 <br>
                 <span>{{Réseau}}</span>
             </div>
-            <div class="cursor logoSecondary" id="bt_scanIpEquipement">
+            <div class="cursor logoSecondary" id="bt_scanIpEquipementYes">
                 <i class="fas fa-sitemap"></i>
                 <br>
-                <span>{{Equipements}}</span>
+                <span>{{Equipements enregistrés}}</span>
+            </div>
+            <div class="cursor logoSecondary" id="bt_scanIpEquipementNo">
+                <i class="fas fa-sitemap"></i>
+                <br>
+                <span>{{Equipements non enregistrés}}</span>
             </div>
 <?php if(scan_ip::getConfigMode() == "debug"){ ?>
             <div class="cursor logoSecondary" id="bt_scanIpDebug">

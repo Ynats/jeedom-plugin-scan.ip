@@ -22,9 +22,14 @@ $('#bt_scanIpNetwork').off('click').on('click', function () {
 });
 
 // Sur la partie Equipement
-$('#bt_scanIpEquipement').off('click').on('click', function () {
-    $('#md_modal').dialog({title: "{{Vos équipements}}"});
-    $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=equipements').dialog('open');
+$('#bt_scanIpEquipementYes').off('click').on('click', function () {
+    $('#md_modal').dialog({title: "{{Vos équipements enregistrés}}"});
+    $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=yes_equipement').dialog('open');
+});
+
+$('#bt_scanIpEquipementNo').off('click').on('click', function () {
+    $('#md_modal').dialog({title: "{{Vos équipements non enregistrés}}"});
+    $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=no_equipement').dialog('open');
 });
 
 // Sur la partie Debug
