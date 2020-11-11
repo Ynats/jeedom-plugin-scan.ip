@@ -147,7 +147,7 @@ foreach ($arrayCommentMac as $tempCommentMac) {
                     $list = 1;
                     foreach ($ipsReseau["sort"] as $device) {
                         
-                        $element = scan_ip::getElementVueNetwork($device, $savingMac);
+                        $element = scan_ip::getElementVueNetwork($device, $savingMac, $commentMac);
 
                         echo '<tr>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'

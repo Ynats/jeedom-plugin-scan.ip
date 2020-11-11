@@ -1559,6 +1559,11 @@ class scan_ipCmd extends cmd {
                 scan_ip::cmdRefresh($eqlogic, $mapping);
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
+            case 'refresh_network': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
+                log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
+                scan_ip::cmdRefresh($eqlogic, $mapping);
+                log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+                break;
             case 'wol': 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande wol : #ID#' . $eqlogic->getId());
                 scan_ip::wakeOnLanByCmd($eqlogic);
