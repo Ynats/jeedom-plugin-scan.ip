@@ -661,6 +661,8 @@ class scan_ip extends eqLogic {
         
         $a = 0;
         $eqLogics = eqLogic::byType('scan_ip');
+        $bridge = self::bridges_getElements();
+        
         foreach ($eqLogics as $scan_ip) {
             $return[$a]["name"] = $scan_ip->name;
             $return[$a]["link"] = "<a href='/index.php?v=d&m=scan_ip&p=scan_ip&id=".$scan_ip->getId()."'>".$scan_ip->name."</a>";
@@ -671,8 +673,6 @@ class scan_ip extends eqLogic {
             $return[$a]["on_line"] = self::getCommande('on_line', $scan_ip);
             
             $return[$a]["plug_element_plugin"] = NULL;
-            
-            $bridge = self::bridges_getElements();
             
             if($bridge != FALSE){
                 for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
