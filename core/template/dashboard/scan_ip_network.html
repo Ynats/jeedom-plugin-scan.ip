@@ -1,0 +1,63 @@
+<style>
+    .scanTd{
+        padding : 3px 0 3px 15px !important;
+    }
+    .scanHender{
+        cursor: pointer !important;
+        width: 100%;
+    }
+    .macPresentActif{
+        color: green;
+    }
+    .macPresentInactif{
+        color: #FF4500;
+    }
+    .macAbsent{
+        color: grey;
+    }
+    .spanScanIp{
+        display: block;
+        width: 78x !important;
+        padding : 2px 5px;
+        color : white;
+        text-align: center;
+    }
+    .EnableScanIp{
+        color: green;
+    }
+    .DisableScanIp{
+        color: #FF4500;
+    }
+    .NoneScanIp{
+        color: grey;
+    }
+    
+   .scan_ip_network_scroller {
+        margin-top: -5px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: scroll;
+        scrollbar-color: auto;
+        scrollbar-width: thin;
+    }
+</style>
+
+<div class="eqLogic eqLogic-widget allowResize" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" style="width: #width#;height: #height#;min-height:245px;#style#;">
+    <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+        <i class="fas fa-sync"></i>
+    </span>
+    <span class="cmd cmd-widget" data-cmd_id="#refresh_id#" style="display:none;"></span>
+    <center class="widget-name">
+        <span class="reportModeVisible">#name_display#<span class="object_name">#object_name#</span></span>
+        <a href="#eqLink#" class="reportModeHidden">#name_display#<span class="object_name">#object_name#</span></a>
+    </center>
+    
+    <script>
+        $('.eqLogic[data-eqLogic_uid=#uid#] .cmd').on('click', function () {
+            jeedom.cmd.execute({id: $(this).data('cmd_id')});
+        }); 
+    </script>
+    
+    <div class="scan_ip_network_scroller">widget_network</div>  
+   
+</div>

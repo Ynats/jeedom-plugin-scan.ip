@@ -6,6 +6,13 @@ $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
+foreach ($eqLogics as $eqLogic) {
+    if($eqLogic->getConfiguration('type_widget', 'normal') == "network"){
+        $idWidgetNetwork = $eqLogic->getId();
+        break;
+    }
+}
+
 ?>
 
 <div class="row row-overflow">
@@ -85,7 +92,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Nom de l'appareil à suivre}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" onchange="timeCron()" data-l1key="id" style="display : none;" />
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de la configuration}}"/>
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" id="scan_ip_name_eq" placeholder="{{Nom de la configuration}}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -113,15 +120,42 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 ?>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div id="scan_ip_info_widget" style="display:none;">
+                            <br />
+                            <div class="form-group" >
+                                <label class="col-sm-3 control-label">Information</label>
+                                <div class="col-sm-9">
+                                    <span style="color:green;">Cet équipement est géré par Scan.Ip et permet d'afficher l'état de votre réseau dans un widget dédié.</span>
+                                </div>
+                            </div>
+                            <div class="form-group" >
+                                <label class="col-sm-3 control-label"></label>
+                                <div class="col-sm-9">
+                                    <span style="color:green;">Pour gérer sa visibilité, vous devez passer par l'espace configuration du plugin. </span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                    <div id="hiden_type_normal">
+                        
+                        <div class="form-group" id="show_scan_ip_widget_normal_visibility">
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-sm-9">
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
                         </div>
-            
-<?php
+                        
+                        <div style="display:none;">
+                            <select id="hiden_type_widget" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_widget">
+                                <option value="normal">Normal</option>
+                                <option value="network">Network</option>
+                            </select>
+                        </div>
+                        
+<?php    
                         scan_ip::vueSubTitle("{{Associer une adresse MAC}}");
 ?>
                         
@@ -149,7 +183,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <input type="text" id="ConstrunctorMac" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
                         </div>
-                        
+                     
+                                  
                     <div id="show_off_line"<?php scan_ip::showEquCadence() ?>>                        
 <?php
                         scan_ip::vueSubTitle("{{On Line ou Off line ? (Mode avancé)}}");
@@ -196,13 +231,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         
-                        <?php
+<?php
                             scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs bridges (optionnel)");
                             scan_ip::bridges_printOptionEquiements();
-                        ?>
- 
+ ?>
+                   
+                        </div>
                     </fieldset>
                 </form>
+ 
             </div>
             <div role="tabpanel" class="tab-pane" id="commandtab">
                 <table id="table_cmd" class="table table-bordered table-condensed">
@@ -219,7 +256,24 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
     </div>
 </div>
-
+<script>
+$("#hiden_type_widget").change(function () {
+    if($("#hiden_type_widget").val() == "network"){
+        $("#hiden_type_normal").hide();
+        $("#scan_ip_info_widget").show();
+        $("[data-action='copy']").hide();
+        $("[data-action='configure']").hide();
+        $("[data-action='remove']").hide();
+    } else { 
+        $("#hiden_type_normal").show();
+        $("#scan_ip_info_widget").hide();
+        $("#scan_ip_name_eq").style("display:none");
+        $("[data-action='copy']").show();
+        $("[data-action='configure']").show();
+        $("[data-action='remove']").show();
+    }
+});
+</script>
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'scan_ip_equ', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>

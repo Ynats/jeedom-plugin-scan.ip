@@ -41,6 +41,21 @@ scan_ip::cleanAfterUpdate();
     </div>
     
     <fieldset>
+<?php
+        scan_ip::vueSubTitle("{{Widget}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Votre réseau}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget avec l'ensemble du réseau}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="widget_network">
+                    <option value="1">{{Afficher le widget de votre réseau}}</option>
+                    <option value="0">{{Masquer le widget de votre réseau}}</option>
+                </select> 
+            </div>
+        </div>   
+        
     <div id="show_oui" style="display:none;">        
 <?php
         scan_ip::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
@@ -49,7 +64,7 @@ scan_ip::cleanAfterUpdate();
             <label class="col-lg-4 control-label">{{Fichier présent}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Ce fichier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
-            <div class="col-lg-2"><?php echo scan_ip::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            <div class="col-lg-5)"><?php echo scan_ip::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
             </div>
         </div>
     </div>
@@ -60,7 +75,7 @@ scan_ip::cleanAfterUpdate();
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_cron_pass ?> {{minute}}"></i></sup>
             </label>
-            <div class="col-lg-2">
+            <div class="col-lg-5">
                 <select class="configKey form-control" id="cron_pass" data-l1key="cron_pass">
                     <option value="1">{{1 minute (recommandé)}}</option>
                     <option value="2">{{2 minutes}}</option>

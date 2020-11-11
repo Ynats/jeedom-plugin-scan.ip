@@ -27,6 +27,7 @@ function scan_ip_install() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
+    scan_ip::getWidgetNetwork();
 }
 
 function scan_ip_update() {
@@ -37,6 +38,8 @@ function scan_ip_update() {
     if (config::byKey('offline_time', 'scan_ip') == '') {
             config::save('offline_time', 4, 'scan_ip');
     }
+    
+    scan_ip::getWidgetNetwork();
     
     scan_ip::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
     

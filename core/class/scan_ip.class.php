@@ -55,6 +55,53 @@ class scan_ip extends eqLogic {
         return config::byKey('mode_plugin', 'scan_ip', "normal");
     }
     
+    public static function getWidgetType($_eq) {
+        return $_eq->getConfiguration('type_widget', 'normal');
+    }
+    
+    public static function getWidgetNetwork(){
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            if(self::getWidgetType($scan_ip) == 'network') {
+                $exist = 1;
+                break;
+            }
+        }
+        
+        if($exist == 0){
+            $scan_ip = new scan_ip();
+            $scan_ip->setEqType_name("scan_ip");
+            $scan_ip->setIsEnable(1);
+            if(config::byKey('widget_network', 'scan_ip', '1') == 1) { 
+                $scan_ip->setIsVisible(1); 
+                $scan_ip->setIsEnable(1);
+            } else { 
+                $scan_ip->setIsVisible(0); 
+                $scan_ip->setIsEnable(0);
+            }
+            $scan_ip->setName("Scan.Ip Widget Network");
+            $scan_ip->setConfiguration('type_widget', 'network');
+            $scan_ip->save();
+        }
+        
+        return $scan_ip;
+    }
+    
+    public static function postConfig_widget_network() { // Ynats Go
+        
+        $eqLogic = self::getWidgetNetwork();
+        
+        if(config::byKey('widget_network', 'scan_ip', '1') == 1) {
+            $eqLogic->setIsVisible(1);
+            $eqLogic->setIsEnable(1);
+        } else {
+            $eqLogic->setIsVisible(0);
+            $eqLogic->setIsEnable(0);
+        }
+        
+        $eqLogic->save();        
+    }
+    
     public function postInsert() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'postInsert :. Lancement');
@@ -68,97 +115,112 @@ class scan_ip extends eqLogic {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'postUpdate :. Mise à jour de : ' . $this->getId());
         
-        $info = $this->getCmd(null, 'ip_v4');
-        if (!is_object($info)) {
-            $info = new scan_ipCmd();
-            $info->setName(__('IpV4', __FILE__));
-        }
-        $info->setLogicalId('ip_v4');
-        $info->setEqLogic_id($this->getId());
-        $info->setIsHistorized(0);
-        $info->setIsVisible(0);
-        $info->setType('info');
-        $info->setSubType('string');
-        $info->save();
+        if(self::getWidgetType($this) == "normal"){
         
-        $info = $this->getCmd(null, 'last_ip_v4');
-        if (!is_object($info)) {
-            $info = new scan_ipCmd();
-            $info->setName(__('Last IpV4', __FILE__));
-        }
-        $info->setLogicalId('last_ip_v4');
-        $info->setEqLogic_id($this->getId());
-        $info->setIsHistorized(0);
-        $info->setIsVisible(0);
-        $info->setType('info');
-        $info->setSubType('string');
-        $info->save();
-        
-        $info = $this->getCmd(null, 'update_time');
-        if (!is_object($info)) {
-            $info = new scan_ipCmd();
-            $info->setName(__('Last Time', __FILE__));
-        }
-        $info->setLogicalId('update_time');
-        $info->setEqLogic_id($this->getId());
-        $info->setIsHistorized(0);
-        $info->setIsVisible(0);
-        $info->setType('info');
-        $info->setSubType('numeric');
-        $info->save();
-        
-        $info = $this->getCmd(null, 'update_date');
-        if (!is_object($info)) {
-            $info = new scan_ipCmd();
-            $info->setName(__('Last Date', __FILE__));
-        }
-        $info->setLogicalId('update_date');
-        $info->setEqLogic_id($this->getId());
-        $info->setIsHistorized(0);
-        $info->setIsVisible(0);
-        $info->setType('info');
-        $info->setSubType('string');
-        $info->save();
-
-
-        $info = $this->getCmd(null, 'on_line');
-        if (!is_object($info)) {
-            $info = new scan_ipCmd();
-            $info->setName(__('Online', __FILE__));
-        }
-        $info->setEqLogic_id($this->getId());
-        $info->setLogicalId('on_line');
-        $info->setType('info');
-        $info->setSubType('binary');
-        $info->save();
-        
-        $refresh = $this->getCmd(null, 'refresh');
-        if (!is_object($refresh)) {
-            $refresh = new scan_ipCmd();
-            $refresh->setName(__('Rafraichir', __FILE__));
-        }
-        $refresh->setEqLogic_id($this->getId());
-        $refresh->setLogicalId('refresh');
-        $refresh->setType('action');
-        $refresh->setSubType('other');
-        $refresh->save();
-       
-        $wol = $this->getCmd(null, 'wol');
-        if($this->getConfiguration("enable_wol") == 1){ 
-            if (!is_object($wol)) {
-                $wol = new scan_ipCmd();
-                $wol->setName(__('WoL', __FILE__));
+            $info = $this->getCmd(null, 'ip_v4');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('IpV4', __FILE__));
             }
-            $wol->setEqLogic_id($this->getId());
-            $wol->setLogicalId('wol');
-            $wol->setType('action');
-            $wol->setSubType('other');
-            $wol->save();
-        } else {
-            if (is_object($wol)) {
-                $wol->remove();
-                ajax::success(utils::o2a($this));
-            } 
+            $info->setLogicalId('ip_v4');
+            $info->setEqLogic_id($this->getId());
+            $info->setIsHistorized(0);
+            $info->setIsVisible(0);
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+
+            $info = $this->getCmd(null, 'last_ip_v4');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Last IpV4', __FILE__));
+            }
+            $info->setLogicalId('last_ip_v4');
+            $info->setEqLogic_id($this->getId());
+            $info->setIsHistorized(0);
+            $info->setIsVisible(0);
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+
+            $info = $this->getCmd(null, 'update_time');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Last Time', __FILE__));
+            }
+            $info->setLogicalId('update_time');
+            $info->setEqLogic_id($this->getId());
+            $info->setIsHistorized(0);
+            $info->setIsVisible(0);
+            $info->setType('info');
+            $info->setSubType('numeric');
+            $info->save();
+
+            $info = $this->getCmd(null, 'update_date');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Last Date', __FILE__));
+            }
+            $info->setLogicalId('update_date');
+            $info->setEqLogic_id($this->getId());
+            $info->setIsHistorized(0);
+            $info->setIsVisible(0);
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+
+
+            $info = $this->getCmd(null, 'on_line');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Online', __FILE__));
+            }
+            $info->setEqLogic_id($this->getId());
+            $info->setLogicalId('on_line');
+            $info->setType('info');
+            $info->setSubType('binary');
+            $info->save();
+
+            $refresh = $this->getCmd(null, 'refresh');
+            if (!is_object($refresh)) {
+                $refresh = new scan_ipCmd();
+                $refresh->setName(__('Rafraichir', __FILE__));
+            }
+            $refresh->setEqLogic_id($this->getId());
+            $refresh->setLogicalId('refresh');
+            $refresh->setType('action');
+            $refresh->setSubType('other');
+            $refresh->save();
+
+            $wol = $this->getCmd(null, 'wol');
+            if($this->getConfiguration("enable_wol") == 1){ 
+                if (!is_object($wol)) {
+                    $wol = new scan_ipCmd();
+                    $wol->setName(__('WoL', __FILE__));
+                }
+                $wol->setEqLogic_id($this->getId());
+                $wol->setLogicalId('wol');
+                $wol->setType('action');
+                $wol->setSubType('other');
+                $wol->save();
+            } else {
+                if (is_object($wol)) {
+                    $wol->remove();
+                    ajax::success(utils::o2a($this));
+                } 
+            }
+        }
+        else {
+            $refresh = $this->getCmd(null, 'refresh');
+            if (!is_object($refresh)) {
+                $refresh = new scan_ipCmd();
+                $refresh->setName(__('Rafraichir', __FILE__));
+            }
+            $refresh->setEqLogic_id($this->getId());
+            $refresh->setLogicalId('refresh');
+            $refresh->setType('action');
+            $refresh->setSubType('other');
+            $refresh->save();
         }
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -671,7 +733,7 @@ class scan_ip extends eqLogic {
         }
     }
     
-    public static function createElement($_mac) { // Ynats
+    public static function createElement($_mac) { 
         $eqLogic = new scan_ip();
         $eqLogic->setEqType_name("scan_ip");
         $eqLogic->setIsEnable(0);
@@ -681,6 +743,71 @@ class scan_ip extends eqLogic {
         $eqLogic->save();
     }  
         
+    public static function getElementVueNetwork($_device, $_savingMac){
+            
+        $savingMac = self::getAlleqLogics();
+        $arrayCommentMac = self::getJson(scan_ip::$_jsonCommentairesEquipement);
+
+        foreach ($arrayCommentMac as $tempCommentMac) {
+            $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
+        }
+
+        if(empty($_savingMac[$_device["mac"]]["offline_time"])){
+            $return["offline_time"] = NULL;
+        } else {
+            $return["offline_time"] = $_savingMac[$_device["mac"]]["offline_time"];
+        }
+
+        if (isset($_savingMac[$_device["mac"]]["name"])) {
+            $return["name"] = $_savingMac[$_device["mac"]]["name"];
+            $return["nameSort"] = self::getCleanForSortTable($_savingMac[$_device["mac"]]["name"]);
+        } else {
+            $return["name"] = "| ". $_device["equipement"];
+            $return["nameSort"] = self::getCleanForSortTable($_device["equipement"]);
+        }
+
+        if (self::isOffline($return["offline_time"], $_device["time"]) == 0) {
+            $return["colorOnLine"] = "#50aa50";
+            $return["titleOnLine"] = "En ligne";
+            $return["lineSortOnline"] = 1;
+        } else {
+            $return["colorOnLine"] = "red";
+            $return["titleOnLine"] = "Hors ligne";
+            $return["lineSortOnline"] = 0;
+        }
+
+        if(!empty($commentMac[$_device["mac"]])){
+            $return["printComment"] = $commentMac[$_device["mac"]];
+            $return["printCommentSort"] = self::getCleanForSortTable($return["printComment"]);
+        } else {
+            $return["printComment"] = "";
+            $return["printCommentSort"] = "ZZZZZZZZZZZZZZZZZZZZ";
+        }
+
+        if (isset($_savingMac[$_device["mac"]]["enable"])) {
+            if ($_savingMac[$_device["mac"]]["enable"] == 1) {
+                $return["classPresent"] = "macPresentActif";
+                $return["textPresent"] = '<i class="fas fa-check"></i>';
+                $return["classSuivi"] = "spanScanIp EnableScanIp";
+                $return["titleEquipement"] = "Cet équipement est enregistré et activé";
+                $return["lineSortEquipement"] = 2;
+            } else {
+                $return["classPresent"] = "macPresentInactif";
+                $return["textPresent"] = '<i class="fas fa-exclamation-circle"></i>';
+                $return["classSuivi"] = "spanScanIp DisableScanIp";
+                $return["titleEquipement"] = "Cet équipement est enregistré mais désactivé";
+                $return["lineSortEquipement"] = 1;
+            }
+        } else {
+            $return["classPresent"] = "macAbsent";
+            $return["textPresent"] = '<i class="fas fa-info-circle"></i>';
+            $return["classSuivi"] = "spanScanIp NoneScanIp";
+            $return["titleEquipement"] = "Cet équipement n'est pas enregistré";
+            $return["lineSortEquipement"] = 0;
+        }
+
+        return $return;
+    }
     
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -690,6 +817,93 @@ class scan_ip extends eqLogic {
 # GESTION DU WIDGET
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
+    
+    public function createSimpleWidget($_version = 'dashboard', $_replace) {
+
+        log::add('scan_ip', 'debug', 'createSimpleWidget :.  Lancement');
+
+        $replace = $_replace;
+
+        $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
+        if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
+
+        if(!empty(self::getCommande('last_ip_v4', $this))){ $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this); } 
+        else { $replace["#last_ip_v4#"] = "..."; }
+
+        if(!empty(self::getCommande('update_date', $this))){ $replace["#update_date#"] = self::getCommande('update_date', $this); } 
+        else { $replace["#update_date#"] = "..."; }
+
+        $replace["#mac#"] = $this->getConfiguration("adress_mac");
+
+        if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
+        else{ $replace["#etat_cycle#"] = "#50aa50"; } 
+
+        if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){ $replace["#etat_last_ip#"] = ' color:orange;'; } 
+        else { $replace["#etat_last_ip#"] = ''; }
+
+        $wol = $this->getCmd(null,'wol');
+        $replace['#cmdWol#'] = (is_object($wol)) ? $wol->getId() : '';
+
+        if($this->getConfiguration("enable_wol") == 0){ $replace['#enableWol#'] = "display:none;"; }
+        else { $replace['#enableWol#'] = ""; }
+
+        return $replace;
+    }
+
+    public function createNetworkWidget($_version = 'dashboard', $_replace) {
+
+        log::add('scan_ip', 'debug', 'createNetworkWidget :.  Lancement');
+
+        $replace = $_replace;
+
+        $savingMac = scan_ip::getAlleqLogics();
+        $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
+        $arrayCommentMac = scan_ip::getJson(scan_ip::$_jsonCommentairesEquipement);
+
+        foreach ($arrayCommentMac as $tempCommentMac) {
+            $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
+        }
+
+        $replace["widget_network"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
+        <thead>
+            <tr style="background-color: grey !important; color: white !important;">
+                <th data-sort="int" class="scanTd" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
+                <th data-sort="string" class="scanTd" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
+                <th data-sort="int" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
+                <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> Adresse MAC</span></th>
+                <th data-sort="int" class="scanTd" style="width:110px;"><span class="scanHender"><b class="caret"></b> Ip</span></th>
+                <th data-sort="string" class="scanTd" style="width:375px;"><span class="scanHender"><b class="caret"></b> Nom</span></th>
+                <th data-sort="string" class="scanTd" style="width:375px;"><span class="scanHender"><b class="caret"></b> Commentaire</span></th>
+                <th data-sort="int" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> Date de mise à jour</span></th>
+            </tr>
+        </thead>
+        <tbody>';
+
+        $list = 1;
+        foreach ($ipsReseau["sort"] as $device) {
+
+            $element = scan_ip::getElementVueNetwork($device, $savingMac);
+
+            $replace["widget_network"] .= '<tr>'
+            . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'
+            . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip::getCycle("15px", $element["colorOnLine"]) . '</td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
+            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
+            . '</tr>';
+
+        }
+
+        $replace["widget_network"] .= '</tbody></table>';
+        $replace["widget_network"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
+        $replace["widget_network"] .= '<script>$(document).ready(function ($) { $("#scan_ip_network_widget").stupidtable(); });</script>';
+
+        return $replace;
+    }
+        
     public function toHtml($_version = 'dashboard') {
 
         log::add('scan_ip', 'debug', 'toHtml :.  Lancement');
@@ -702,32 +916,21 @@ class scan_ip extends eqLogic {
 
         $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
         $version = jeedom::versionAlias($_version);
-
-        $replace["#ip_v4#"] = self::getCommande('ip_v4', $this);
-        if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
         
-        if(!empty(self::getCommande('last_ip_v4', $this))){ $replace["#last_ip_v4#"] = self::getCommande('last_ip_v4', $this); } 
-        else { $replace["#last_ip_v4#"] = "..."; }
+        if(self::getWidgetType($this) == "normal"){
+            log::add('scan_ip', 'debug', 'toHtml :.  Création widget Normal');
+            $replace = self::createSimpleWidget($version = 'dashboard', $replace);
+            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
+            
+        } else {
+            log::add('scan_ip', 'debug', 'toHtml :.  Création widget Network');
+            $replace = self::createNetworkWidget($version = 'dashboard', $replace);
+            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            return template_replace($replace, getTemplate('core', $version, 'scan_ip_network', 'scan_ip'));
+        }
         
-        if(!empty(self::getCommande('update_date', $this))){ $replace["#update_date#"] = self::getCommande('update_date', $this); } 
-        else { $replace["#update_date#"] = "..."; }
-
-        $replace["#mac#"] = $this->getConfiguration("adress_mac");
-
-        if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
-        else{ $replace["#etat_cycle#"] = "#50aa50"; } 
-
-        if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){ $replace["#etat_last_ip#"] = ' color:orange;'; } 
-        else { $replace["#etat_last_ip#"] = ''; }
         
-        $wol = $this->getCmd(null,'wol');
-        $replace['#cmdWol#'] = (is_object($wol)) ? $wol->getId() : '';
-        
-        if($this->getConfiguration("enable_wol") == 0){ $replace['#enableWol#'] = "display:none;"; }
-        else { $replace['#enableWol#'] = ""; }
-        
-        log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-        return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
         
     }
 
