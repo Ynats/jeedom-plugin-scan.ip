@@ -693,10 +693,10 @@ class scan_ip extends eqLogic {
     }
 
     public static function showEquCadence() {
-        if (self::getConfigMode() == "debug") {
-            echo "";
-        } else {
+        if (self::getConfigMode() == "normal") {
             echo " style='display:none;'";
+        } else {
+            echo "";
         }
     }
 

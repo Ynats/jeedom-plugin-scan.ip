@@ -1,4 +1,21 @@
 
+$("#hiden_type_widget").change(function () {
+    if($("#hiden_type_widget").val() == "network"){
+        $("#hiden_type_normal").hide();
+        $("#scan_ip_info_widget").show();
+        $("[data-action='copy']").hide();
+        $("[data-action='configure']").hide();
+        $("[data-action='remove']").hide();
+    } else { 
+        $("#hiden_type_normal").show();
+        $("#scan_ip_info_widget").hide();
+        $("#scan_ip_name_eq").style("display:none");
+        $("[data-action='copy']").show();
+        $("[data-action='configure']").show();
+        $("[data-action='remove']").show();
+    }
+});
+
 if (!$("#offline_time option:selected").length) {
     $("#offline_time option[value='4']").attr('selected', 'selected');
 }

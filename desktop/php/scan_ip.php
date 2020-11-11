@@ -256,24 +256,7 @@ foreach ($eqLogics as $eqLogic) {
 
     </div>
 </div>
-<script>
-$("#hiden_type_widget").change(function () {
-    if($("#hiden_type_widget").val() == "network"){
-        $("#hiden_type_normal").hide();
-        $("#scan_ip_info_widget").show();
-        $("[data-action='copy']").hide();
-        $("[data-action='configure']").hide();
-        $("[data-action='remove']").hide();
-    } else { 
-        $("#hiden_type_normal").show();
-        $("#scan_ip_info_widget").hide();
-        $("#scan_ip_name_eq").style("display:none");
-        $("[data-action='copy']").show();
-        $("[data-action='configure']").show();
-        $("[data-action='remove']").show();
-    }
-});
-</script>
+
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'scan_ip_equ', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
