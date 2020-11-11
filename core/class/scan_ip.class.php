@@ -79,6 +79,8 @@ class scan_ip extends eqLogic {
                 $scan_ip->setIsVisible(0); 
                 $scan_ip->setIsEnable(0);
             }
+            $scan_ip->setDisplay('height',"570px");
+            $scan_ip->setDisplay('width',"1130px");
             $scan_ip->setName("Scan.Ip Widget Network");
             $scan_ip->setConfiguration('type_widget', 'network');
             $scan_ip->save();
@@ -469,8 +471,8 @@ class scan_ip extends eqLogic {
             $return[$scan_ip->getConfiguration("adress_mac")]["name"] = $scan_ip->name;
             $return[$scan_ip->getConfiguration("adress_mac")]["enable"] = $scan_ip->getIsEnable();
             $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", self::$_defaut_offline_time);
-        }
-        log::add('scan_ip', 'debug', 'getAlleqLogics :. "' . $scan_ip->name .'"');
+            log::add('scan_ip', 'debug', 'getAlleqLogics :. "' . $scan_ip->name .'"');
+        } 
         return $return;
     }
     
@@ -488,35 +490,39 @@ class scan_ip extends eqLogic {
         if($_mapping == NULL){
             $_mapping = self::getJson(self::$_jsonMapping);
         }
+        
+        if(self::getWidgetType($eqlogic) == "normal"){
 
-        $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"), $_mapping);
-        $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
-              
-        if(self::isOffline($offline_time, $device["time"]) == 0){
-            $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
-            $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
-            if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
-            $eqlogic->checkAndUpdateCmd('on_line', 1); 
-        } else {
-            $eqlogic->checkAndUpdateCmd('on_line', 0);
-            $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
-            $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
-        }
+            $device = self::searchByMac($eqlogic->getConfiguration("adress_mac"), $_mapping);
+            $offline_time = $eqlogic->getConfiguration("offline_time", self::$_defaut_offline_time);
+
+            if(self::isOffline($offline_time, $device["time"]) == 0){
+                $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
+                $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
+                if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
+                $eqlogic->checkAndUpdateCmd('on_line', 1); 
+            } else {
+                $eqlogic->checkAndUpdateCmd('on_line', 0);
+                $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
+                $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+            }
+
+            ///////////////////////////////////////////
+            // Mise à jour de l'élément associé
+
+                self::majElementsAssocies($eqlogic, $device);
+
+            // Mise à jour de l'élément associé
+            ///////////////////////////////////////////
+
+            if(!empty($device["time"])) {
+                $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
+                $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+            } else {
+                $eqlogic->checkAndUpdateCmd('update_time', NULL);
+                $eqlogic->checkAndUpdateCmd('update_date', NULL);
+            }
         
-        ///////////////////////////////////////////
-        // Mise à jour de l'élément associé
-        
-        self::majElementsAssocies($eqlogic, $device);
-        
-        // Mise à jour de l'élément associé
-        ///////////////////////////////////////////
-        
-        if(!empty($device["time"])) {
-            $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
-            $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
-        } else {
-            $eqlogic->checkAndUpdateCmd('update_time', NULL);
-            $eqlogic->checkAndUpdateCmd('update_date', NULL);
         }
         
         $eqlogic->toHtml('dashboard');
@@ -743,15 +749,8 @@ class scan_ip extends eqLogic {
         $eqLogic->save();
     }  
         
-    public static function getElementVueNetwork($_device, $_savingMac){
-            
-        $savingMac = self::getAlleqLogics();
-        $arrayCommentMac = self::getJson(scan_ip::$_jsonCommentairesEquipement);
-
-        foreach ($arrayCommentMac as $tempCommentMac) {
-            $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
-        }
-
+    public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
+ 
         if(empty($_savingMac[$_device["mac"]]["offline_time"])){
             $return["offline_time"] = NULL;
         } else {
@@ -776,8 +775,8 @@ class scan_ip extends eqLogic {
             $return["lineSortOnline"] = 0;
         }
 
-        if(!empty($commentMac[$_device["mac"]])){
-            $return["printComment"] = $commentMac[$_device["mac"]];
+        if(!empty($_commentMac[$_device["mac"]])){
+            $return["printComment"] = $_commentMac[$_device["mac"]];
             $return["printCommentSort"] = self::getCleanForSortTable($return["printComment"]);
         } else {
             $return["printComment"] = "";
@@ -882,7 +881,7 @@ class scan_ip extends eqLogic {
         $list = 1;
         foreach ($ipsReseau["sort"] as $device) {
 
-            $element = scan_ip::getElementVueNetwork($device, $savingMac);
+            $element = scan_ip::getElementVueNetwork($device, $savingMac, $commentMac);
 
             $replace["widget_network"] .= '<tr>'
             . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'
@@ -900,7 +899,7 @@ class scan_ip extends eqLogic {
         $replace["widget_network"] .= '</tbody></table>';
         $replace["widget_network"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
         $replace["widget_network"] .= '<script>$(document).ready(function ($) { $("#scan_ip_network_widget").stupidtable(); });</script>';
-
+        
         return $replace;
     }
         
@@ -917,17 +916,16 @@ class scan_ip extends eqLogic {
         $this->emptyCacheWidget(); //vide le cache. Pratique pour le développement
         $version = jeedom::versionAlias($_version);
         
-        if(self::getWidgetType($this) == "normal"){
-            log::add('scan_ip', 'debug', 'toHtml :.  Création widget Normal');
-            $replace = self::createSimpleWidget($version = 'dashboard', $replace);
-            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip'));
-            
-        } else {
+        if(self::getWidgetType($this) == "network"){
             log::add('scan_ip', 'debug', 'toHtml :.  Création widget Network');
             $replace = self::createNetworkWidget($version = 'dashboard', $replace);
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
-            return template_replace($replace, getTemplate('core', $version, 'scan_ip_network', 'scan_ip'));
+            return template_replace($replace, getTemplate('core', $version, 'scan_ip_network', 'scan_ip')); 
+        } else {
+            log::add('scan_ip', 'debug', 'toHtml :.  Création widget Normal');
+            $replace = self::createSimpleWidget($version = 'dashboard', $replace);
+            log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
+            return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip')); 
         }
         
         
@@ -1108,7 +1106,7 @@ class scan_ip extends eqLogic {
     public static function getJson($_file) {
         log::add('scan_ip', 'debug', 'getJson :. Lancement');
         $return = json_decode(file_get_contents($_file.".json"),true);
-        log::add('scan_ip', 'debug', 'getJson :. Chargement du Json Mapping');
+        log::add('scan_ip', 'debug', 'getJson :. ' . $_file . ".json");
         return $return;
     }
     
@@ -1553,10 +1551,11 @@ class scan_ipCmd extends cmd {
         log::add('scan_ip', 'debug', 'execute :. Lancement');
         
         $eqlogic = $this->getEqLogic();
+        $mapping = scan_ip::getJson(scan_ip::$_jsonMapping);
+        
         switch ($this->getLogicalId()) { //vérifie le logicalid de la commande 			
             case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
-                $mapping = scan_ip::getJson(self::$_jsonMapping);
                 scan_ip::cmdRefresh($eqlogic, $mapping);
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
