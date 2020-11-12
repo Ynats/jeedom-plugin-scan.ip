@@ -65,8 +65,8 @@ scan_ip_tools::cleanAfterUpdate();
             </label>
             <div class="col-lg-5">
                 <select class="configKey form-control" id="cron_pass" data-l1key="widget_new_equipement">
-                    <option value="1">{{Afficher le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau)}}</option>
-                    <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau)}}</option>
+                    <option value="1">{{Afficher le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
+                    <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
                 </select> 
             </div>
         </div> 
