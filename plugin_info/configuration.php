@@ -46,7 +46,7 @@ scan_ip_tools::cleanAfterUpdate();
     
     <fieldset>
 <?php
-        scan_ip_tools::vueSubTitle("{{Widget}}", "config");
+        scan_ip_tools::vueSubTitle("{{Widgets dédiés à Scan.Ip}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Votre réseau}}

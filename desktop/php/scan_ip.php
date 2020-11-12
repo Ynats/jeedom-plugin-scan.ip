@@ -6,12 +6,7 @@ $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
-foreach ($eqLogics as $eqLogic) {
-    if($eqLogic->getConfiguration('type_widget', 'normal') == "network"){
-        $idWidgetNetwork = $eqLogic->getId();
-        break;
-    }
-}
+//$specWidget = scan_ip_widgets::getIdWidgetSpeciaux();
 
 ?>
 
@@ -59,18 +54,39 @@ foreach ($eqLogics as $eqLogic) {
         </div>
         <legend><i class="fas fa-table"></i> {{Mes configurations}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
+        
+        <legend><i class="fas fa-sitemap"></i>  {{Vos équipements MAC}}</legend>
         <div class="eqLogicThumbnailContainer">
             <?php
             foreach ($eqLogics as $eqLogic) {
-                $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
-                echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
-                echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
-                echo '<br>';
-                echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
-                echo '</div>';
+                if($eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
+                    echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
+                    echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+                    echo '<br>';
+                    echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
+                    echo '</div>';
+                }
             }
             ?>
         </div>
+        
+        <legend><i class="fas fa-cogs"></i>  {{Widgets dédiés et gérés par Scan.Ip}}</legend>
+        <div class="eqLogicThumbnailContainer">
+            <?php
+            foreach ($eqLogics as $eqLogic) {
+                if($eqLogic->getConfiguration('type_widget', 'normal') != "normal"){
+                    $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
+                    echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
+                    echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+                    echo '<br>';
+                    echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
+                    echo '</div>';
+                }
+            }
+            ?>
+        </div>
+        
     </div>
 
     <div class="col-xs-12 eqLogic" style="display: none;">
@@ -135,20 +151,25 @@ foreach ($eqLogics as $eqLogic) {
                         <div id="scan_ip_info_widget" style="display:none;">
                             <br />
                             <div class="form-group" >
-                                <label class="col-sm-3 control-label">Information</label>
+                                <label class="col-sm-3 control-label">Attention Widget dédié au plugin</label>
                                 <div class="col-sm-9">
-                                    <span style="color:green;">Cet équipement est géré par Scan.Ip et permet d'afficher l'état de votre réseau dans un widget dédié.</span>
+                                    <span>Cet équipement est géré par Scan.Ip et permet d'afficher l'état de votre réseau dans un widget dédié.</span>
                                 </div>
                             </div>
                             <div class="form-group" >
                                 <label class="col-sm-3 control-label"></label>
                                 <div class="col-sm-9">
-                                    <span style="color:green;">Pour gérer sa visibilité, vous devez passer par l'espace configuration du plugin. </span>
+                                    <span>Pour gérer sa visibilité, vous devez passer par l'espace configuration du plugin. </span>
                                 </div>
                             </div>
-                            
-                        </div>
-                        
+                            <div class="form-group" >
+                                <label class="col-sm-3 control-label"></label>
+                                <div class="cursor eqLogicAction col-sm-9" data-action="gotoPluginConf" style="color:green;">
+                                    <i class="fas fa-wrench"></i>
+                                    <span>{{Cliquez ici pour ouvrir la configuration}}</span>
+                                </div>
+                            </div>
+                        </div>    
                         
                     <div id="hiden_type_normal">
                         

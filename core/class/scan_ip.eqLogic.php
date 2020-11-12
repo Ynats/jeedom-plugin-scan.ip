@@ -44,7 +44,9 @@ class scan_ip_eqLogic extends eqLogic {
         
         $allEquipementsBridges = scan_ip_bridges::bridges_getEquiementsById();
         
+        $return = NULL;
         $a = 0;
+        
         $eqLogics = eqLogic::byType('scan_ip');
         $bridge = scan_ip_bridges::bridges_getElements();
         
@@ -81,4 +83,15 @@ class scan_ip_eqLogic extends eqLogic {
        return $return;
     }
     
+    public static function getEquipementsbyMac(){
+        $eqLogics = eqLogic::byType('scan_ip');
+        $return = NULL;
+        foreach ($eqLogics as $scan_ip) {
+            if(scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
+                $return[] = $scan_ip->getConfiguration("adress_mac");
+            }
+        }
+        return $return;
+    }
+
 }

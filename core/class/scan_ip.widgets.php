@@ -79,8 +79,8 @@ class scan_ip_widgets extends eqLogic {
                 $scan_ip->setIsVisible(0); 
                 $scan_ip->setIsEnable(0);
             }
-            $scan_ip->setDisplay('height',"300px");
-            $scan_ip->setDisplay('width',"400px");
+            $scan_ip->setDisplay('height',"230px");
+            $scan_ip->setDisplay('width',"712px");
             $scan_ip->setName("Scan.Ip Widget Alertes");
             $scan_ip->setConfiguration('type_widget', 'new_equipement');
             $scan_ip->save();
@@ -104,18 +104,15 @@ class scan_ip_widgets extends eqLogic {
         $eqLogic->save();        
     }
     
-    public static function createNetworkWidget($_version = 'dashboard', $_replace) {
+    public static function createNetworkWidget($_version = 'dashboard', $_replace, $_reseau) {
 
         log::add('scan_ip', 'debug', 'createNetworkWidget :.  Lancement');
 
         $replace = $_replace;
-
         $savingMac = scan_ip_eqLogic::getAlleqLogics();
-        $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
-        
         $commentMac = scan_ip_json::getCommentaires();
 
-        $replace["widget_network"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
+        $replace["#widget_network#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
                 <th data-sort="int" class="scanTd" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
@@ -131,11 +128,11 @@ class scan_ip_widgets extends eqLogic {
         <tbody>';
 
         $list = 1;
-        foreach ($ipsReseau["sort"] as $device) {
+        foreach ($_reseau["sort"] as $device) {
 
             $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
 
-            $replace["widget_network"] .= '<tr>'
+            $replace["#widget_network#"] .= '<tr>'
             . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'
             . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
             . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
@@ -148,14 +145,50 @@ class scan_ip_widgets extends eqLogic {
 
         }
 
-        $replace["widget_network"] .= '</tbody></table>';
-        $replace["widget_network"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
-        $replace["widget_network"] .= '<script>$(document).ready(function ($) { $("#scan_ip_network_widget").stupidtable(); });</script>';
+        $replace["#widget_network#"] .= '</tbody></table>';
+        $replace["#widget_network#"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
+        $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { $("#scan_ip_network_widget").stupidtable(); });</script>';
         
         return $replace;
     }
     
-    public static function createSimpleWidget($scan_ip, $_version = 'dashboard', $_replace) {
+    public static function createAlerteWidget($scan_ip, $_version = 'dashboard', $_replace) {
+
+        log::add('scan_ip', 'debug', 'createAlerteWidget :.  Lancement');
+
+        $replace = $_replace;
+        
+        $temp = array();
+        
+        $replace["#last_unknown_equipement#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;">
+        <thead>
+            <tr style="background-color: grey !important; color: white !important;">
+                <th class="scanTd" style="width:170px;">Date</th>
+                <th class="scanTd" style="width:130px;">Adresse MAC</th>
+                <th class="scanTd" style="width:110px;">Ip</th>
+                <th class="scanTd" style="width:375px;">Information</th>
+            </tr>
+        </thead>
+        <tbody>';
+        
+        for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
+            if(!empty(scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip))){  
+                $replace["#last_unknown_equipement#"] .= '<tr>'
+                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip) . '</td>'
+                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_mac", $scan_ip) . '</td>'
+                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_ip_v4", $scan_ip) . '</td>'
+                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_equipement", $scan_ip) . '</td>'
+                . '</tr>';
+            }
+            
+        }
+        
+        $replace["#last_unknown_equipement#"] .= '</tbody></table>';
+        
+        return $replace;
+    }
+    
+    public static function createSimpleWidget($scan_ip, $_version = "dashboard", $_replace) {
 
         log::add('scan_ip', 'debug', 'createSimpleWidget :.  Lancement');
 
@@ -185,6 +218,26 @@ class scan_ip_widgets extends eqLogic {
         else { $replace['#enableWol#'] = ""; }
 
         return $replace;
+    }
+    
+    public static function getIdWidgetSpeciaux(){
+        $return = NULL;
+        $widgetDetect = 0;
+        $widgetMax = 2;
+        foreach ($eqLogics as $eqLogic) {
+            if($eqLogic->getConfiguration('type_widget', 'normal') == "network"){
+                $return["network"] = $eqLogic->getId();
+                $widgetDetect++;
+            } 
+            elseif($eqLogic->getConfiguration('type_widget', 'normal') == "new_equipement"){
+                $return["new_equipement"] = $eqLogic->getId();
+                $widgetDetect++;
+            }
+            if($widgetDetect >= $widgetMax){
+                break;
+            }
+        }
+        return $return;
     }
     
 }

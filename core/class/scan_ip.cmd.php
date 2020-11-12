@@ -110,15 +110,59 @@ class scan_ip_cmd extends eqLogic {
     public function setCmdAlerteNewEquipement($_scanIp){
         
         for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
-            $info = $_scanIp->getCmd(null, 'last_'.$i);
+            $info = $_scanIp->getCmd(null, 'last_'.$i.'_mac');
             if (!is_object($info)) {
                 $info = new scan_ipCmd();
-                $info->setName(__('Connexion '.$i, __FILE__));
+                $info->setName(__('Connexion '.$i.' MAC', __FILE__));
             }
             $info->setEqLogic_id($_scanIp->getId());
-            $info->setLogicalId('last_'.$i);
+            $info->setLogicalId('last_'.$i.'_mac');
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+            
+            $info = $_scanIp->getCmd(null, 'last_'.$i.'_time');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Connexion '.$i.' Time', __FILE__));
+            }
+            $info->setEqLogic_id($_scanIp->getId());
+            $info->setLogicalId('last_'.$i.'_time');
             $info->setType('info');
             $info->setSubType('numeric');
+            $info->save();
+            
+            $info = $_scanIp->getCmd(null, 'last_'.$i.'_date');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Connexion '.$i.' Date', __FILE__));
+            }
+            $info->setEqLogic_id($_scanIp->getId());
+            $info->setLogicalId('last_'.$i.'_date');
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+            
+            $info = $_scanIp->getCmd(null, 'last_'.$i.'_ip_v4');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Connexion '.$i.' IpV4', __FILE__));
+            }
+            $info->setEqLogic_id($_scanIp->getId());
+            $info->setLogicalId('last_'.$i.'_ip_v4');
+            $info->setType('info');
+            $info->setSubType('string');
+            $info->save();
+            
+            $info = $_scanIp->getCmd(null, 'last_'.$i.'_equipement');
+            if (!is_object($info)) {
+                $info = new scan_ipCmd();
+                $info->setName(__('Connexion '.$i.' Equipement', __FILE__));
+            }
+            $info->setEqLogic_id($_scanIp->getId());
+            $info->setLogicalId('last_'.$i.'_equipement');
+            $info->setType('info');
+            $info->setSubType('string');
             $info->save();
         }
         
@@ -154,50 +198,107 @@ class scan_ip_cmd extends eqLogic {
         return (is_object($tmp_cmd)) ? $tmp_cmd->execCmd() : '';
     }
     
-    public static function cmdRefresh($eqlogic, $_mapping = NULL){
+    public static function cmdRefreshWidgetNormal($_eqlogic, $_mapping = NULL){
+        
+        $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("adress_mac"), $_mapping);
+        $offline_time = $_eqlogic->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
+
+        if(scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
+            $_eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
+            $last_ip_v4 = self::getCommande('last_ip_v4', $_eqlogic);
+            if($last_ip_v4 == "") { $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
+            $_eqlogic->checkAndUpdateCmd('on_line', 1); 
+        } else {
+            $_eqlogic->checkAndUpdateCmd('on_line', 0);
+            $_eqlogic->checkAndUpdateCmd('ip_v4', NULL);
+            $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+        }
+
+        ///////////////////////////////////////////
+        // Mise à jour de l'élément associé
+
+        scan_ip_bridges::majElementsAssocies($_eqlogic, $device);
+
+        // Mise à jour de l'élément associé
+        ///////////////////////////////////////////
+
+        if(!empty($device["time"])) {
+            $_eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
+            $_eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
+        } else {
+            $_eqlogic->checkAndUpdateCmd('update_time', NULL);
+            $_eqlogic->checkAndUpdateCmd('update_date', NULL);
+        }
+ 
+    }
+    
+    public static function cmdRefreshWidgetAlerte($_eqlogic, $_mapping = NULL){
+        
+        $temp = array();
+        
+        $mac = scan_ip_eqLogic::getEquipementsbyMac();
+        foreach ($_mapping["byTime"] as $time => $allElement) { 
+            foreach ($allElement as $element) { 
+                if(!in_array($element["mac"], $mac)){
+                    $temp[] = array(
+                        "time" => $time, 
+                        "mac" => $element["mac"], 
+                        "ip_v4" => $element["ip_v4"],
+                        "equipement" => $element["equipement"]
+                    );   
+                }  
+            }
+        }
+        
+        for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
+            
+            if(!empty($temp[$i]["mac"])){
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_mac', $temp[$i]["mac"]);
+            } else {
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_mac', NULL);
+            }
+            if(!empty($temp[$i]["time"])){
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_time', $temp[$i]["time"]);
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_date', date("d/m/Y H:i:s", $temp[$i]["time"]));
+            } else {
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_time', NULL);
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_date', NULL);
+            }
+            if(!empty($temp[$i]["equipement"])){
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_equipement', $temp[$i]["equipement"]);
+            } else {
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_equipement', NULL);
+            }
+            if(!empty($temp[$i]["ip_v4"])){
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_ip_v4', $temp[$i]["ip_v4"]);
+            } else {
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_ip_v4', NULL);
+            }
+        }
+        
+    }
+    
+    public static function cmdRefresh($_eqlogic, $_mapping = NULL){
 
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         
         if($_mapping == NULL){
-            $_mapping = scan_ip_json::getJson(scan_ip::$_jsonMapping);
+            $mapping = scan_ip_json::getJson(scan_ip::$_jsonMapping);
+        } else {
+            $mapping = $_mapping;
         }
         
-        if(scan_ip_widgets::getWidgetType($eqlogic) == "normal"){
-
-            $device = scan_ip_json::searchByMac($eqlogic->getConfiguration("adress_mac"), $_mapping);
-            $offline_time = $eqlogic->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
-
-            if(scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
-                $eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
-                $last_ip_v4 = self::getCommande('last_ip_v4', $eqlogic);
-                if($last_ip_v4 == "") { $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
-                $eqlogic->checkAndUpdateCmd('on_line', 1); 
-            } else {
-                $eqlogic->checkAndUpdateCmd('on_line', 0);
-                $eqlogic->checkAndUpdateCmd('ip_v4', NULL);
-                $eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
-            }
-
-            ///////////////////////////////////////////
-            // Mise à jour de l'élément associé
-
-            scan_ip_bridges::majElementsAssocies($eqlogic, $device);
-
-            // Mise à jour de l'élément associé
-            ///////////////////////////////////////////
-
-            if(!empty($device["time"])) {
-                $eqlogic->checkAndUpdateCmd('update_time', $device["time"]);
-                $eqlogic->checkAndUpdateCmd('update_date', date("d/m/Y H:i:s", $device["time"]));
-            } else {
-                $eqlogic->checkAndUpdateCmd('update_time', NULL);
-                $eqlogic->checkAndUpdateCmd('update_date', NULL);
-            }
-        
+        switch (scan_ip_widgets::getWidgetType($_eqlogic)) {
+            case "normal":
+                self::cmdRefreshWidgetNormal($_eqlogic, $mapping);
+                break;
+            case "new_equipement":
+                self::cmdRefreshWidgetAlerte($_eqlogic, $mapping);
+                break;
         }
         
-        $eqlogic->toHtml('dashboard');
-        $eqlogic->refreshWidget();
+        $_eqlogic->toHtml('dashboard');
+        $_eqlogic->refreshWidget();
     }
     
 }

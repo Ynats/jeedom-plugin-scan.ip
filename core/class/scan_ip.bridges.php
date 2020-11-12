@@ -179,7 +179,7 @@ class scan_ip_bridges extends eqLogic {
         }
     }
     
-    public static function majElementsAssocies($eqlogic, $device){
+    public static function majElementsAssocies($_eqlogic, $_device){
         log::add('scan_ip', 'debug', 'majElementsAssocies :. Lancement');
         $deamons = NULL;
         
@@ -188,7 +188,7 @@ class scan_ip_bridges extends eqLogic {
         if($bridges != FALSE){ 
             for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
                 
-                $plug_element_plugin = $eqlogic->getConfiguration("plug_element_plugin_".$index);
+                $plug_element_plugin = $_eqlogic->getConfiguration("plug_element_plugin_".$index);
                 
                 if($plug_element_plugin != ""){
                     
@@ -196,18 +196,18 @@ class scan_ip_bridges extends eqLogic {
                     
                     if(self::bridges_pluginExists($testBridge[0])){
                         if(self::bridges_existId($testBridge[1]) == TRUE){
-                            if($device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
-                                $add_deamon = self::bridges_majElement($device["ip_v4"], $plug_element_plugin);
+                            if($_device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                                $add_deamon = self::bridges_majElement($_device["ip_v4"], $plug_element_plugin);
                                 $deamons = scan_ip_tools::arrayCompose($deamons, $add_deamon);
                             }
                         } else {
-                            $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
-                            $eqlogic->save();
+                            $_eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                            $_eqlogic->save();
                         }
                     } else {
                         log::add('scan_ip', 'debug', 'majElementsAssocies :. Suppression du bridge car le plugin "'.$testBridge[0].'" n\'est pas installé');
-                        $eqlogic->setConfiguration("plug_element_plugin_".$index, "");
-                        $eqlogic->save();
+                        $_eqlogic->setConfiguration("plug_element_plugin_".$index, "");
+                        $_eqlogic->save();
                     } 
                 }
                 
