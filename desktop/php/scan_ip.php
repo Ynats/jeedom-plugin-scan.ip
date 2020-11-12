@@ -125,6 +125,13 @@ foreach ($eqLogics as $eqLogic) {
                                 ?>
                             </div>
                         </div>
+                        <div style="display:none;">
+                            <select id="hiden_type_widget" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_widget">
+                                <option value="normal">Normal</option>
+                                <option value="network">Network</option>
+                                <option value="new_equipement">Alerte</option>
+                            </select>
+                        </div>
                         <div id="scan_ip_info_widget" style="display:none;">
                             <br />
                             <div class="form-group" >
@@ -151,26 +158,17 @@ foreach ($eqLogics as $eqLogic) {
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
-                        </div>
-                        
-                        <div style="display:none;">
-                            <select id="hiden_type_widget" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_widget">
-                                <option value="normal">Normal</option>
-                                <option value="network">Network</option>
-                            </select>
-                        </div>
-                        
+                        </div>          
 <?php    
-                        scan_ip::vueSubTitle("{{Associer une adresse MAC}}");
-?>
-                        
+                        scan_ip_tools::vueSubTitle("{{Associer une adresse MAC}}");
+?>                   
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
                             <div class="col-sm-5">
                                 <select id="scan_ip_mac_select" style="color: #039be5 !important;" class="form-control">
                                     <option value="">Sélectionner parmi les adresses Mac non enregistrées</option>
                                     <?php
-                                        scan_ip::printSelectOptionAdressMac();
+                                        scan_ip_json::printSelectOptionAdressMac();
                                     ?>
                                 </select>
                             </div>
@@ -179,7 +177,7 @@ foreach ($eqLogics as $eqLogic) {
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
                             <div class="col-sm-5">
-                                <input type="text" onchange="hideSelect(<?php echo scan_ip::$_defaut_bridges_by_equipement ?>);" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                                <input type="text" onchange="hideSelect(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -190,9 +188,9 @@ foreach ($eqLogics as $eqLogic) {
                         </div>
                      
                                   
-                    <div id="show_off_line"<?php scan_ip::showEquCadence() ?>>                        
+                    <div id="show_off_line"<?php scan_ip_tools::showEquCadence() ?>>                        
 <?php
-                        scan_ip::vueSubTitle("{{On Line ou Off line ? (Mode avancé)}}");
+                        scan_ip_tools::vueSubTitle("{{On Line ou Off line ? (Mode avancé)}}");
 ?>                        
 
                         <div class="form-group">
@@ -223,7 +221,7 @@ foreach ($eqLogics as $eqLogic) {
                     </div>
                         
 <?php
-                        scan_ip::vueSubTitle("{{Réveiller votre équipement à distance ?}}");
+                        scan_ip_tools::vueSubTitle("{{Réveiller votre équipement à distance ?}}");
 ?> 
                         <div class="form-group">
                             <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement soit compatible et/ou que l'option ait bien été activé pour que cela fonctionne}}"></i></sup>
@@ -237,8 +235,8 @@ foreach ($eqLogics as $eqLogic) {
                         </div>
                         
 <?php
-                            scan_ip::vueSubTitle("Associer cette adresse MAC à un ou plusieurs bridges (optionnel)");
-                            scan_ip::bridges_printOptionEquiements();
+                            scan_ip_tools::vueSubTitle("Associer cette adresse MAC à un ou plusieurs bridges (optionnel)");
+                            scan_ip_bridges::bridges_printOptionEquiements();
  ?>
                    
                         </div>

@@ -3,16 +3,15 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_synologyapi {
+class scan_ip_Abeille {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "synologyapi";
-    public static $name = "_name";
-    public static $ip = "_server";
-
+    public static $plug = "Abeille";
+    public static $ip = "IpWifiZigate";
+    
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
     *
@@ -26,21 +25,17 @@ class scan_ip_synologyapi {
     public function getAllElements(){
 
         $return = NULL;
-        
-        for($i = 1; $i <= 3; $i++){
-             if(!empty(config::byKey("Syno".$i.self::$ip, self::$plug))) {
+        $zigateNb = config::byKey('zigateNb', self::$plug);
 
+        for($i = 1; $i <= $zigateNb; $i++){
+            if(config::byKey('AbeilleType'.$i, self::$plug) == "WIFI" AND !empty(config::byKey(self::$ip.$i, self::$plug))){
                 $return[self::$plug.$i]["plugin"] = self::$plug;
                 $return[self::$plug.$i]["plugin_print"] = self::$plug;
-                if(empty(config::byKey("Syno".$i.self::$ip, self::$plug))) {
-                    $return[self::$plug.$i]["name"] = "Syno".$i;
-                } else {
-                    $return[self::$plug.$i]["name"] = config::byKey("Syno".$i.self::$name, self::$plug);
-                }
-                $return[self::$plug.$i]["id"] = "Syno".$i.self::$ip;
+                $return[self::$plug.$i]["name"] =  "Zigate".$i;
+                $return[self::$plug.$i]["id"] = self::$ip.$i;
                 
-                $value = config::byKey("Syno".$i.self::$ip, self::$plug);
-                if(preg_match(scan_ip::getRegex("ip_v4"), $value, $match)){
+                $value = config::byKey(self::$ip.$i, self::$plug);
+                if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value, $match)){
                     $return[self::$plug.$i]["ip_v4"] = $match[0];
                 } else {
                    $return[self::$plug.$i]["ip_v4"] = NULL;
@@ -59,14 +54,14 @@ class scan_ip_synologyapi {
     * 
     */
     public function majIpElement($_ip ,$_id){
-       
+        
         $old = config::byKey($_id, self::$plug);
-        preg_match(scan_ip::getRegex("ip_v4"), $old, $match);
+        preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);
         if($match[0] != $_ip) { 
-            $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old);
+            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $old);
             config::save($_id, $change_ip, self::$plug);
             // Retourne le deamon à lancer
-            return NULL;
+            return self::$plug;
         }
         
     }

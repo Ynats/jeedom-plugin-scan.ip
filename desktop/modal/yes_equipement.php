@@ -18,6 +18,9 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
+
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.eqLogic.php";
 ?>
 
 <style>
@@ -50,7 +53,7 @@ if (!isConnect('admin')) {
                 <tbody>
 <?php
                     $list = 1;
-                    foreach (scan_ip::showEquipements() as $equipement) {
+                    foreach (scan_ip_eqLogic::showEquipements() as $equipement) {
            
                         if($equipement["on_line"] == 0 AND $equipement["ip_v4"] == ""){ 
                             $color = "red"; 
@@ -64,14 +67,14 @@ if (!isConnect('admin')) {
                             $statut = "En ligne";
                             $statutColor = "color:#50aa50";
                             $sortOnLine = 1;
-                            $sortip_v4 = scan_ip::getCleanForSortTable($equipement["ip_v4"]);
+                            $sortip_v4 = scan_ip_tools::getCleanForSortTable($equipement["ip_v4"]);
                         }
                         
                         if(empty($equipement["last_ip_v4"])){ 
                             $equipement["last_ip_v4"] = "..."; 
                             $sortlast_ip_v4 = 0;
                         } else {
-                            $sortlast_ip_v4 = scan_ip::getCleanForSortTable($equipement["last_ip_v4"]);
+                            $sortlast_ip_v4 = scan_ip_tools::getCleanForSortTable($equipement["last_ip_v4"]);
                         }
                         if(empty($equipement["update_date"])){ $equipement["update_date"] = "..."; }
                         if(empty($equipement["plug_element_plugin"])){ $equipement["plug_element_plugin"] = "..."; }
@@ -85,14 +88,14 @@ if (!isConnect('admin')) {
                         
                         echo '<tr>'
                             . '<td style="text-align:center;" class="">' . $list++ . '</td>'
-                            . '<td class="scanTd" style="padding-left:10px;"><span style="display:none;">' . $sortOnLine . '</span>' . scan_ip::getCycle("15px", $color) . '</td>'
+                            . '<td class="scanTd" style="padding-left:10px;"><span style="display:none;">' . $sortOnLine . '</span>' . scan_ip_tools::getCycle("15px", $color) . '</td>'
                             . '<td class="scanTd">' . $equipement["link"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                             . '<td class="scanTd"><span style="display:none;">' . $sortip_v4 . '</span>' . $equipement["ip_v4"] . '</td>'
                             . '<td class="scanTd" style="'.$style_last.'"><span style="display:none;">' . $sortlast_ip_v4 . '</span>' . $equipement["last_ip_v4"] . '</td>'
                             . '<td class="scanTd">' . $equipement["update_date"] . '</td>'
-                            . '<td class="scanTd" style="'.$statutColor.'"><span style="display:none;">' . scan_ip::getCleanForSortTable($statut) . '</span>' . $statut . '</td>'
-                            . '<td class="scanTd""><span style="display:none;">' . scan_ip::getCleanForSortTable($equipement["plug_element_plugin"]) . '</span>' . $equipement["plug_element_plugin"] . '</td>'
+                            . '<td class="scanTd" style="'.$statutColor.'"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($statut) . '</span>' . $statut . '</td>'
+                            . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["plug_element_plugin"]) . '</span>' . $equipement["plug_element_plugin"] . '</td>'
                             . '</tr>';
                         
                     }

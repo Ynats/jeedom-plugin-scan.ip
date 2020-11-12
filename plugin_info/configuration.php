@@ -16,16 +16,20 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+
 include_file('core', 'authentification', 'php');
 if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
 
-// Brigde affachés par paquet de ...
-$paquetBridges = ceil(count(scan_ip::getJsonBridges())/3);
+require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.bridges.php";
+require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.tools.php";
 
-scan_ip::cleanAfterUpdate();
+// Brigde affachés par paquet de ...
+$paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
+
+scan_ip_tools::cleanAfterUpdate();
 
 ?>
 <form class="form-horizontal">
@@ -42,7 +46,7 @@ scan_ip::cleanAfterUpdate();
     
     <fieldset>
 <?php
-        scan_ip::vueSubTitle("{{Widget}}", "config");
+        scan_ip_tools::vueSubTitle("{{Widget}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Votre réseau}}
@@ -54,22 +58,33 @@ scan_ip::cleanAfterUpdate();
                     <option value="0">{{Masquer le widget de votre réseau}}</option>
                 </select> 
             </div>
-        </div>   
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label"><?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{derniers équipements non enregistrés}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget }} <?php echo scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements entrant dans votre réseau}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="widget_new_equipement">
+                    <option value="1">{{Afficher le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau)}}</option>
+                    <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau)}}</option>
+                </select> 
+            </div>
+        </div> 
         
     <div id="show_oui" style="display:none;">        
 <?php
-        scan_ip::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
+        scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Fichier présent}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Ce fichier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
-            <div class="col-lg-5)"><?php echo scan_ip::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            <div class="col-lg-5)"><?php echo scan_ip_tools::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
             </div>
         </div>
     </div>
 <?php
-        scan_ip::vueSubTitle("{{Cadence de rafraichissement}}", "config");
+        scan_ip_tools::vueSubTitle("{{Cadence de rafraichissement}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
@@ -86,23 +101,23 @@ scan_ip::cleanAfterUpdate();
     
     <div id="show_sous_reseau" style="display:none;">     
     <?php
-        scan_ip::vueSubTitle("{{Spécifier des plages à scanner (Mode avancé)}}", "config");
-        echo scan_ip::printInputSubConfig(); 
+        scan_ip_tools::vueSubTitle("{{Spécifier des plages à scanner (Mode avancé)}}", "config");
+        echo scan_ip_tools::printInputSubConfig(); 
     ?> 
     </div>
     <?php
-        scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
+        scan_ip_tools::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
     ?> 
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs($paquetBridges, 0); ?>
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, 0); ?>
             </div>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs($paquetBridges, $paquetBridges); ?>
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, $paquetBridges); ?>
             </div>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs($paquetBridges, ($paquetBridges*2)); ?>
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, ($paquetBridges*2)); ?>
             </div>
         </div>
     </fieldset>

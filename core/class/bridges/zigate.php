@@ -3,14 +3,14 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_Abeille {
-    
+class scan_ip_zigate {
+  
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "Abeille";
-    public static $ip = "IpWifiZigate";
+    public static $plug = "zigate";
+    public static $ip = "host";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -23,26 +23,19 @@ class scan_ip_Abeille {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-
-        $return = NULL;
-        $zigateNb = config::byKey('zigateNb', self::$plug);
-
-        for($i = 1; $i <= $zigateNb; $i++){
-            if(config::byKey('AbeilleType'.$i, self::$plug) == "WIFI" AND !empty(config::byKey(self::$ip.$i, self::$plug))){
-                $return[self::$plug.$i]["plugin"] = self::$plug;
-                $return[self::$plug.$i]["plugin_print"] = self::$plug;
-                $return[self::$plug.$i]["name"] =  "Zigate".$i;
-                $return[self::$plug.$i]["id"] = self::$ip.$i;
-                
-                $value = config::byKey(self::$ip.$i, self::$plug);
-                if(preg_match(scan_ip::getRegex("ip_v4"), $value, $match)){
-                    $return[self::$plug.$i]["ip_v4"] = $match[0];
-                } else {
-                   $return[self::$plug.$i]["ip_v4"] = NULL;
-                }
-            }
+  
+        $return[self::$plug]["plugin"] = self::$plug;
+        $return[self::$plug]["plugin_print"] = self::$plug;
+        $return[self::$plug]["name"] = "ZiGate Wifi";
+        $return[self::$plug]["id"] = "config";
+        
+        $value = config::byKey(self::$ip, self::$plug);
+        if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value, $match)){
+            $return[self::$plug]["ip_v4"] = $match[0];
+            return $return;
+        } else {
+           return NULL; 
         }
-        return $return;
     }
     
     
@@ -55,15 +48,14 @@ class scan_ip_Abeille {
     */
     public function majIpElement($_ip ,$_id){
         
-        $old = config::byKey($_id, self::$plug);
-        preg_match(scan_ip::getRegex("ip_v4"), $old, $match);
+        $old = config::byKey(self::$ip, self::$plug);
+        preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);
         if($match[0] != $_ip) { 
-            $change_ip = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old);
-            config::save($_id, $change_ip, self::$plug);
+            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $old);
+            config::save(self::$ip, $change_ip, self::$plug);
             // Retourne le deamon à lancer
             return self::$plug;
         }
-        
     }
     
 }

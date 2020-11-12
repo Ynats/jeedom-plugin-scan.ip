@@ -19,15 +19,19 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-$ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.json.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.eqLogic.php";
+
+$ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 
 if (empty($ipsReseau)) {
     scan_ip::syncScanIp();
-    $ipsReseau = scan_ip::getJson(scan_ip::$_jsonMapping);
+    $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 }
 
-$savingMac = scan_ip::getAlleqLogics();
-$arrayCommentMac = scan_ip::getJson(scan_ip::$_jsonCommentairesEquipement);
+$savingMac = scan_ip_eqLogic::getAlleqLogics();
+$arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
 
 foreach ($arrayCommentMac as $tempCommentMac) {
     $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
@@ -80,7 +84,7 @@ foreach ($arrayCommentMac as $tempCommentMac) {
         <?php if($ipsReseau["jeedom"]["name"] != "") { ?>
             <div>
                 <label class="col-sm-3 control-label">Nom : </label>
-                <div><?php echo $ipsReseau["jeedom"]["name"] ?></div> 
+                <div><?php echo $ipsReseau["jeedom"]["name"] ?></div>
             </div>
         <?php } ?>
             <div>
@@ -147,14 +151,14 @@ foreach ($arrayCommentMac as $tempCommentMac) {
                     $list = 1;
                     foreach ($ipsReseau["sort"] as $device) {
                         
-                        $element = scan_ip::getElementVueNetwork($device, $savingMac, $commentMac);
+                        $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
 
                         echo '<tr>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'
-                                . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip::getCycle("15px", $element["colorOnLine"]) . '</td>'
+                                . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
-                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
+                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $element["printCommentSort"] . '</span><input type="text" id="input_' . $list . '" data-mac="' . $device["mac"] . '" value="' . $element["printComment"] . '" class="form-control" style="width:100%;"></td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'

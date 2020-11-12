@@ -24,7 +24,9 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    echo json_encode(scan_ip::getJson(scan_ip::$_jsonMapping)["byMac"]);
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.json.php';
+    
+    echo json_encode(scan_ip_json::getJson(scan_ip::$_jsonMapping)["byMac"]);
     
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

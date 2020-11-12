@@ -18,6 +18,9 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
+
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.json.php";
 ?>
 
 <style>
@@ -53,14 +56,14 @@ if (!isConnect('admin')) {
                 <tbody>
 <?php
                     $list = 1;
-                    foreach (scan_ip::showNoEquipements() as $equipement) {
+                    foreach (scan_ip_json::showNoEquipements() as $equipement) {
                         echo '<tr>'
                             . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="add_input_' . $list . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
                             . '<td style="text-align:center;">' . $list++ . '</td>'
                             . '<td class="scanTd">' . $equipement["name"] . '</td>'
-                            . '<td class="scanTd""><span style="display:none;">' . scan_ip::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
+                            . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
-                            . '<td class="scanTd"><span style="display:none;">' . scan_ip::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
+                            . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
                             . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["time"]) . '</td>'
                             . '</tr>';
                     }

@@ -63,7 +63,7 @@ class scan_ip_camera {
                 if($eqLogic->getConfiguration(self::$ip) != $_ip){
                     $record[self::$ip] = 1;
                     $old_ipStream = $eqLogic->getConfiguration(self::$ipStream); 
-                    if(preg_match(scan_ip::getRegex("ip_v4"), $old_ipStream, $match)){ 
+                    if(preg_match(scan_ip_tools::getRegex("ip_v4"), $old_ipStream, $match)){ 
                         if(!empty($match[0]) AND $match[0] != $eqLogic->getConfiguration(self::$ip)){
                             log::add('scan_ip', 'debug', "Bridge camera :. L'ip associée à \"URL de snaphot\" est différente de l'ip associée à la caméra \"" . $eqLogic->getName() . "\". \"URL de snaphot\" est donc ignoré.");
                         } 
@@ -77,7 +77,7 @@ class scan_ip_camera {
                     $eqLogic->setConfiguration(self::$ip, $_ip); 
                 }
                 if($record[self::$ipStream] == 1) {
-                    $change_ipStream = preg_replace(scan_ip::getRegex("ip_v4"), $_ip, $old_ipStream);
+                    $change_ipStream = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $old_ipStream);
                     $eqLogic->setConfiguration(self::$ipStream, $change_ipStream);
                 }
                 if($record[self::$ip] == 1){

@@ -18,6 +18,9 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
+
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.shell.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.tools.php";
 ?>
 
 <div class="col-md-12">
@@ -27,7 +30,7 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printShell("sudo ip a");
+                scan_ip_shell::printShell("sudo ip a");
             ?>
         </div>
     </div>
@@ -40,7 +43,7 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printShell("ip route show default | awk '/default/ {print $3}'");
+                scan_ip_shell::printShell("ip route show default | awk '/default/ {print $3}'");
             ?>
         </div>
     </div>
@@ -60,7 +63,7 @@ if ($subReseau["subReseauEnable"] > 0) {
                     </div>
                     <div class="panel-body">
                         <?php
-                            scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
+                            scan_ip_shell::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
                         ?>
                     </div>
                 </div>
@@ -79,7 +82,7 @@ else {
                     </div>
                     <div class="panel-body">
                         <?php
-                            scan_ip::printShell("sudo arp-scan --localnet --ouifile=".scan_ip::$_file_oui." --iabfile=" .  scan_ip::$_file_iab);
+                            scan_ip_shell::printShell("sudo arp-scan --localnet --ouifile=".scan_ip::$_file_oui." --iabfile=" .  scan_ip::$_file_iab);
                         ?>
                     </div>
                 </div>
@@ -94,7 +97,7 @@ else {
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printArray(scan_ip::getJson(scan_ip::$_jsonEquipement));
+                scan_ip_tools::printArray(scan_ip::getJson(scan_ip::$_jsonEquipement));
             ?>
         </div>
     </div>

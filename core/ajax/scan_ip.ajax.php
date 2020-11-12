@@ -24,13 +24,17 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.tools.php';
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.json.php';
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.eqLogic.php';
+    
     ajax::init();
     
     if (init('action') == 'syncEqLogicWithOpenScanId') {
         
-        if(scan_ip::lockProcess() == TRUE){
+        if(scan_ip_tools::lockProcess() == TRUE){
             scan_ip::syncScanIp();
-            scan_ip::unlockProcess();  
+            scan_ip_tools::unlockProcess();  
         }
         
         ajax::success();
@@ -39,14 +43,14 @@ try {
     
     elseif (init('action') == 'recordCommentaires') {
         
-        scan_ip::majNetworkCommentaires(init('data'));
+        scan_ip_json::majNetworkCommentaires(init('data'));
         ajax::success();
         
     }
     
     elseif (init('action') == 'addEquipement') {
         
-        scan_ip::addEquipementsTab(init('data'));
+        scan_ip_eqLogic::addEquipementsTab(init('data'));
         ajax::success();
         
     }

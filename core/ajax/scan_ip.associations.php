@@ -18,13 +18,14 @@
 
 try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
+    require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.bridges.php";
     include_file('core', 'authentification', 'php');
 
     if (!isConnect('admin')) {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    echo scan_ip::bridges_getAllAssignEquipement("json");
+    echo scan_ip_bridges::bridges_getAllAssignEquipement("json");
     
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
