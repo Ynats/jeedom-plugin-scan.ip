@@ -236,8 +236,6 @@ class scan_ip extends eqLogic {
             return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip')); 
         }
         
-        
-        
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,7 +330,7 @@ class scan_ipCmd extends cmd {
         switch ($this->getLogicalId()) { //vérifie le logicalid de la commande 			
             case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande refresh : #ID#' . $eqlogic->getId());
-                scan_ip::cmdRefresh($eqlogic, $mapping);
+                scan_ip_cmd::cmdRefresh($eqlogic, $mapping);
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
             case 'wol': 
