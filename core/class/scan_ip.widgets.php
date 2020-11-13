@@ -43,22 +43,7 @@ class scan_ip_widgets extends eqLogic {
         
         return $scan_ip;
     }
-    
-    public static function postConfig_widget_network() { 
-        
-        $eqLogic = self::getWidgetNetwork();
-        
-        if(config::byKey('widget_network', 'scan_ip', '1') == 1) {
-            $eqLogic->setIsVisible(1);
-            $eqLogic->setIsEnable(1);
-        } else {
-            $eqLogic->setIsVisible(0);
-            $eqLogic->setIsEnable(0);
-        }
-        
-        $eqLogic->save();        
-    }
-    
+
     public static function getWidgetAlerteNewEquipement(){
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) {

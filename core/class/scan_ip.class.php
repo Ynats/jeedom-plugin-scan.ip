@@ -86,6 +86,34 @@ class scan_ip extends eqLogic {
 
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
+    
+    public static function postConfig_widget_network() { 
+        
+        $eqLogic = scan_ip_widgets::getWidgetNetwork();
+        
+        if(config::byKey('widget_network', 'scan_ip', '1') == 1) {
+            $eqLogic->setIsVisible(1);
+            $eqLogic->setIsEnable(1);
+        } else {
+            $eqLogic->setIsVisible(0);
+            $eqLogic->setIsEnable(0);
+        }
+        
+        $eqLogic->save();        
+    }
+    
+    public static function postConfig_widget_new_equipement() { 
+        
+        $eqLogic = scan_ip_widgets::getWidgetAlerteNewEquipement();
+        
+        if(config::byKey('widget_new_equipement', 'scan_ip', '1') == 1) {
+            $eqLogic->setIsVisible(1);
+        } else {
+            $eqLogic->setIsVisible(0);
+        }
+        
+        $eqLogic->save();        
+    }
 
     /*     * **********************Getteur Setteur*************************** */
     
