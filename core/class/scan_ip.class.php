@@ -22,7 +22,10 @@ require_once __DIR__ . "/../../../../core/php/core.inc.php";
 require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
 class scan_ip extends eqLogic {
-    /*     * *************************Attributs****************************** */
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# START | VARIABLES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static $_widgetPossibility = array('custom' => true);
     public static $_folderJson = __DIR__ . "/../../../../plugins/scan_ip/data/json/";
@@ -39,13 +42,19 @@ class scan_ip extends eqLogic {
     public static $_defaut_offline_time = 4;
     public static $_defaut_alerte_new_equipement = 10;
 
-    /*     * ***********************Methode static*************************** */
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# END | VARIABLES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# START | CONFIGURATON
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
     
     public static function getConfigMode() {
         return config::byKey('mode_plugin', 'scan_ip', "normal");
     }
-
+    
+    
     public function postInsert() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
         log::add('scan_ip', 'debug', 'postInsert :. Lancement');
@@ -53,7 +62,43 @@ class scan_ip extends eqLogic {
         $this->setConfiguration("offline_time", self::$_defaut_offline_time);
         $this->save();
     }
-     
+    
+    public static function postConfig_widget_network() { 
+        
+        $eqLogic = scan_ip_widget_network::getWidgetNetwork();
+        
+        if(config::byKey('widget_network', 'scan_ip', '1') == 1) {
+            $eqLogic->setIsVisible(1);
+            $eqLogic->setIsEnable(1);
+        } else {
+            $eqLogic->setIsVisible(0);
+            $eqLogic->setIsEnable(0);
+        }
+        
+        $eqLogic->save();        
+    }
+    
+    public static function postConfig_widget_new_equipement() { 
+        
+        $eqLogic = scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
+        
+        if(config::byKey('widget_new_equipement', 'scan_ip', '1') == 1) {
+            $eqLogic->setIsVisible(1);
+        } else {
+            $eqLogic->setIsVisible(0);
+        }
+        
+        $eqLogic->save();        
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# END | CONFIGURATON
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# START | CONFIGURATON
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+    
     public function postUpdate() {
         
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -62,15 +107,15 @@ class scan_ip extends eqLogic {
         switch (scan_ip_widgets::getWidgetType($this)) {
             
             case "normal":
-                scan_ip_cmd::setCmdWidgetNormal($this);
+                scan_ip_widget_normal::setCmdWidgetNormal($this);
                 break;
             
             case "network":
-                scan_ip_cmd::setCmdWidgetNetwork($this);
+                scan_ip_widget_network::setCmdWidgetNetwork($this);
                 break;
             
             case "new_equipement":
-                scan_ip_cmd::setCmdAlerteNewEquipement($this);
+                scan_ip_widget_alerte::setCmdAlerteNewEquipement($this);
                 break;
         }
              
@@ -86,131 +131,7 @@ class scan_ip extends eqLogic {
 
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
     }
-    
-    public static function postConfig_widget_network() { 
-        
-        $eqLogic = scan_ip_widgets::getWidgetNetwork();
-        
-        if(config::byKey('widget_network', 'scan_ip', '1') == 1) {
-            $eqLogic->setIsVisible(1);
-            $eqLogic->setIsEnable(1);
-        } else {
-            $eqLogic->setIsVisible(0);
-            $eqLogic->setIsEnable(0);
-        }
-        
-        $eqLogic->save();        
-    }
-    
-    public static function postConfig_widget_new_equipement() { 
-        
-        $eqLogic = scan_ip_widgets::getWidgetAlerteNewEquipement();
-        
-        if(config::byKey('widget_new_equipement', 'scan_ip', '1') == 1) {
-            $eqLogic->setIsVisible(1);
-        } else {
-            $eqLogic->setIsVisible(0);
-        }
-        
-        $eqLogic->save();        
-    }
-
-    /*     * **********************Getteur Setteur*************************** */
-    
-    public static function syncScanIp(){
-        log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
-        log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
-        
-        // Si json pas au bon endroit
-        if(@is_file(__DIR__ . "/../../../../plugins/scan_ip/core/json/mapping.json")){
-            shell_exec("sudo mv " . __DIR__ . "/../../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
-        }
-        
-        $lastScan = self::scanReseau();
-        
-        $eqLogics = eqLogic::byType('scan_ip');
-        foreach ($eqLogics as $scan_ip) {
-            if ($scan_ip->getIsEnable() == 1) {
-                log::add('scan_ip', 'debug', 'syncScanIp :. cmdRefresh('.$scan_ip->getId().')');
-                scan_ip_cmd::cmdRefresh($scan_ip, $lastScan);
-            }
-        }  
-        
-        log::add('scan_ip', 'debug', 'syncScanIp :. Fin du scan du réseau');
-        log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
-    }
-    
-    public static function scanReseau(){
-        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
-        log::add('scan_ip', 'debug', 'scanReseau :. Lancement');
-        
-        $ipRoute = scan_ip_shell::getIpRoute();
-        $subReseau = scan_ip_shell::getSubReseauEnable($ipRoute);  
-        $infoJeedom = scan_ip_shell::getInfoJeedom($ipRoute);
-
-        if($subReseau["subReseauEnable"] > 0) {
-            $new = array();
-            foreach ($subReseau["subReseau"] as $sub) { 
-                if($sub["enable"] == 1){
-                    $scanResult = scan_ip_shell::arpScanShell($sub["name"]); 
-                    $new = scan_ip_tools::arrayCompose($new, $scanResult);
-                }
-            }
-        } else {
-            $new = scan_ip_shell::arpScanShell();
-        }
-
-        if(count($new) == 0){
-            log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
-            exit();
-        } 
-        else {
-            $old = scan_ip_json::getJson(self::$_jsonMapping);
-            
-            if(empty($old) OR count($old) == 0){ $now = $new; } 
-            else { $now = scan_ip_tools::arrayCompose($old, $new); } 
-            
-            $now = scan_ip_tools::cleanArrayEquipement($now);
-            scan_ip_json::createJsonFile(self::$_jsonEquipement, $now); 
-            
-            foreach ($now as $mac => $scanLine) {
-                if($scanLine["ip_v4"] == $ipRoute){
-                    $now["route"]["ip_v4"] = $scanLine["ip_v4"];
-                    $now["route"]["mac"] = $mac;
-                } else {
-                    $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array(
-                            "ip_v4" => $scanLine["ip_v4"], 
-                            "mac" => $mac, 
-                            "time" => $scanLine["time"], 
-                            "equipement" => $scanLine["equipement"]
-                    );
-                    $now["byIpv4"][$scanLine["ip_v4"]] = array("mac" => $mac, "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);
-                    $now["byMac"][$mac] = array("ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"], "time" => $scanLine["time"]);  
-                    $now["byTime"][$scanLine["time"]][] = array("mac" => $mac, "ip_v4" => $scanLine["ip_v4"], "equipement" => $scanLine["equipement"]);
-                }
-            }
-
-            ksort($now["sort"]);
-            krsort($now["byTime"]);
-        }
-
-        $now["jeedom"] = $infoJeedom; 
-        $now["infos"]["version_arp"] = scan_ip_shell::arpVersion();
-        $now["infos"]["time"] = time();
-        $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
-
-        scan_ip_json::recordInJson(self::$_jsonMapping, $now);
-        
-        log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
-        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
-        
-        return $now;
-    }
-              
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# GESTION DU WIDGET
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
-        
+   
     public function toHtml($_version = 'dashboard') {
 
         log::add('scan_ip', 'debug', 'toHtml :.  Lancement');
@@ -228,17 +149,17 @@ class scan_ip extends eqLogic {
         
         if(scan_ip_widgets::getWidgetType($this) == "network"){
             log::add('scan_ip', 'debug', 'toHtml :.  Création widget Network');
-            $replace = scan_ip_widgets::createNetworkWidget($version = 'dashboard', $replace, $reseau);
+            $replace = scan_ip_widget_network::createNetworkWidget($version = 'dashboard', $replace, $reseau);
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             return template_replace($replace, getTemplate('core', $version, 'scan_ip_network', 'scan_ip')); 
         }elseif(scan_ip_widgets::getWidgetType($this) == "new_equipement"){
             log::add('scan_ip', 'debug', 'toHtml :.  Création widget Alerte');
-            $replace = scan_ip_widgets::createAlerteWidget($this, $version = 'dashboard', $replace);
+            $replace = scan_ip_widget_alerte::createAlerteWidget($this, $version = 'dashboard', $replace);
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             return template_replace($replace, getTemplate('core', $version, 'scan_ip_alerte', 'scan_ip')); 
         } else {
             log::add('scan_ip', 'debug', 'toHtml :.  Création widget Normal');
-            $replace = scan_ip_widgets::createSimpleWidget($this, $version = 'dashboard', $replace);
+            $replace = scan_ip_widget_normal::createSimpleWidget($this, $version = 'dashboard', $replace);
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             return template_replace($replace, getTemplate('core', $version, 'scan_ip', 'scan_ip')); 
         }
@@ -268,7 +189,7 @@ class scan_ip extends eqLogic {
                 
                 log::add('scan_ip', 'debug', 'cron :. Configuration Minute : '. $cronConfig);
                  
-                self::syncScanIp();
+                scan_ip_scan::syncScanIp();
                 scan_ip_tools::unlockProcess();
                 
                 log::add('scan_ip', 'debug', '_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_');

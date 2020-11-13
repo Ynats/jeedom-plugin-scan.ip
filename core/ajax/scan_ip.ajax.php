@@ -33,7 +33,7 @@ try {
     if (init('action') == 'syncEqLogicWithOpenScanId') {
         
         if(scan_ip_tools::lockProcess() == TRUE){
-            scan_ip::syncScanIp();
+            scan_ip_scan::syncScanIp();
             scan_ip_tools::unlockProcess();  
         }
         

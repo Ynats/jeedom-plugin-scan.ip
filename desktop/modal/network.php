@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 
 if (empty($ipsReseau)) {
-    scan_ip::syncScanIp();
+    scan_ip_scan::syncScanIp();
     $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 }
 
