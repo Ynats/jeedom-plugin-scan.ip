@@ -140,13 +140,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     }
                                 ?>
                             </div>
-                        </div>
+                        </div>   
                         <div style="display:none;">
                             <select id="hiden_type_widget" class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="type_widget">
                                 <option value="normal">Normal</option>
                                 <option value="network">Network</option>
                                 <option value="new_equipement">Alerte</option>
                             </select>
+                            
                         </div>
                         <div id="scan_ip_info_widget" style="display:none;">
                             <br />

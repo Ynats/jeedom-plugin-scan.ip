@@ -24,7 +24,10 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    echo json_encode(config::byKey('cron_pass', 'scan_ip', 1));
+    echo json_encode(array(
+        "cron_pass" => config::byKey('cron_pass', 'scan_ip', 1), 
+        "mode_plugin" => config::byKey('mode_plugin', 'scan_ip', "normal"))
+    );
     
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

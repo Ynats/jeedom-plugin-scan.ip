@@ -11,7 +11,7 @@ $("#hiden_type_widget").change(function () {
         $("#hiden_type_normal").hide();
         $("#scan_ip_info_widget").show();
         $("[data-action='copy']").hide();
-        $("[data-action='configure']").hide();
+        $("[data-action='configure']").hide();  
         $("[data-action='remove']").hide();
         if($("#hiden_type_widget").val() == "network"){
             $("#scan_ip_widget_network_parametre").show();
@@ -70,9 +70,12 @@ function verifCadence() {
 }
 
 function timeCron() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.time_cron.php", function (result) {
-        $("#cronPass").attr('data-cron', result);
-        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " + result + " minutes");
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.config.php", function (result) { console.log(result["mode_plugin"]);
+        if(result["mode_plugin"] === "debug"){ 
+            $("[data-action='remove']").show();
+        } 
+        $("#cronPass").attr('data-cron', result["cron_pass"]);
+        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " + result["cron_pass"] + " minutes");
         verifCadence();
     });
 }
