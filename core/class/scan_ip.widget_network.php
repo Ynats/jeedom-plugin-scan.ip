@@ -84,14 +84,14 @@ class scan_ip_widget_network extends eqLogic {
             $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
 
             $replace["#widget_network#"] .= '<tr>'
-            . '<td class="scanTd ' . $element["classPresent"] . '" style="text-align:center;">' . $list++ . '</td>'
+            . '<td class="scanTd" style="text-align:center;">' . $list++ . '</td>'
             . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
             . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
+            . '<td class="scanTd">' . $device["mac"] . '</td>'
+            . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
+            . '<td class="scanTd" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
+            . '<td class="scanTd"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
+            . '<td class="scanTd"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
             . '</tr>';
 
         }

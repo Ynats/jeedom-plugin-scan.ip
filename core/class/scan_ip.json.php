@@ -58,7 +58,7 @@ class scan_ip_json extends eqLogic {
         log::add('scan_ip', 'debug', 'getJson :. Lancement');
         
         try {
-            $return = json_decode(file_get_contents($_file.".json"),true);
+            $return = @json_decode(@file_get_contents($_file.".json"),true);
         } catch (Exception $e) {
             $rerurn = NULL;
         }

@@ -196,7 +196,6 @@ class scan_ip_widget_alerte extends eqLogic {
         
         for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
             if(!empty(scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip))){ 
-                
                 $record = scan_ip_cmd::getCommande("last_".$i."_record", $scan_ip, NULL);
                 if($record != NULL){
                     $record = date("d/m/Y H:i:s", $record);

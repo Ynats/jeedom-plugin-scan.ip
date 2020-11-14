@@ -19,7 +19,7 @@ class scan_ip_cmd extends eqLogic {
 
         log::add('scan_ip', 'debug', 'cmdRefresh :. Lancement');
         
-        if($_mapping == NULL){
+        if($_mapping == NULL OR empty($_mapping["sort"])){
             $mapping = scan_ip_json::getJson(scan_ip::$_jsonMapping);
         } else {
             $mapping = $_mapping;

@@ -32,33 +32,33 @@ class scan_ip_scan extends eqLogic {
         log::add('scan_ip', 'debug', 'syncScanIp :. Fin du scan du réseau');
         log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
     }
-    
+       
     public static function scanReseau(){
         log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
         log::add('scan_ip', 'debug', 'scanReseau :. Lancement');
         
-        $ipRoute = scan_ip_shell::getIpRoute();
+        $ipRoute = scan_ip_shell::getIpRoute();  
         $subReseau = scan_ip_shell::getSubReseauEnable($ipRoute);  
         $infoJeedom = scan_ip_shell::getInfoJeedom($ipRoute);
-
-        if($subReseau["subReseauEnable"] > 0) {
-            $new = array();
-            foreach ($subReseau["subReseau"] as $sub) { 
-                if($sub["enable"] == 1){
-                    $scanResult = scan_ip_shell::arpScanShell($sub["name"]); 
-                    $new = scan_ip_tools::arrayCompose($new, $scanResult);
-                }
-            }
-        } else {
-            $new = scan_ip_shell::arpScanShell();
+        
+        if($subReseau["subReseauEnable"] == 0) {
+            config::save("sub_enable_".md5($subReseau["name_plage_route"]), 1, 'scan_ip');
+            $subReseau = scan_ip_shell::getSubReseauEnable($ipRoute);
         }
 
-        if(count($new) == 0){
+        $new = array();
+        foreach ($subReseau["subReseau"] as $sub) { 
+            if($sub["enable"] == 1){
+                $scanResult = scan_ip_shell::arpScanShell($sub["name"]); 
+                $new = scan_ip_tools::arrayCompose($new, $scanResult);
+            }
+        }
+
+        if(count($new) == 0){            
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
             exit();
         } 
         else {
-            
             
             $old = scan_ip_json::getJson(scan_ip::$_jsonMapping);
             
@@ -66,10 +66,9 @@ class scan_ip_scan extends eqLogic {
             else { $now = scan_ip_tools::arrayCompose($old, $new); } 
             
             $now = scan_ip_tools::cleanArrayEquipement($now);
-            scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $now); 
             
-            $nowMapping = self::createJsonMapping($now, $ipRoute);
-            
+            $equipement = self::createArchiveEquipement($new);
+            $nowMapping = self::createJsonMapping($now, $equipement, $ipRoute);
         }
         
         $nowMapping["jeedom"] = $infoJeedom; 
@@ -79,13 +78,39 @@ class scan_ip_scan extends eqLogic {
 
         scan_ip_json::recordInJson(scan_ip::$_jsonMapping, $nowMapping);
         
-        log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
+        log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $nowMapping["infos"]["version_arp"] . ']');
         log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
         
         return $now;
     }
     
-    public static function createJsonMapping($_now, $_ipRoute){
+    public static function createArchiveEquipement($_new){
+        
+        $old = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
+        
+        if($old != NULL){
+            foreach ($old as $mac => $scanLine) {
+                if(empty($old[$mac]) AND !empty($_new[$mac])){
+                    $return[$mac]["record"] = time();
+                    $return[$mac]["equipement"] = $_new[$mac]["equipement"];
+                } else {
+                    $return[$mac]["record"] = $old[$mac]["record"];
+                    $return[$mac]["equipement"] = $old[$mac]["equipement"];
+                }
+            }
+        } else {
+            foreach ($_new as $mac => $scanLine) {
+                $return[$mac]["record"] = time();
+                $return[$mac]["equipement"] = $scanLine["equipement"];
+            }
+        }
+        
+        scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $return);
+        
+        return $return;
+    }
+    
+    public static function createJsonMapping($_now, $_equipement, $_ipRoute){
         
         $timeNow = time();
         $_return = array();
@@ -95,13 +120,8 @@ class scan_ip_scan extends eqLogic {
                     $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
                     $_return["route"]["mac"] = $mac;
                 } else {
-                    if(empty($old["byMac"][$mac]["record"])){
-                        $create = $timeNow;
-                    } else {
-                        $create = $old["byMac"][$mac]["record"];
-                    }
-                    $_return["sort"][explode(".",$scanLine["ip_v4"])[3]] = array(
-                            "record" => $create,
+                    $_return["sort"][] = array(
+                            "record" => $_equipement[$mac]["record"],
                             "ip_v4" => $scanLine["ip_v4"], 
                             "mac" => $mac, 
                             "time" => $scanLine["time"], 
@@ -111,19 +131,19 @@ class scan_ip_scan extends eqLogic {
                         "mac" => $mac, 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
-                        "record" => $create
+                        "record" => $_equipement[$mac]["record"]
                         );
                     $_return["byMac"][$mac] = array(
                         "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
-                        "record" => $create
+                        "record" => $_equipement[$mac]["record"]
                         );  
-                    $_return["byTime"][$scanLine["time"].$create][] = array(
+                    $_return["byTime"][$scanLine["time"].$_equipement[$mac]["record"]][] = array(
                         "time" => $scanLine["time"], 
                         "mac" => $mac, "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
-                        "record" => $create
+                        "record" => $_equipement[$mac]["record"]
                         );
                 }
             }

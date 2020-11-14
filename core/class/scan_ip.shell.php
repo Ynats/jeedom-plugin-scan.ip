@@ -25,11 +25,7 @@ class scan_ip_shell extends eqLogic {
         $time = time();
         $return = array();
         
-        if($_subReseau == NULL){
-            exec('sudo arp-scan --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output );
-        } else {
-            exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output);
-        }
+        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output);
         
         foreach ($output as $scanLine) {
             if (preg_match(scan_ip_tools::getRegex("ip_v4"), $scanLine)) { 
@@ -43,7 +39,7 @@ class scan_ip_shell extends eqLogic {
                     $return[$mac]["ip_v4"] = $sortIp[0];
                     $return[$mac]["time"] = $time;
             }
-        } 
+        }
         
         return $return;
     }
@@ -72,11 +68,13 @@ class scan_ip_shell extends eqLogic {
     
     public static function getInfoJeedom($_ipRoute){ 
         log::add('scan_ip', 'debug', 'getInfoJeedom :. Lancement');
-
+        
+        $plageRouteur = scan_ip_tools::getPlageIp($_ipRoute);
         exec('sudo ip a', $list);
 
         foreach ($list as $i => $value) {
-            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($_ipRoute).")", $value)) {
+            $return["plage_route"] = NULL; 
+            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".$plageRouteur.")", $value)) {
                 $return["ip_v4"] = trim(str_replace("inet", "", explode("/",$value)[0]));
                 $return["mac"] = strtoupper(trim(str_replace("link/ether", "", explode("brd",$list[$i-1])[0])));
                 $return["name"] = config::byKey('name');
@@ -97,6 +95,7 @@ class scan_ip_shell extends eqLogic {
         
         exec('sudo ip a', $list);
         $i = 0;
+        $return["name_plage_route"] = NULL;
         
         foreach ($list as $value) {
             if(preg_match(scan_ip_tools::getRegex("sub_reseau"), $value)){ 
@@ -105,7 +104,10 @@ class scan_ip_shell extends eqLogic {
                 $return[$i]["name"] = $name; 
             }
             if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value)) {
-                $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*";
+                $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*"; 
+                if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
+                    $return["name_plage_route"] = $name;
+                }   
             } else {
                 $return[$i]["ip_v4"] = NULL;
             }
@@ -117,11 +119,17 @@ class scan_ip_shell extends eqLogic {
         log::add('scan_ip', 'debug', 'getSubReseauEnable :. Lancement');
         
         $a = $return["subReseauEnable"] = 0;
-        foreach (self::scanSubReseau($_ipRoute) as $sub) { 
+        
+        $allReseau = self::scanSubReseau($_ipRoute);
+        
+        $return["name_plage_route"] = $allReseau["name_plage_route"];
+        unset($allReseau["name_plage_route"]);
+        
+        foreach ($allReseau as $key => $sub) { 
             $return["subReseau"][$a]["enable"] = config::byKey('sub_enable_'.md5($sub["name"]), 'scan_ip', 0);
             $return["subReseau"][$a]["name"] = $sub["name"];
             $return["subReseauEnable"] =  $return["subReseau"][$a]["enable"] + $return["subReseauEnable"];
-            $a++;
+            $a++; 
         }
         
         return $return; 
