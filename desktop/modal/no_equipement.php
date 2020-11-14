@@ -35,7 +35,8 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <div>
     <div class="col-md-12" id="show_scan_ip_add" style="padding: 15px !important; display:none;">
         <div class="form-group">
-                    <a class="btn btn-success pull-right" id="add_scan_ip_equipement"><i class="fas fa-check-circle"></i> Ajouter les équipements sélectionnés</a>
+            <a class="btn btn-success pull-right" id="add_scan_ip_equipement"><i class="fas fa-check-circle"></i> Ajouter les équipements sélectionnés</a>
+<!--            <a class="btn btn-danger pull-right" id="remove_scan_ip_equipement"><i class="fas fa-trash"></i> Supprimer les équipements sélectionnés</a>-->
         </div>
     </div>
     
@@ -58,7 +59,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                     $list = 1;
                     foreach (scan_ip_json::showNoEquipements() as $equipement) {
                         echo '<tr>'
-                            . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="add_input_' . $list . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
+                            . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="checked_input_' . $list . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
                             . '<td style="text-align:center;">' . $list++ . '</td>'
                             . '<td class="scanTd">' . $equipement["name"] . '</td>'
                             . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
@@ -78,6 +79,10 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
       
     $("#add_scan_ip_equipement").click(function() {
         addEquipement(<?php echo $list ?>);
+    });
+    
+    $("#remove_scan_ip_equipement").click(function() {
+        removeEquipement(<?php echo $list ?>);
     });
 
 </script>  

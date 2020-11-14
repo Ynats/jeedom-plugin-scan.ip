@@ -50,7 +50,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 </div>
 
 <?php
-$subReseau = scan_ip::getSubReseauEnable();
+$subReseau = scan_ip_shell::getSubReseauEnable();
 if ($subReseau["subReseauEnable"] > 0) {
     foreach ($subReseau["subReseau"] as $sub) {
         if ($sub["enable"] == 1) {
@@ -93,11 +93,24 @@ else {
 <div class="col-md-12">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
-            <h3 class="panel-title"># Mapping</h3>
+            <h3 class="panel-title"># Equipements</h3>
         </div>
         <div class="panel-body">
             <?php
-                scan_ip_tools::printArray(scan_ip::getJson(scan_ip::$_jsonEquipement));
+                scan_ip_tools::printArray(scan_ip_json::getJson(scan_ip::$_jsonEquipement));
+            ?>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-primary" id="div_functionalityPanel">
+        <div class="panel-heading">
+            <h3 class="panel-title"># Mappings</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip_tools::printArray(scan_ip_json::getJson(scan_ip::$_jsonMapping));
             ?>
         </div>
     </div>

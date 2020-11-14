@@ -110,7 +110,7 @@ class scan_ip_json extends eqLogic {
         $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
 
         if (empty($ipsReseau)) {
-            scan_ip::syncScanIp();
+            scan_ip_scan::syncScanIp();
             $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
         }
         
@@ -136,6 +136,20 @@ class scan_ip_json extends eqLogic {
         }
         
         return $return;
+    }
+    
+    public static function removeJsonEquipements($_array){ 
+        $equipement = self::getJson(scan_ip::$_jsonMapping);
+        var_dump($equipement);
+        foreach ($_array as $equ) {
+            //self::createElement($equ[0]["mac"]);
+        }
+    }
+    
+    public static function removeEquipementsTab($_array){ 
+        foreach ($_array as $equ) {
+            //self::createElement($equ[0]["mac"]);
+        }
     }
     
 }

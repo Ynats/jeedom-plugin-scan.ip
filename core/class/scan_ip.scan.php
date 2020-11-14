@@ -58,7 +58,7 @@ class scan_ip_scan extends eqLogic {
             exit();
         } 
         else {
-            $timeNow = time();
+            
             
             $old = scan_ip_json::getJson(scan_ip::$_jsonMapping);
             
@@ -68,36 +68,58 @@ class scan_ip_scan extends eqLogic {
             $now = scan_ip_tools::cleanArrayEquipement($now);
             scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $now); 
             
-            foreach ($now as $mac => $scanLine) {
+            $nowMapping = self::createJsonMapping($now);
+            
+        }
+        
+        $nowMapping["jeedom"] = $infoJeedom; 
+        $nowMapping["infos"]["version_arp"] = scan_ip_shell::arpVersion();
+        $nowMapping["infos"]["time"] = time();
+        $nowMapping["infos"]["date"] = date("d/m/Y H:i:s", $nowMapping["infos"]["time"]);
+
+        scan_ip_json::recordInJson(scan_ip::$_jsonMapping, $nowMapping);
+        
+        log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
+        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
+        
+        return $now;
+    }
+    
+    public static function createJsonMapping($_now){
+        
+        $timeNow = time();
+        $_return = array();
+            
+            foreach ($_now as $mac => $scanLine) {
                 if($scanLine["ip_v4"] == $ipRoute){
-                    $now["route"]["ip_v4"] = $scanLine["ip_v4"];
-                    $now["route"]["mac"] = $mac;
+                    $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
+                    $_return["route"]["mac"] = $mac;
                 } else {
                     if(empty($old["byMac"][$mac]["record"])){
                         $create = $timeNow;
                     } else {
                         $create = $old["byMac"][$mac]["record"];
                     }
-                    $now["sort"][explode(".",$scanLine["ip_v4"])[3]] = array(
+                    $_return["sort"][explode(".",$scanLine["ip_v4"])[3]] = array(
                             "record" => $create,
                             "ip_v4" => $scanLine["ip_v4"], 
                             "mac" => $mac, 
                             "time" => $scanLine["time"], 
                             "equipement" => $scanLine["equipement"]
                     );
-                    $now["byIpv4"][$scanLine["ip_v4"]] = array(
+                    $_return["byIpv4"][$scanLine["ip_v4"]] = array(
                         "mac" => $mac, 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
                         "record" => $create
                         );
-                    $now["byMac"][$mac] = array(
+                    $_return["byMac"][$mac] = array(
                         "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
                         "record" => $create
                         );  
-                    $now["byTime"][$scanLine["time"].$create][] = array(
+                    $_return["byTime"][$scanLine["time"].$create][] = array(
                         "time" => $scanLine["time"], 
                         "mac" => $mac, "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
@@ -106,21 +128,10 @@ class scan_ip_scan extends eqLogic {
                 }
             }
 
-            ksort($now["sort"]);
-            krsort($now["byTime"]);
-        }
-
-        $now["jeedom"] = $infoJeedom; 
-        $now["infos"]["version_arp"] = scan_ip_shell::arpVersion();
-        $now["infos"]["time"] = time();
-        $now["infos"]["date"] = date("d/m/Y H:i:s", $now["infos"]["time"]);
-
-        scan_ip_json::recordInJson(scan_ip::$_jsonMapping, $now);
+            ksort($_return["sort"]);
+            krsort($_return["byTime"]);
         
-        log::add('scan_ip', 'debug', 'scanReseau :. Fin du scan [' . $now["infos"]["version_arp"] . ']');
-        log::add('scan_ip', 'debug', "////////////////////////////////////////////////////////////////////");
-        
-        return $now;
+        return $_return;
     }
     
 }

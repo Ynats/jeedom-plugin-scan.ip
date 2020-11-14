@@ -55,6 +55,13 @@ try {
         
     }
     
+    elseif (init('action') == 'removeEquipement') {
+        
+        scan_ip_json::removeEquipementsTab(init('data'));
+        ajax::success();
+        
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

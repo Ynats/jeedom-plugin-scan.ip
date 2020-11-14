@@ -29,8 +29,8 @@ function scan_ip_install() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    scan_ip_widgets::getWidgetNetwork();
-    scan_ip_widgets::getWidgetAlerteNewEquipement();
+    scan_ip_widget_network::getWidgetNetwork();
+    scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
 }
 
 function scan_ip_update() {
@@ -42,8 +42,8 @@ function scan_ip_update() {
             config::save('offline_time', 4, 'scan_ip');
     }
     
-    scan_ip_widgets::getWidgetNetwork();
-    scan_ip_widgets::getWidgetAlerteNewEquipement();
+    scan_ip_widget_network::getWidgetNetwork();
+    scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
     
     scan_ip_tools::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
     
