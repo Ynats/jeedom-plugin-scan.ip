@@ -37,14 +37,13 @@ try {
             scan_ip_tools::unlockProcess();  
         } else {
             event::add('jeedom::alert', array(
-                'level' => 'danger',
+                'level' => 'warning',
                 'page' => 'scan_ip',
-                'message' => "Une synchronisation est déjà en cours."
+                'message' => 'Action annulée : Une synchronisation est déjà en cours.'
             ));
         }
-        
+                
         ajax::success();
-        
     }
     
     elseif (init('action') == 'recordCommentaires') {

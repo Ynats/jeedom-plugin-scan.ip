@@ -108,6 +108,7 @@ class scan_ip_json extends eqLogic {
         $commentMac = self::getCommentaires();
         
         $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
+        $jsonEquipement = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
 
         if (empty($ipsReseau)) {
             scan_ip_scan::syncScanIp();
@@ -130,7 +131,8 @@ class scan_ip_json extends eqLogic {
                     "mac" => $device["mac"], 
                     "ip_v4" => $device["ip_v4"], 
                     "comment" => $comment, 
-                    "time" => $device["time"]
+                    "time" => $device["time"],
+                    "record" => $jsonEquipement[$device["mac"]]["record"]
                 );
             }
         }
@@ -138,18 +140,35 @@ class scan_ip_json extends eqLogic {
         return $return;
     }
     
-    public static function removeJsonEquipements($_array){ 
-        $equipement = self::getJson(scan_ip::$_jsonMapping);
-        var_dump($equipement);
-        foreach ($_array as $equ) {
-            //self::createElement($equ[0]["mac"]);
-        }
-    }
-    
     public static function removeEquipementsTab($_array){ 
-        foreach ($_array as $equ) {
-            //self::createElement($equ[0]["mac"]);
+        
+        $jsonEquipement = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
+        $jsonMapping = scan_ip_json::getJson(scan_ip::$_jsonMapping);
+        
+        foreach ($_array as $delete) {
+            
+            $mac = $delete[0]["mac"];
+            
+            foreach ($jsonMapping["sort"] as $key => $sort) {
+                if($sort["mac"] == $mac){
+                    $del_sort = $key;
+                    break;
+                }
+            }
+            
+            $del_byIpv4 = $jsonMapping["sort"][$del_sort]["ip_v4"];
+            $del_byTime = $jsonMapping["sort"][$del_sort]["time"].$jsonEquipement[$mac]["record"];
+                         
+            unset($jsonEquipement[$mac]);
+            unset($jsonMapping["byMac"][$mac]);
+            unset($jsonMapping["sort"][$del_sort]);
+            unset($jsonMapping["byIpv4"][$del_byIpv4]);
+            unset($jsonMapping["byTime"][$del_byTime]);
+            
         }
+        
+        self::recordInJson(scan_ip::$_jsonEquipement, $jsonEquipement);
+        self::recordInJson(scan_ip::$_jsonMapping, $jsonMapping);
     }
     
 }

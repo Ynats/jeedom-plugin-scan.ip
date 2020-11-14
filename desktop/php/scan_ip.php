@@ -150,6 +150,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         </div>
                         <div id="scan_ip_info_widget" style="display:none;">
                             <br />
+<?php    
+                        scan_ip_tools::vueSubTitle("{{A savoir !}}");
+?>
                             <div class="form-group" >
                                 <label class="col-sm-3 control-label">Attention Widget dédié au plugin</label>
                                 <div class="col-sm-9">
@@ -169,6 +172,28 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <span>{{Cliquez ici pour ouvrir la configuration}}</span>
                                 </div>
                             </div>
+                        <div id="scan_ip_widget_network_parametre" style="display:none;">
+<?php    
+                        scan_ip_tools::vueSubTitle("{{Paramètres du Widget}}");
+?> 
+                            <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Ordre d'afffichage du Widget}}</sup>
+                            </label>
+                            <div class="col-lg-5">
+                                <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="saveOrderColonWidegetNetwork">
+                                    <option value="online">{{par "En ligne"}}</option>
+                                    <option value="saving">{{par "Elément enregistré"}}</option>
+                                    <option value="mac">{{par "Adresse MAC"}}</option>
+                                    <option value="ip">{{par "Ip"}}</option>
+                                    <option value="name">{{par "Nommage"}}</option>
+                                    <option value="comment">{{par "Commentaires"}}</option>
+                                    <option value="time">{{par "Mide à jour"}}</option>
+                                </select> 
+                            </div>
+                        </div>
+                            
+                        </div>
+                            
                         </div>    
                         
                     <div id="hiden_type_normal">

@@ -55,7 +55,7 @@ class scan_ip_widget_network extends eqLogic {
         
     }
 
-    public static function createNetworkWidget($_version = 'dashboard', $_replace, $_reseau) {
+    public static function createNetworkWidget($_this, $_version = 'dashboard', $_replace, $_reseau) {
 
         log::add('scan_ip', 'debug', 'createNetworkWidget :.  Lancement');
 
@@ -66,7 +66,6 @@ class scan_ip_widget_network extends eqLogic {
         $replace["#widget_network#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th data-sort="int" class="scanTd" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
                 <th data-sort="string" class="scanTd" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
                 <th data-sort="int" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
                 <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> Adresse MAC</span></th>
@@ -78,13 +77,11 @@ class scan_ip_widget_network extends eqLogic {
         </thead>
         <tbody>';
 
-        $list = 1;
         foreach ($_reseau["sort"] as $device) {
 
             $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
 
             $replace["#widget_network#"] .= '<tr>'
-            . '<td class="scanTd" style="text-align:center;">' . $list++ . '</td>'
             . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
             . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
             . '<td class="scanTd">' . $device["mac"] . '</td>'
@@ -95,10 +92,35 @@ class scan_ip_widget_network extends eqLogic {
             . '</tr>';
 
         }
+        
+        switch ($_this->getConfiguration("saveOrderColonWidegetNetwork")) {
+            case "online":
+                $orderBy = 0;
+                break;
+            case "saving":
+                $orderBy = 1;
+                break;
+            case "mac":
+                $orderBy = 2;
+                break;
+            case "ip":
+                $orderBy = 3;
+                break;
+            case "name":
+                $orderBy = 4;
+                break;
+            case "comment":
+                $orderBy = 5;
+                break;
+            case "time":
+                $orderBy = 6;
+                break;
+
+        }
 
         $replace["#widget_network#"] .= '</tbody></table>';
         $replace["#widget_network#"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
-        $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { $("#scan_ip_network_widget").stupidtable(); });</script>';
+        $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { var $table = $("#scan_ip_network_widget").stupidtable(); var $th_to_sort = $table.find("thead th").eq('.$orderBy.'); $th_to_sort.stupidsort(); });</script>';
         
         return $replace;
     }

@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
     <div class="col-md-12" id="show_scan_ip_add" style="padding: 15px !important; display:none;">
         <div class="form-group">
             <a class="btn btn-success pull-right" id="add_scan_ip_equipement"><i class="fas fa-check-circle"></i> Ajouter les équipements sélectionnés</a>
-<!--            <a class="btn btn-danger pull-right" id="remove_scan_ip_equipement"><i class="fas fa-trash"></i> Supprimer les équipements sélectionnés</a>-->
+            <a class="btn btn-danger pull-right" id="remove_scan_ip_equipement"><i class="fas fa-trash"></i> Supprimer les équipements sélectionnés</a>
         </div>
     </div>
     
@@ -51,6 +51,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         <th data-sort="string" style="width:375px;"><span class="scanHender"><b class="caret"></b> {{Commentaire}}</span></th>
                         <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Adresse MAC}}</span></th>
                         <th data-sort="int" style="width:110px;"><span class="scanHender"><b class="caret"></b> {{ip}}</span></th>
+                        <th data-sort="string" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Enregistrement}}</span></th>
                         <th data-sort="string" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Date de mise à jour}}</span></th>
                     </tr>
                 </thead>
@@ -65,6 +66,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                             . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                             . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                             . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
+                            . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["record"]) . '</td>'
                             . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["time"]) . '</td>'
                             . '</tr>';
                     }

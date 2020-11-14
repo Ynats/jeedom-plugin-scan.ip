@@ -41,7 +41,7 @@ class scan_ip extends eqLogic {
     public static $_defaut_cron_pass = 1;
     public static $_defaut_offline_time = 4;
     public static $_defaut_alerte_new_equipement = 10;
-
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # END | VARIABLES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
@@ -53,7 +53,6 @@ class scan_ip extends eqLogic {
     public static function getConfigMode() {
         return config::byKey('mode_plugin', 'scan_ip', "normal");
     }
-    
     
     public function postInsert() {
         log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
@@ -149,7 +148,7 @@ class scan_ip extends eqLogic {
         
         if(scan_ip_widgets::getWidgetType($this) == "network"){
             log::add('scan_ip', 'debug', 'toHtml :.  Création widget Network');
-            $replace = scan_ip_widget_network::createNetworkWidget($version = 'dashboard', $replace, $reseau);
+            $replace = scan_ip_widget_network::createNetworkWidget($this, $version = 'dashboard', $replace, $reseau);
             log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
             return template_replace($replace, getTemplate('core', $version, 'scan_ip_network', 'scan_ip')); 
         }elseif(scan_ip_widgets::getWidgetType($this) == "new_equipement"){

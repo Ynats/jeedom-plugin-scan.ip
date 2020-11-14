@@ -6,12 +6,18 @@ $("#hiden_type_widget").change(function () {
         $("[data-action='copy']").show();
         $("[data-action='configure']").show();
         $("[data-action='remove']").show();
+        $("#scan_ip_widget_network_parametre").hide();
     } else { 
         $("#hiden_type_normal").hide();
         $("#scan_ip_info_widget").show();
         $("[data-action='copy']").hide();
         $("[data-action='configure']").hide();
         $("[data-action='remove']").hide();
+        if($("#hiden_type_widget").val() == "network"){
+            $("#scan_ip_widget_network_parametre").show();
+        } else {
+            $("#scan_ip_widget_network_parametre").hide();
+        }
     }
 });
 
