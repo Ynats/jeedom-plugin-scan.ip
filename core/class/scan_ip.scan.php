@@ -94,10 +94,8 @@ class scan_ip_scan extends eqLogic {
         
         if($old != NULL){
             
-            $result = array_merge($_new, $old);
-            
-            foreach ($result as $mac => $scanLine) {
-                if(empty($scanLine["record"])){
+            foreach (array_merge($_new, $old) as $mac => $scanLine) {
+                if(empty($scanLine["record"]) OR $scanLine["record"] == ""){
                     $return[$mac]["record"] = time();
                     $return[$mac]["equipement"] = $_new[$mac]["equipement"];
                 } else {
