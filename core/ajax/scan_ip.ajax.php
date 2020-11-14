@@ -35,6 +35,12 @@ try {
         if(scan_ip_tools::lockProcess() == TRUE){
             scan_ip_scan::syncScanIp();
             scan_ip_tools::unlockProcess();  
+        } else {
+            event::add('jeedom::alert', array(
+                'level' => 'danger',
+                'page' => 'scan_ip',
+                'message' => "Une synchronisation est déjà en cours."
+            ));
         }
         
         ajax::success();

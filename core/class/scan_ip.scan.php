@@ -56,7 +56,11 @@ class scan_ip_scan extends eqLogic {
 
         if(count($new) == 0){            
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
-            exit();
+            event::add('jeedom::alert', array(
+                'level' => 'warning',
+                'page' => 'scan_ip',
+                'message' => "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations."
+            )); 
         } 
         else {
             
@@ -89,8 +93,11 @@ class scan_ip_scan extends eqLogic {
         $old = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
         
         if($old != NULL){
-            foreach ($old as $mac => $scanLine) {
-                if(empty($old[$mac]) AND !empty($_new[$mac])){
+            
+            $result = array_merge($_new, $old);
+            
+            foreach ($result as $mac => $scanLine) {
+                if(empty($scanLine["record"])){
                     $return[$mac]["record"] = time();
                     $return[$mac]["equipement"] = $_new[$mac]["equipement"];
                 } else {
@@ -120,6 +127,12 @@ class scan_ip_scan extends eqLogic {
                     $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
                     $_return["route"]["mac"] = $mac;
                 } else {
+                    if(!empty($_equipement[$mac]["record"])){
+                        $record = $_equipement[$mac]["record"];
+                    } else {
+                        $record = NULL;
+                    }
+                    
                     $_return["sort"][] = array(
                             "record" => $_equipement[$mac]["record"],
                             "ip_v4" => $scanLine["ip_v4"], 
