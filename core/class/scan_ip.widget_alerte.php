@@ -189,7 +189,7 @@ class scan_ip_widget_alerte extends eqLogic {
                 <th class="scanTd" style="width:130px;">Adresse MAC</th>
                 <th class="scanTd" style="width:110px;">Ip</th>
                 <th class="scanTd" style="width:375px;">Information</th>
-                <th class="scanTd" style="width:375px;">Première connexion</th>
+                <th class="scanTd" style="width:375px;">Vu la première fois</th>
             </tr>
         </thead>
         <tbody>';
