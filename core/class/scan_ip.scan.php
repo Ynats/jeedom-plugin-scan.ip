@@ -68,7 +68,7 @@ class scan_ip_scan extends eqLogic {
             $now = scan_ip_tools::cleanArrayEquipement($now);
             scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $now); 
             
-            $nowMapping = self::createJsonMapping($now);
+            $nowMapping = self::createJsonMapping($now, $ipRoute);
             
         }
         
@@ -85,13 +85,13 @@ class scan_ip_scan extends eqLogic {
         return $now;
     }
     
-    public static function createJsonMapping($_now){
+    public static function createJsonMapping($_now, $_ipRoute){
         
         $timeNow = time();
         $_return = array();
             
             foreach ($_now as $mac => $scanLine) {
-                if($scanLine["ip_v4"] == $ipRoute){
+                if($scanLine["ip_v4"] == $_ipRoute){
                     $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
                     $_return["route"]["mac"] = $mac;
                 } else {
