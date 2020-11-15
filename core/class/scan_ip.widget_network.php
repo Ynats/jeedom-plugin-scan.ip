@@ -149,12 +149,6 @@ class scan_ip_widget_network extends eqLogic {
         } else {
             $return["name"] = "| ". $_device["equipement"];
         }
-        
-        if(!empty($_commentMac[$_device["mac"]])){
-            $return["printComment"] = $_commentMac[$_device["mac"]];
-        } else {
-            $return["printComment"] = "";
-        }
 
         if (scan_ip_tools::isOffline($return["offline_time"], $_device["time"]) == 0) {
             $return["colorOnLine"] = "#50aa50";
@@ -166,13 +160,23 @@ class scan_ip_widget_network extends eqLogic {
             $return["lineSortOnline"] = 0;
         }
 
+        if(!empty($_commentMac[$_device["mac"]])){
+            $return["printComment"] = $_commentMac[$_device["mac"]];
+        } else {
+            $return["printComment"] = "";
+        }
+
         if (isset($_savingMac[$_device["mac"]]["enable"])) {
             if ($_savingMac[$_device["mac"]]["enable"] == 1) {
+                $return["classPresent"] = "color: green;";
                 $return["textPresent"] = '<i class="fas fa-check"></i>';
+                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: green;";
                 $return["titleEquipement"] = "Cet équipement est enregistré et activé";
                 $return["lineSortEquipement"] = 2;
             } else {
+                $return["classPresent"] = "color: #FF4500;";
                 $return["textPresent"] = '<i class="fas fa-exclamation-circle"></i>';
+                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: #FF4500;";
                 $return["titleEquipement"] = "Cet équipement est enregistré mais désactivé";
                 $return["lineSortEquipement"] = 1;
             }
