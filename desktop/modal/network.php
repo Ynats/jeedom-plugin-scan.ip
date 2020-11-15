@@ -36,7 +36,7 @@ foreach ($arrayCommentMac as $tempCommentMac) {
 }
 
 $eqLogic = scan_ip_eqLogic::searcheqLogicByType("network");
-$orderBy = $eqLogic->getConfiguration("saveOrderColonWidegetNetwork");
+$orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
 
 ?>
 
