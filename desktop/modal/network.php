@@ -96,6 +96,10 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
                 <label class="col-sm-3 control-label">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["jeedom"]["mac"]?></div>
             </div>
+            <div>
+                <label class="col-sm-3 control-label">Installation : </label>
+                <div><?php echo scan_ip_tools::printDate($ipsReseau["jeedom"]["record"]) ?></div> 
+            </div>
             <?php if(gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) != $ipsReseau["jeedom"]["ip_v4"]) { ?>            
                 <div>
                     <label class="col-sm-3 control-label">Host Name : </label>
@@ -113,6 +117,12 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
             <h3 class="panel-title">Votre routeur</h3>
         </div>
         <div class="panel-body">
+            <?php if(!empty($ipsReseau["route"]["equipement"])) { ?>            
+                <div>
+                    <label class="col-sm-3 control-label">Nom : </label>
+                    <div><?php echo $ipsReseau["route"]["equipement"] ?></div>
+                </div>
+            <?php } ?> 
             <div>
                 <label class="col-sm-3 control-label">ip : </label>
                 <div><?php echo $ipsReseau["route"]["ip_v4"] ?></div>

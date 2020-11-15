@@ -324,4 +324,18 @@ class scan_ip_tools extends eqLogic {
         } 
     }
     
+    public static function getInstallJeedom(){
+        
+        $test1 = __DIR__ . "/../../../../robots.txt";
+        $test2 = __DIR__ . "/../../../../apple-touch-icon.png";
+        $test3 = __DIR__ . "/../../../../COPYRING";
+        
+        if (file_exists($test1)) { $return[] = filemtime($test1); }
+        if (file_exists($test2)) { $return[] = filemtime($test2); }
+        if (file_exists($test3)) { $return[] = filemtime($test3); }
+        
+        asort($return);
+        return $return[0];
+    }
+    
 }

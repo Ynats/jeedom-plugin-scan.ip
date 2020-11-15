@@ -69,8 +69,32 @@ scan_ip_tools::cleanAfterUpdate();
                     <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
                 </select> 
             </div>
-        </div> 
+        </div>
         
+        <div id="show_avance" style="display:none;">   
+<?php
+        scan_ip_tools::vueSubTitle("{{Votre réseau (Mode avancé)}}", "config");
+?>     
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Routeur}}</label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_routeur">
+                    <option value="0">{{Retirer le routeur de la liste}}</option>
+                    <option value="1">{{Ajouter le routeur dans la liste}}</option>
+                </select> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Jeedom}}</label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_jeedom">
+                    <option value="0">{{Retirer Jeedom de la liste}}</option>
+                    <option value="1">{{Ajouter Jeedom dans la liste}}</option>
+                </select> 
+            </div>
+        </div>
+    </div> 
+           
     <div id="show_oui" style="display:none;">        
 <?php
         scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");

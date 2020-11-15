@@ -68,7 +68,7 @@ class scan_ip_scan extends eqLogic {
             $equipement = self::createArchiveEquipement($new);
             $now = scan_ip_tools::arrayCompose($equipement, $new);       
             $now = scan_ip_tools::cleanArrayEquipement($now); 
-            $nowMapping = self::createJsonMapping($now, $equipement, $ipRoute); 
+            $nowMapping = self::createJsonMapping($now, $equipement, $ipRoute, $infoJeedom); 
         }
         
         $nowMapping["jeedom"] = $infoJeedom; 
@@ -125,24 +125,41 @@ class scan_ip_scan extends eqLogic {
         return $return;
     }
     
-    public static function createJsonMapping($_now, $_equipement, $_ipRoute){
+    public static function createJsonMapping($_now, $_equipement, $_ipRoute, $_infoJeedom){
         
         $timeNow = time();
         $_return = array();
-            
+        $add_network_routeur = config::byKey('add_network_routeur', 'scan_ip', 0);
+        $add_network_jeedom = config::byKey('add_network_jeedom', 'scan_ip', 0);
+        
+        if($add_network_jeedom == 1){
+            $_jeedom[$_infoJeedom["mac"]] = array(
+                "ip_v4" => $_infoJeedom["ip_v4"], 
+                "equipement" => $_infoJeedom["name"], 
+                "time" => $_infoJeedom["time"], 
+                "record" => $_infoJeedom["record"]
+            );
+            $_now = scan_ip_tools::arrayCompose($_jeedom, $_now);
+        }
+          
             foreach ($_now as $mac => $scanLine) {
+                
                 if($scanLine["ip_v4"] == $_ipRoute){
                     $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
                     $_return["route"]["mac"] = $mac;
-                } else {
+                    $_return["route"]["equipement"] = $scanLine["equipement"];
+                } 
+                
+                if($add_network_routeur == 1 OR $scanLine["ip_v4"] != $_ipRoute){
+                
                     if(!empty($_equipement[$mac]["record"])){
                         $record = $_equipement[$mac]["record"];
                     } else {
-                        $record = NULL;
+                        $record = $_infoJeedom["record"];
                     }
-                    
+
                     $_return["sort"][] = array(
-                            "record" => $_equipement[$mac]["record"],
+                            "record" => $record,
                             "ip_v4" => $scanLine["ip_v4"], 
                             "mac" => $mac, 
                             "time" => $scanLine["time"], 
@@ -152,19 +169,19 @@ class scan_ip_scan extends eqLogic {
                         "mac" => $mac, 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
-                        "record" => $_equipement[$mac]["record"]
+                        "record" => $record
                         );
                     $_return["byMac"][$mac] = array(
                         "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
                         "time" => $scanLine["time"], 
-                        "record" => $_equipement[$mac]["record"]
+                        "record" => $record
                         );  
-                    $_return["byTime"][$scanLine["time"].$_equipement[$mac]["record"]][] = array(
+                    $_return["byTime"][$scanLine["time"].$record][] = array(
                         "time" => $scanLine["time"], 
                         "mac" => $mac, "ip_v4" => $scanLine["ip_v4"], 
                         "equipement" => $scanLine["equipement"], 
-                        "record" => $_equipement[$mac]["record"]
+                        "record" => $record
                         );
                 }
             }

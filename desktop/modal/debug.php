@@ -22,7 +22,6 @@ if (!isConnect('admin')) {
 require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
 ?>
-
 <div class="col-md-12">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">

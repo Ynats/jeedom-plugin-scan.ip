@@ -28,8 +28,7 @@ class scan_ip_shell extends eqLogic {
         exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output);
         
         foreach ($output as $scanLine) {
-            if (preg_match(scan_ip_tools::getRegex("ip_v4"), $scanLine)) { 
-                
+            if (preg_match(scan_ip_tools::getRegex("ip_v4"), $scanLine)) {     
                     preg_match(scan_ip_tools::getRegex("ip_v4"), $scanLine, $sortIp); 
                     preg_match(scan_ip_tools::getRegex("mac"), $scanLine, $sortMac);
                     
@@ -40,7 +39,6 @@ class scan_ip_shell extends eqLogic {
                     $return[$mac]["time"] = $time;
             }
         }
-        
         return $return;
     }
     
@@ -73,11 +71,13 @@ class scan_ip_shell extends eqLogic {
         exec('sudo ip a', $list);
 
         foreach ($list as $i => $value) {
-            $return["plage_route"] = NULL; 
+            // $return["plage_route"] = NULL; 
             if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".$plageRouteur.")", $value)) {
                 $return["ip_v4"] = trim(str_replace("inet", "", explode("/",$value)[0]));
                 $return["mac"] = strtoupper(trim(str_replace("link/ether", "", explode("brd",$list[$i-1])[0])));
                 $return["name"] = config::byKey('name');
+                $return["time"] = time();
+                $return["record"] =scan_ip_tools::getInstallJeedom();
                 break;
             }
         }
