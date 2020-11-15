@@ -17,7 +17,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
             <div class="cursor eqLogicAction logoPrimary" data-action="add">
                 <i class="fas fa-plus-circle"></i>
                 <br>
-                <span>{{Ajouter une adresse MAC}}</span>
+                <span>{{Ajouter un équipement MAC}}</span>
             </div>
             <div class="cursor logoSecondary" id="bt_syncEqLogic">
                 <i class="fas fa-sync-alt"></i>
@@ -62,7 +62,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 if($eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
                     $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
                     echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
-                    echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+                    echo '<img src="' . scan_ip::$_pngIconMac . '"/>';
                     echo '<br>';
                     echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
                     echo '</div>';
@@ -78,7 +78,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 if($eqLogic->getConfiguration('type_widget', 'normal') != "normal"){
                     $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
                     echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
-                    echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+                    echo '<img src="' . scan_ip::$_pngIconWidget . '"/>';
                     echo '<br>';
                     echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
                     echo '</div>';

@@ -33,6 +33,9 @@ class scan_ip extends eqLogic {
     public static $_jsonEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json/equipements";
     public static $_jsonCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json/commentMac";
     
+    public static $_pngIconMac = "./plugins/scan_ip/data/png/scan_ip_icon_mac.png";
+    public static $_pngIconWidget = "./plugins/scan_ip/data/png/scan_ip_icon_widget.png";
+    
     public static $_bash_oui = "sudo get-oui -u http://standards-oui.ieee.org/oui.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_file_oui =  __DIR__ . "/../../../../plugins/scan_ip/resources/oui.txt";
     public static $_bash_iab = "sudo get-iab -u http://standards-oui.ieee.org/iab/iab.txt -f " . __DIR__ . "/../../../../plugins/scan_ip/resources/iab.txt";
