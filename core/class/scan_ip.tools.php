@@ -118,65 +118,6 @@ class scan_ip_tools extends eqLogic {
         echo "<pre style='background-color: #1b2426 !important; color: white !important;'>".print_r($_array, true)."</pre>";
     }
     
-    public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
-        
-        if(empty($_savingMac[$_device["mac"]]["offline_time"])){
-            $return["offline_time"] = NULL;
-        } else {
-            $return["offline_time"] = $_savingMac[$_device["mac"]]["offline_time"];
-        }
-
-        if (isset($_savingMac[$_device["mac"]]["name"])) {
-            $return["name"] = $_savingMac[$_device["mac"]]["name"];
-            $return["nameSort"] = scan_ip_tools::getCleanForSortTable($_savingMac[$_device["mac"]]["name"]);
-        } else {
-            $return["name"] = "| ". $_device["equipement"];
-            $return["nameSort"] = scan_ip_tools::getCleanForSortTable($_device["equipement"]);
-        }
-
-        if (scan_ip_tools::isOffline($return["offline_time"], $_device["time"]) == 0) {
-            $return["colorOnLine"] = "#50aa50";
-            $return["titleOnLine"] = "En ligne";
-            $return["lineSortOnline"] = 1;
-        } else {
-            $return["colorOnLine"] = "red";
-            $return["titleOnLine"] = "Hors ligne";
-            $return["lineSortOnline"] = 0;
-        }
-
-        if(!empty($_commentMac[$_device["mac"]])){
-            $return["printComment"] = $_commentMac[$_device["mac"]];
-            $return["printCommentSort"] = scan_ip_tools::getCleanForSortTable($return["printComment"]);
-        } else {
-            $return["printComment"] = "";
-            $return["printCommentSort"] = "ZZZZZZZZZZZZZZZZZZZZ";
-        }
-
-        if (isset($_savingMac[$_device["mac"]]["enable"])) {
-            if ($_savingMac[$_device["mac"]]["enable"] == 1) {
-                $return["classPresent"] = "color: green;";
-                $return["textPresent"] = '<i class="fas fa-check"></i>';
-                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: green;";
-                $return["titleEquipement"] = "Cet équipement est enregistré et activé";
-                $return["lineSortEquipement"] = 2;
-            } else {
-                $return["classPresent"] = "color: #FF4500;";
-                $return["textPresent"] = '<i class="fas fa-exclamation-circle"></i>';
-                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: #FF4500;";
-                $return["titleEquipement"] = "Cet équipement est enregistré mais désactivé";
-                $return["lineSortEquipement"] = 1;
-            }
-        } else {
-            $return["classPresent"] = "color: grey;";
-            $return["textPresent"] = '<i class="fas fa-info-circle"></i>';
-            $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: grey;";
-            $return["titleEquipement"] = "Cet équipement n'est pas enregistré";
-            $return["lineSortEquipement"] = 0;
-        }
-
-        return $return;
-    }
-    
     public static function printFileOuiExist(){
         if(@file_exists(scan_ip::$_file_oui) == TRUE){
             return "<span style='color:green'>Installé</span>";
@@ -192,7 +133,7 @@ class scan_ip_tools extends eqLogic {
         if($_string == "..."){
             if($_type == "int"){
                 return 9999999999999;
-            } elseif($_type == "int"){
+            } elseif($_type == "string"){
                 return "ZZZZZZZZZZZZZZZ";
             } elseif($_type == "date"){
                 return 0;

@@ -80,15 +80,15 @@ class scan_ip_widget_network extends eqLogic {
 
         foreach ($_reseau["sort"] as $device) {
 
-            $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
+            $element = self::getElementVueNetwork($device, $savingMac, $commentMac);
 
             $replace["#widget_network#"] .= '<tr>'
             . '<td style="padding : 3px 0 3px 15px !important;" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
             . '<td style="text-align:center !important; padding : 3px 0 3px 15px !important;' . $element["classPresent"] . '" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
             . '<td style="padding : 3px 0 3px 15px !important;">' . $device["mac"] . '</td>'
             . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"], "int") . '</span>' . $device["ip_v4"] . '</td>'
-            . '<td style="text-overflow: ellipsis;padding : 3px 0 3px 15px !important;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
-            . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
+            . '<td style="text-overflow: ellipsis;padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["name"], "string") . '</span>' . $element["name"] . '</td>'
+            . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["printComment"], "string") . '</span>' . $element["printComment"] . '</td>'
             . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["time"], "date") . '</span>' . scan_ip_tools::printDate($device["time"]) . '</td>'
             . '</tr>';
 
@@ -134,6 +134,57 @@ class scan_ip_widget_network extends eqLogic {
                 return 6;
                 break;
         }
+    }
+    
+    public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
+        
+        if(empty($_savingMac[$_device["mac"]]["offline_time"])){
+            $return["offline_time"] = NULL;
+        } else {
+            $return["offline_time"] = $_savingMac[$_device["mac"]]["offline_time"];
+        }
+
+        if (isset($_savingMac[$_device["mac"]]["name"])) {
+            $return["name"] = $_savingMac[$_device["mac"]]["name"];
+        } else {
+            $return["name"] = "| ". $_device["equipement"];
+        }
+        
+        if(!empty($_commentMac[$_device["mac"]])){
+            $return["printComment"] = $_commentMac[$_device["mac"]];
+        } else {
+            $return["printComment"] = "";
+        }
+
+        if (scan_ip_tools::isOffline($return["offline_time"], $_device["time"]) == 0) {
+            $return["colorOnLine"] = "#50aa50";
+            $return["titleOnLine"] = "En ligne";
+            $return["lineSortOnline"] = 1;
+        } else {
+            $return["colorOnLine"] = "red";
+            $return["titleOnLine"] = "Hors ligne";
+            $return["lineSortOnline"] = 0;
+        }
+
+        if (isset($_savingMac[$_device["mac"]]["enable"])) {
+            if ($_savingMac[$_device["mac"]]["enable"] == 1) {
+                $return["textPresent"] = '<i class="fas fa-check"></i>';
+                $return["titleEquipement"] = "Cet équipement est enregistré et activé";
+                $return["lineSortEquipement"] = 2;
+            } else {
+                $return["textPresent"] = '<i class="fas fa-exclamation-circle"></i>';
+                $return["titleEquipement"] = "Cet équipement est enregistré mais désactivé";
+                $return["lineSortEquipement"] = 1;
+            }
+        } else {
+            $return["classPresent"] = "color: grey;";
+            $return["textPresent"] = '<i class="fas fa-info-circle"></i>';
+            $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: grey;";
+            $return["titleEquipement"] = "Cet équipement n'est pas enregistré";
+            $return["lineSortEquipement"] = 0;
+        }
+
+        return $return;
     }
     
 }
