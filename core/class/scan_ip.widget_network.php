@@ -103,7 +103,7 @@ class scan_ip_widget_network extends eqLogic {
     
     public static function getConfigOrder($_this){
         $return = $_this->getConfiguration("saveOrderColonWidegetNetwork");
-        if(empty($return)){
+        if(empty($return) OR $return == ""){
             return "ip";
         } else {
             return $return;
