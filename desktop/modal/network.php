@@ -157,10 +157,10 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
                                 . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
-                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
+                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"], "int") . '</span>' . $device["ip_v4"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $element["printCommentSort"] . '</span><input type="text" id="input_' . $list . '" data-mac="' . $device["mac"] . '" value="' . $element["printComment"] . '" class="form-control" style="width:100%;"></td>'
-                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . $device["time"] . '</span>' .  scan_ip_tools::printDate($device["time"]) . '</td>'
+                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["time"], "date") . '</span>' .  scan_ip_tools::printDate($device["time"]) . '</td>'
                                 . '</tr>';
                     }
 ?>

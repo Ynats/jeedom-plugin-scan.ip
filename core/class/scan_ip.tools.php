@@ -185,12 +185,20 @@ class scan_ip_tools extends eqLogic {
         }
     }
     
-    public static function getCleanForSortTable($_string){
+    public static function getCleanForSortTable($_string, $_type = NULL){
         if (preg_match(self::getRegex("ip_v4"), $_string)) { 
             return str_replace(".", "", $_string);
         } 
         if($_string == "..."){
-            return "";
+            if($_type == "int"){
+                return 9999999999999;
+            } elseif($_type == "int"){
+                return "ZZZZZZZZZZZZZZZ";
+            } elseif($_type == "date"){
+                return 0;
+            } else{
+                return 9999999999999;
+            }
         }
         else {
             return strtolower($_string);
