@@ -155,7 +155,7 @@ class scan_ip_widget_alerte extends eqLogic {
             }
             if(!empty($temp[$i]["time"])){
                 $_eqlogic->checkAndUpdateCmd('last_'.$i.'_time', $temp[$i]["time"]);
-                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_date', date("d/m/Y H:i:s", $temp[$i]["time"]));
+                $_eqlogic->checkAndUpdateCmd('last_'.$i.'_date', scan_ip_tools::printDate($temp[$i]["time"]));
             } else {
                 $_eqlogic->checkAndUpdateCmd('last_'.$i.'_time', NULL);
                 $_eqlogic->checkAndUpdateCmd('last_'.$i.'_date', NULL);
@@ -185,11 +185,11 @@ class scan_ip_widget_alerte extends eqLogic {
         $replace["#last_unknown_equipement#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th class="scanTd" style="width:170px;">Date</th>
-                <th class="scanTd" style="width:130px;">Adresse MAC</th>
-                <th class="scanTd" style="width:110px;">Ip</th>
-                <th class="scanTd" style="width:375px;">Information</th>
-                <th class="scanTd" style="width:375px;">Vu la première fois</th>
+                <th style="padding : 3px 0 3px 15px !important;" style="width:170px;">Date</th>
+                <th style="padding : 3px 0 3px 15px !important;" style="width:130px;">Adresse MAC</th>
+                <th style="padding : 3px 0 3px 15px !important;" style="width:110px;">Ip</th>
+                <th style="padding : 3px 0 3px 15px !important;" style="width:375px;">Information</th>
+                <th style="padding : 3px 0 3px 15px !important;" style="width:375px;">Vu la première fois</th>
             </tr>
         </thead>
         <tbody>';
@@ -204,11 +204,11 @@ class scan_ip_widget_alerte extends eqLogic {
                 }
                 
                 $replace["#last_unknown_equipement#"] .= '<tr>'
-                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip) . '</td>'
-                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_mac", $scan_ip) . '</td>'
-                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_ip_v4", $scan_ip) . '</td>'
-                . '<td class="scanTd">' . scan_ip_cmd::getCommande("last_".$i."_equipement", $scan_ip) . '</td>'
-                . '<td class="scanTd">' . $record . '</td>'
+                . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip) . '</td>'
+                . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_mac", $scan_ip) . '</td>'
+                . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_ip_v4", $scan_ip) . '</td>'
+                . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_equipement", $scan_ip) . '</td>'
+                . '<td style="padding : 3px 0 3px 15px !important;">' . $record . '</td>'
                 . '</tr>';
             }
         }

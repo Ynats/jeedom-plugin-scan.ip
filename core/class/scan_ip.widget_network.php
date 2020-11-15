@@ -54,7 +54,7 @@ class scan_ip_widget_network extends eqLogic {
         $refresh->save();
         
     }
-
+    
     public static function createNetworkWidget($_this, $_version = 'dashboard', $_replace, $_reseau) {
 
         log::add('scan_ip', 'debug', 'createNetworkWidget :.  Lancement');
@@ -66,13 +66,13 @@ class scan_ip_widget_network extends eqLogic {
         $replace["#widget_network#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th data-sort="string" class="scanTd" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
-                <th data-sort="int" style="text-align: center; width:30px;" class="scanTd"><span class="scanHender"><b class="caret"></b></span></th>
-                <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> Adresse MAC</span></th>
-                <th data-sort="int" class="scanTd" style="width:110px;"><span class="scanHender"><b class="caret"></b> Ip</span></th>
-                <th data-sort="string" class="scanTd" style="width:375px;"><span class="scanHender"><b class="caret"></b> Nom</span></th>
-                <th data-sort="string" class="scanTd" style="width:375px;"><span class="scanHender"><b class="caret"></b> Commentaire</span></th>
-                <th data-sort="int" class="scanTd" style="width:170px;"><span class="scanHender"><b class="caret"></b> Date de mise à jour</span></th>
+                <th data-sort="string" style="padding : 3px 0 3px 15px !important; text-align: center; width:30px;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
+                <th data-sort="int" style="text-align: center; width:30px; padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
+                <th data-sort="string" style="width:130px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Adresse MAC</span></th>
+                <th data-sort="int" style="width:110px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Ip</span></th>
+                <th data-sort="string" style="width:375px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Nom</span></th>
+                <th data-sort="string" style="width:375px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Commentaire</span></th>
+                <th data-sort="int" style="width:170px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Date de mise à jour</span></th>
             </tr>
         </thead>
         <tbody>';
@@ -82,13 +82,13 @@ class scan_ip_widget_network extends eqLogic {
             $element = scan_ip_tools::getElementVueNetwork($device, $savingMac, $commentMac);
 
             $replace["#widget_network#"] .= '<tr>'
-            . '<td class="scanTd" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
-            . '<td class="scanTd ' . $element["classPresent"] . '" style="style="text-align:center !important;" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
-            . '<td class="scanTd">' . $device["mac"] . '</td>'
-            . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
-            . '<td class="scanTd" style="text-overflow: ellipsis;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
-            . '<td class="scanTd"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
-            . '<td class="scanTd"><span style="display:none;">' . $device["time"] . '</span>' . date("d/m/Y H:i:s", $device["time"]) . '</td>'
+            . '<td style="padding : 3px 0 3px 15px !important;" title="' . $element["titleOnLine"] .'"><span style="display:none;">' . $element["lineSortOnline"] . '</span>' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
+            . '<td style="text-align:center !important; padding : 3px 0 3px 15px !important;' . $element["classPresent"] . '" title="' . $element["titleEquipement"] .'"><span style="display:none;">' . $element["lineSortEquipement"] . '</span><span class="' . $element["classSuivi"] . '">' . $element["textPresent"] . '</span></td>'
+            . '<td style="padding : 3px 0 3px 15px !important;">' . $device["mac"] . '</td>'
+            . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"]) . '</span>' . $device["ip_v4"] . '</td>'
+            . '<td style="text-overflow: ellipsis;padding : 3px 0 3px 15px !important;"><span style="display:none;">' . $element["nameSort"] . '</span>' . $element["name"] . '</td>'
+            . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . $element["printCommentSort"] . '</span>' . $element["printComment"] . '</td>'
+            . '<td style="padding : 3px 0 3px 15px !important;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["time"]) . '</span>' . scan_ip_tools::printDate($device["time"]) . '</td>'
             . '</tr>';
 
         }

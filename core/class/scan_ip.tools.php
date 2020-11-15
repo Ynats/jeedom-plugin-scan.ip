@@ -154,22 +154,22 @@ class scan_ip_tools extends eqLogic {
 
         if (isset($_savingMac[$_device["mac"]]["enable"])) {
             if ($_savingMac[$_device["mac"]]["enable"] == 1) {
-                $return["classPresent"] = "macPresentActif";
+                $return["classPresent"] = "color: green;";
                 $return["textPresent"] = '<i class="fas fa-check"></i>';
-                $return["classSuivi"] = "spanScanIp EnableScanIp";
+                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: green;";
                 $return["titleEquipement"] = "Cet équipement est enregistré et activé";
                 $return["lineSortEquipement"] = 2;
             } else {
-                $return["classPresent"] = "macPresentInactif";
+                $return["classPresent"] = "color: #FF4500;";
                 $return["textPresent"] = '<i class="fas fa-exclamation-circle"></i>';
-                $return["classSuivi"] = "spanScanIp DisableScanIp";
+                $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: #FF4500;";
                 $return["titleEquipement"] = "Cet équipement est enregistré mais désactivé";
                 $return["lineSortEquipement"] = 1;
             }
         } else {
-            $return["classPresent"] = "macAbsent";
+            $return["classPresent"] = "color: grey;";
             $return["textPresent"] = '<i class="fas fa-info-circle"></i>';
-            $return["classSuivi"] = "spanScanIp NoneScanIp";
+            $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: grey;";
             $return["titleEquipement"] = "Cet équipement n'est pas enregistré";
             $return["lineSortEquipement"] = 0;
         }
@@ -188,7 +188,11 @@ class scan_ip_tools extends eqLogic {
     public static function getCleanForSortTable($_string){
         if (preg_match(self::getRegex("ip_v4"), $_string)) { 
             return str_replace(".", "", $_string);
-        } else {
+        } 
+        if($_string == "..."){
+            return "";
+        }
+        else {
             return strtolower($_string);
         }
     }
@@ -196,7 +200,7 @@ class scan_ip_tools extends eqLogic {
     public static function cleanArrayEquipement($_array){
         $return = NULL;
         foreach ($_array as $mac => $scanLine) {
-            if(!empty($scanLine["ip_v4"]) AND !empty($scanLine["time"]) AND !empty($scanLine["equipement"]) AND !empty($mac)){
+            if(!empty($scanLine["equipement"]) AND !empty($mac)){
                 $return[$mac] = $scanLine;
             }
         }
@@ -302,6 +306,14 @@ class scan_ip_tools extends eqLogic {
             }
         }
         return $return;
+    }
+    
+    public static function printDate($_time = NULL){
+        if($_time == NULL OR $_time == "..."){
+            return "...";
+        } else {
+             return date("d/m/Y H:i:s", $_time);
+        } 
     }
     
 }

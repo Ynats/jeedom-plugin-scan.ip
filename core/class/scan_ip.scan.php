@@ -63,16 +63,10 @@ class scan_ip_scan extends eqLogic {
             )); 
         } 
         else {
-            
-            $old = scan_ip_json::getJson(scan_ip::$_jsonMapping);
-            
-            if(empty($old) OR count($old) == 0){ $now = $new; } 
-            else { $now = scan_ip_tools::arrayCompose($old, $new); } 
-            
-            $now = scan_ip_tools::cleanArrayEquipement($now);
-            
             $equipement = self::createArchiveEquipement($new);
-            $nowMapping = self::createJsonMapping($now, $equipement, $ipRoute);
+            $now = scan_ip_tools::arrayCompose($equipement, $new);       
+            $now = scan_ip_tools::cleanArrayEquipement($now); 
+            $nowMapping = self::createJsonMapping($now, $equipement, $ipRoute); 
         }
         
         $nowMapping["jeedom"] = $infoJeedom; 
@@ -95,13 +89,28 @@ class scan_ip_scan extends eqLogic {
         if($old != NULL){
             
             foreach (array_merge($_new, $old) as $mac => $scanLine) {
-                if(empty($scanLine["record"]) OR $scanLine["record"] == ""){
-                    $return[$mac]["record"] = time();
-                    $return[$mac]["equipement"] = $_new[$mac]["equipement"];
-                } else {
-                    $return[$mac]["record"] = $old[$mac]["record"];
-                    $return[$mac]["equipement"] = $old[$mac]["equipement"];
+                
+                if(empty($scanLine["record"]) OR $scanLine["record"] == ""){ $return[$mac]["record"] = time(); } 
+                else { $return[$mac]["record"] = $old[$mac]["record"]; }
+                
+                if(empty($old[$mac]["equipement"]) AND empty($_new[$mac]["equipement"])){
+                    $return[$mac]["equipement"] = scan_ip_api_mac_vendor::get_MacVendor($mac);
                 }
+                elseif(!empty($_new[$mac]["equipement"]) and $_new[$mac]["equipement"] != "..."){
+                    $return[$mac]["equipement"] = $_new[$mac]["equipement"];
+                }
+                else {
+                    $return[$mac]["equipement"] = $old[$mac]["equipement"]; 
+                }   
+                
+                if(!empty($_new[$mac]["ip_v4"])){ $return[$mac]["ip_v4"] = $_new[$mac]["ip_v4"]; } 
+                elseif(!empty($old[$mac]["ip_v4"])){ $return[$mac]["ip_v4"] = $old[$mac]["ip_v4"]; }
+                else { $return[$mac]["ip_v4"] = "..."; }
+
+                if(!empty($_new[$mac]["time"])){ $return[$mac]["time"] = $_new[$mac]["time"]; } 
+                 elseif(!empty($old[$mac]["time"])){ $return[$mac]["time"] = $old[$mac]["time"]; }
+                else { $return[$mac]["time"] = "..."; }
+                
             }
         } else {
             foreach ($_new as $mac => $scanLine) {
