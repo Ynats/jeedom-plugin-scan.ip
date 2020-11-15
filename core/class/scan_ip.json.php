@@ -82,7 +82,7 @@ class scan_ip_json extends eqLogic {
         fputs($fichier, json_encode($_data));
         fclose($fichier);
 
-        unlink($_file.'.json');
+        @unlink($_file.'.json');
         rename($_file.'.temp', $_file.'.json');
         chmod($_file.'.json', 0777);
     }

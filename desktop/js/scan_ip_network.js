@@ -1,7 +1,7 @@
 
-$(document).ready(function ($) {
-    $("#scan_ip_network").stupidtable();
-});
+//$(document).ready(function ($) {
+//    $("#scan_ip_network").stupidtable();
+//});
 
 function btSaveCommentaires(nb)
         {

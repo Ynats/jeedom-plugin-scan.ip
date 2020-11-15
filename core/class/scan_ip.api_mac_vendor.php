@@ -10,20 +10,42 @@ require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_
 
 class scan_ip_api_mac_vendor extends eqLogic {
     
+    public static $_jsonMajVendorApi = __DIR__ . "/../../../../plugins/scan_ip/data/json/majVendorApi";
+    public static $_jsonRoulement = 3600 * 7; // 3600 secondes = 1 journée
+    
     public static function get_MacVendor($_mac){
         log::add('scan_ip', 'debug', 'get_MacVendor :. Lancement');
         
-        $return = self::get_MacvendorsCom($_mac);
+        $now = time();
+        $jsonMajVendorApi = scan_ip_json::getJson(self::$_jsonMajVendorApi);
         
-        if($return == NULL){
-            $return = self::get_MacvendorsCo($_mac);
-        }
-        
-        if($return != NULL){
-            return $return;
+        if(!empty($jsonMajVendorApi[$_mac])){
+            if(($now - $jsonMajVendorApi[$_mac]) >= self::$_jsonRoulement){
+                $pass = TRUE;
+            } else {
+                $pass = FALSE;
+            }
         } else {
-            return "...";
+            $pass = TRUE;
         }
+        
+        if($pass == TRUE){
+            $return = self::get_MacvendorsCom($_mac);
+        
+            if($return == NULL){
+                $return = self::get_MacvendorsCo($_mac);
+            }
+
+            if($return != NULL){
+                scan_ip_json::createJsonFile(self::$_jsonMajVendorApi, $jsonMajVendorApi);
+                return $return;
+            } else {
+                $jsonMajVendorApi[$_mac] = $now;
+                scan_ip_json::createJsonFile(self::$_jsonMajVendorApi, $jsonMajVendorApi);
+                return "...";
+            }
+        }
+         
     }
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

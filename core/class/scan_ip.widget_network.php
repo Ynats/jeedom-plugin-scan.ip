@@ -92,37 +92,38 @@ class scan_ip_widget_network extends eqLogic {
             . '</tr>';
 
         }
-        
-        switch ($_this->getConfiguration("saveOrderColonWidegetNetwork")) {
-            case "online":
-                $orderBy = 0;
-                break;
-            case "saving":
-                $orderBy = 1;
-                break;
-            case "mac":
-                $orderBy = 2;
-                break;
-            case "ip":
-                $orderBy = 3;
-                break;
-            case "name":
-                $orderBy = 4;
-                break;
-            case "comment":
-                $orderBy = 5;
-                break;
-            case "time":
-                $orderBy = 6;
-                break;
-
-        }
 
         $replace["#widget_network#"] .= '</tbody></table>';
         $replace["#widget_network#"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
-        $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { var $table = $("#scan_ip_network_widget").stupidtable(); var $th_to_sort = $table.find("thead th").eq('.$orderBy.'); $th_to_sort.stupidsort(); });</script>';
+        $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { var $table = $("#scan_ip_network_widget").stupidtable(); var $th_to_sort = $table.find("thead th").eq('.self::getOrderBy($_this->getConfiguration("saveOrderColonWidegetNetwork")).'); $th_to_sort.stupidsort(); });</script>';
         
         return $replace;
+    }
+    
+    public static function getOrderBy($_config){
+         switch ($_config) {
+            case "online":
+                return 0;
+                break;
+            case "saving":
+                return 1;
+                break;
+            case "mac":
+                return 2;
+                break;
+            case "ip":
+                return 3;
+                break;
+            case "name":
+                return 4;
+                break;
+            case "comment":
+                return 5;
+                break;
+            case "time":
+                return 6;
+                break;
+        }
     }
     
 }

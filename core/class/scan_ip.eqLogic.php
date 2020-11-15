@@ -22,6 +22,18 @@ class scan_ip_eqLogic extends eqLogic {
         return $return;
     }
     
+    public static function searcheqLogicByType($_type){
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            if($_type == "network" and $scan_ip->getConfiguration('type_widget') == "network"){
+                return $scan_ip;
+            } elseif($_type == "new_equipement" and $scan_ip->getConfiguration('type_widget') == "new_equipement"){
+                return $scan_ip;
+            }
+        } 
+        return NULL;
+    }
+    
     public static function addEquipementsTab($_array){ 
         foreach ($_array as $equ) {
             self::createElement($equ[0]["mac"]);

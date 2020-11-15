@@ -119,7 +119,7 @@ class scan_ip_tools extends eqLogic {
     }
     
     public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
- 
+        
         if(empty($_savingMac[$_device["mac"]]["offline_time"])){
             $return["offline_time"] = NULL;
         } else {

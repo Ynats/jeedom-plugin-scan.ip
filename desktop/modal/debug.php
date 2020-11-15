@@ -19,8 +19,8 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.shell.php";
-require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
+
 ?>
 
 <div class="col-md-12">
