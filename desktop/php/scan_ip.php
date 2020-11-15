@@ -6,7 +6,7 @@ $plugin = plugin::byId('scan_ip');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
-//$specWidget = scan_ip_widgets::getIdWidgetSpeciaux();
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
 ?>
 

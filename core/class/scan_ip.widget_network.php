@@ -34,6 +34,7 @@ class scan_ip_widget_network extends eqLogic {
             $scan_ip->setDisplay('width',"1130px");
             $scan_ip->setName("Scan.Ip Widget Network");
             $scan_ip->setConfiguration('type_widget', 'network');
+            $scan_ip->setConfiguration('saveOrderColonWidegetNetwork', 'ip');
             $scan_ip->save();
         }
         
@@ -102,7 +103,7 @@ class scan_ip_widget_network extends eqLogic {
     
     public static function getConfigOrder($_this){
         $return = $_this->getConfiguration("saveOrderColonWidegetNetwork");
-        if($return == NULL){
+        if(empty($return)){
             return "ip";
         } else {
             return $return;
