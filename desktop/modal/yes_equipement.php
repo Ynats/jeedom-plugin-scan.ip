@@ -57,7 +57,6 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                     
                     if(!empty($allEquipements)){
                         
-                    
                         foreach ($allEquipements as $equipement) {
 
                             if($equipement["on_line"] == 0 AND $equipement["ip_v4"] == ""){ 
