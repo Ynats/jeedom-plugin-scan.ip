@@ -112,7 +112,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
             </table>
         </div>
     </div>
-    <div id="div_alert_scan_ip" class="jqAlert alert-warning" style="display:none;"><span class="displayError">Pour le moment, vous n'avez enregistré aucune équipement MAC.</span></div>
+    <div id="div_alert_scan_ip" class="jqAlert alert-warning" style="display:none;"><span class="displayError">Pour le moment, vous n'avez pas enregistré d'équipement MAC.</span></div>
 </div>
   
 <?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>
