@@ -39,20 +39,17 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
             <table style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_equipement">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
-                        <th data-sort="int" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
-                        <th data-sort="int" style="width:40px;"><span class="scanHender"><b class="caret"></b></th>
+                        <th data-sort="int" style="width:40px; text-align: center;"><span class="scanHender"><b class="caret"></b></th>
                         <th data-sort="string" style="width:250px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Nom}}</span></th>
                         <th data-sort="string" style="width:150px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Adresse MAC}}</span></th>
                         <th data-sort="int" style="width:125px;"><span class="scanHender"><b class="caret"></b> {{ip}}</span></th>
                         <th data-sort="int" style="width:125px;"><span class="scanHender"><b class="caret"></b> {{Dernière ip}}</span></th>
                         <th data-sort="string" style="width:170px;"><span class="scanHender"><b class="caret"></b> {{Mis à jour}}</span></th>
-                        <th data-sort="string" style="width:150px;"><span class="scanHender"><b class="caret"></b> {{Statut}}</span></th>
                         <th data-sort="string">{{Elément plugin associé}}</th>
                     </tr>
                 </thead>
                 <tbody>
 <?php
-                    $list = 1;
                     $allEquipements = scan_ip_eqLogic::showEquipements();
                     
                     if(!empty($allEquipements)){
@@ -91,14 +88,12 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
 
                             echo '<tr>'
-                                . '<td style="text-align:center;" class="">' . $list++ . '</td>'
-                                . '<td class="scanTd" style="padding-left:10px;"><span style="display:none;">' . $sortOnLine . '</span>' . scan_ip_tools::getCycle("15px", $color) . '</td>'
+                                . '<td class="scanTd" style="width:40px; padding-left:14px !important;"><span style="display:none;">' . $sortOnLine . '</span>' . scan_ip_tools::getCycle("15px", $color) . '</td>'
                                 . '<td class="scanTd">' . $equipement["link"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                                 . '<td class="scanTd"><span style="display:none;">' . $sortip_v4 . '</span>' . $equipement["ip_v4"] . '</td>'
                                 . '<td class="scanTd" style="'.$style_last.'"><span style="display:none;">' . $sortlast_ip_v4 . '</span>' . $equipement["last_ip_v4"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["update_date"] . '</td>'
-                                . '<td class="scanTd" style="'.$statutColor.'"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($statut) . '</span>' . $statut . '</td>'
                                 . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["plug_element_plugin"]) . '</span>' . $equipement["plug_element_plugin"] . '</td>'
                                 . '</tr>';
 

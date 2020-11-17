@@ -7,6 +7,7 @@ $("#hiden_type_widget").change(function () {
         $("[data-action='configure']").show();
         $("[data-action='remove']").show();
         $("#scan_ip_widget_network_parametre").hide();
+        $("#scan_ip_commandes").show();
     } else { 
         $("#hiden_type_normal").hide();
         $("#scan_ip_info_widget").show();
@@ -15,8 +16,10 @@ $("#hiden_type_widget").change(function () {
         $("[data-action='remove']").hide();
         if($("#hiden_type_widget").val() == "network"){
             $("#scan_ip_widget_network_parametre").show();
+            $("#scan_ip_commandes").hide();
         } else {
             $("#scan_ip_widget_network_parametre").hide();
+            $("#scan_ip_commandes").show();
         }
     }
 });

@@ -13,10 +13,8 @@ apt-get update
 echo 50 > ${PROGRESS_FILE}
 sudo apt-get -y install arp-scan
 echo 70 > ${PROGRESS_FILE}
-sudo apt-get -y install libwww-perl
-echo 80 > ${PROGRESS_FILE}
 sudo apt-get install -y wakeonlan 
-echo 90 > ${PROGRESS_FILE}
+echo 85 > ${PROGRESS_FILE}
 sudo apt-get install -y etherwake 
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"

@@ -101,7 +101,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
             <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
-            <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
+            <li role="presentation" id="scan_ip_commandes"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
         </ul>
         <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
             <div role="tabpanel" class="tab-pane active" id="eqlogictab">
@@ -274,7 +274,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{Réveiller votre équipement à distance ?}}");
 ?> 
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement soit compatible et/ou que l'option ait bien été activé pour que cela fonctionne}}"></i></sup>
+                            <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement soit compatible et/ou que l'option ait bien été activée pour que cela fonctionne}}"></i></sup>
                             </label>
                             <div class="col-lg-5">
                                 <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="enable_wol">

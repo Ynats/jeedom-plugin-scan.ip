@@ -46,7 +46,6 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
                         <th style="text-align: center; width:30px;"></th>
-                        <th data-sort="int" style="text-align: center; width:30px;"><span class="scanHender"><b class="caret"></b></span></th>
                         <th data-sort="string" style="width:375px;;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Nom}}</span></th>
                         <th data-sort="string" style="width:375px;"><span class="scanHender"><b class="caret"></b> {{Commentaire}}</span></th>
                         <th data-sort="string" style="width:130px;" class="scanTd"><span class="scanHender"><b class="caret"></b> {{Adresse MAC}}</span></th>
@@ -64,8 +63,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                     
                         foreach ($allNoEquipement as $equipement) {
                             echo '<tr>'
-                                . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="checked_input_' . $list . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
-                                . '<td style="text-align:center;">' . $list++ . '</td>'
+                                . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="checked_input_' . $list++  . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
                                 . '<td class="scanTd">' . $equipement["name"] . '</td>'
                                 . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'

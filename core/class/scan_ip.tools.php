@@ -120,9 +120,17 @@ class scan_ip_tools extends eqLogic {
     
     public static function printFileOuiExist(){
         if(@file_exists(scan_ip::$_file_oui) == TRUE){
-            return "<span style='color:green'>Installé</span>";
+            return "<span style='color:green'>oui.txt (Installé)</span>";
         } else {
-            return '<a class="btn btn-danger btn-sm" onclick= "recordBtMac()" style="position:relative;top:-5px;"><i class="fas fa-paperclip"></i> Fichier Manquant. Cliquez ici pour le télécharger.</a>';
+            return '<a class="btn btn-danger btn-sm" onclick= "recordBtMac()" style="position:relative;top:-5px;"><i class="fas fa-paperclip"></i> oui.txt (Manquant)</a>';
+        }
+    }
+    
+    public static function printFileIatExist(){
+        if(@file_exists(scan_ip::$_file_iab) == TRUE){
+            return "<span style='color:green'>iab.txt (Installé)</span>";
+        } else {
+            return '<a class="btn btn-danger btn-sm" onclick= "recordBtMac()" style="position:relative;top:-5px;"><i class="fas fa-paperclip"></i> iab.txt (Manquant)</a>';
         }
     }
     

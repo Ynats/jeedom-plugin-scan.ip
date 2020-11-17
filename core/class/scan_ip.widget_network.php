@@ -43,16 +43,16 @@ class scan_ip_widget_network extends eqLogic {
     
     public function setCmdWidgetNetwork($_scanIp){
         
-        $refresh = $_scanIp->getCmd(null, 'refresh');
-        if (!is_object($refresh)) {
-            $refresh = new scan_ipCmd();
-            $refresh->setName(__('Rafraichir', __FILE__));
-        }
-        $refresh->setEqLogic_id($_scanIp->getId());
-        $refresh->setLogicalId('refresh');
-        $refresh->setType('action');
-        $refresh->setSubType('other');
-        $refresh->save();
+//        $refresh = $_scanIp->getCmd(null, 'refresh');
+//        if (!is_object($refresh)) {
+//            $refresh = new scan_ipCmd();
+//            $refresh->setName(__('Rafraichir', __FILE__));
+//        }
+//        $refresh->setEqLogic_id($_scanIp->getId());
+//        $refresh->setLogicalId('refresh');
+//        $refresh->setType('action');
+//        $refresh->setSubType('other');
+//        $refresh->save();
         
     }
     

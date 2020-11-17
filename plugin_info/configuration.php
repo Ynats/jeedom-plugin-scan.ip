@@ -49,7 +49,7 @@ scan_ip_tools::cleanAfterUpdate();
         scan_ip_tools::vueSubTitle("{{Widgets dédiés à Scan.Ip}}", "config");
 ?>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Votre réseau}}
+            <label class="col-lg-4 control-label">{{Widget Network}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget avec l'ensemble du réseau}}"></i></sup>
             </label>
             <div class="col-lg-5">
@@ -60,8 +60,8 @@ scan_ip_tools::cleanAfterUpdate();
             </div>
         </div>
         <div class="form-group">
-            <label class="col-lg-4 control-label"><?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{derniers équipements non enregistrés}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget }} <?php echo scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements entrant dans votre réseau}}"></i></sup>
+            <label class="col-lg-4 control-label">{{Widget Alertes}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher le widget des }} <?php echo scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements entrant dans votre réseau}}"></i></sup>
             </label>
             <div class="col-lg-5">
                 <select class="configKey form-control" id="cron_pass" data-l1key="widget_new_equipement">
@@ -100,10 +100,15 @@ scan_ip_tools::cleanAfterUpdate();
         scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
 ?>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Fichier présent}}
+            <label class="col-lg-4 control-label">{{Fichiers présents}}
                 <sup><i class="fa fa-question-circle tooltips" title="{{Ce fichier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
             </label>
-            <div class="col-lg-5)"><?php echo scan_ip_tools::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            <div class="col-lg-5"><?php echo scan_ip_tools::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label"></label>
+            <div class="col-lg-5"><?php echo scan_ip_tools::printFileIatExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_iab) ?>"></i></sup>
             </div>
         </div>
     </div>
