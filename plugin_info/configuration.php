@@ -1,4 +1,4 @@
-<?php
+  <?php
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -16,84 +16,141 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+
 include_file('core', 'authentification', 'php');
 if (!isConnect()) {
     include_file('desktop', '404', 'php');
     die();
 }
 
+require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.bridges.php";
+require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+
+// Brigde affachés par paquet de ...
+$paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
+
+scan_ip_tools::cleanAfterUpdate();
+
 ?>
-<div style="width: 100%; display: none;" id="div_alert_config" class="jqAlert alert-danger"><span href="#" class="btn_closeAlert pull-right cursor" style="position : relative;top:-2px; left : 30px;color : grey;">×</span><span class="displayError"></span></div>
 <form class="form-horizontal">
+    
+    <div class="form-group">
+        <div class="col-lg-2" style="right:15px; position: absolute;">
+            <select onchange="scan_ip_mode_plugin()" class="configKey form-control" data-l1key="mode_plugin" id="scan_ip_mode">
+                <option value="normal">{{Mode normal}}</option>
+                <option value="advanced">{{Mode avancé}}</option>
+                <option value="debug">{{Mode debug}}</option>
+            </select>
+        </div>
+    </div>
+    
     <fieldset>
 <?php
-    scan_ip::vueSubTitle("{{Cadence de rafraichissement}}", "config");
+        scan_ip_tools::vueSubTitle("{{Widgets dédiés à Scan.Ip}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Widget Network}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget avec l'ensemble du réseau}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="widget_network">
+                    <option value="1">{{Afficher le widget de votre réseau}}</option>
+                    <option value="0">{{Masquer le widget de votre réseau}}</option>
+                </select> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Widget Alertes}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher le widget des }} <?php echo scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements entrant dans votre réseau}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="widget_new_equipement">
+                    <option value="1">{{Afficher le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
+                    <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
+                </select> 
+            </div>
+        </div>
+        
+        <div id="show_avance" style="display:none;">   
+<?php
+        scan_ip_tools::vueSubTitle("{{Votre réseau (Mode avancé)}}", "config");
+?>     
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Routeur}}</label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_routeur">
+                    <option value="0">{{Retirer le routeur de la liste}}</option>
+                    <option value="1">{{Ajouter le routeur dans la liste}}</option>
+                </select> 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Jeedom}}</label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_jeedom">
+                    <option value="0">{{Retirer Jeedom de la liste}}</option>
+                    <option value="1">{{Ajouter Jeedom dans la liste}}</option>
+                </select> 
+            </div>
+        </div>
+    </div> 
+           
+    <div id="show_oui" style="display:none;">        
+<?php
+        scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Fichiers présents}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Ce fichier sert à récupérer le nom des constructeurs de matériel}}"></i></sup>
+            </label>
+            <div class="col-lg-5"><?php echo scan_ip_tools::printFileOuiExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_oui) ?>"></i></sup>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label"></label>
+            <div class="col-lg-5"><?php echo scan_ip_tools::printFileIatExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_iab) ?>"></i></sup>
+            </div>
+        </div>
+    </div>
+<?php
+        scan_ip_tools::vueSubTitle("{{Cadence de rafraichissement}}", "config");
 ?>
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à 1 minute}}"></i></sup>
+                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_cron_pass ?> {{minute}}"></i></sup>
             </label>
-            <div class="col-lg-2">
+            <div class="col-lg-5">
                 <select class="configKey form-control" id="cron_pass" data-l1key="cron_pass">
-                    <option value="3">{{3 minutes}}</option>
+                    <option value="1">{{1 minute (recommandé)}}</option>
                     <option value="2">{{2 minutes}}</option>
-                    <option value="1">{{1 minute}}</option>
-                </select> 
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Présumé hors-ligne au bout de }}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à 4 minutes}}"></i></sup>
-            </label>
-            <div class="col-lg-2">
-                <select class="configKey form-control" id="offline_time" data-l1key="offline_time">
-                    <option value="5">{{6 minutes}}</option>
-                    <option value="5">{{5 minutes}}</option>
-                    <option value="4">{{4 minutes}}</option>
                     <option value="3">{{3 minutes}}</option>
                 </select> 
             </div>
         </div>
-    <?php
-        scan_ip::vueSubTitle("{{Plage(s) à scanner}}", "config");
-        
-        echo scan_ip::printInputSubConfig(); 
     
-        scan_ip::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
+    <div id="show_sous_reseau" style="display:none;">     
+    <?php
+        scan_ip_tools::vueSubTitle("{{Spécifier des plages à scanner (Mode avancé)}}", "config");
+        echo scan_ip_tools::printInputSubConfig(); 
+    ?> 
+    </div>
+    <?php
+        scan_ip_tools::vueSubTitle("{{Bridges : Plugins compatibles}}", "config");
     ?> 
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Liste des Plugins pris en compte}}</label>
             <div class="col-lg-2">
-                <?php echo scan_ip::bridges_printPlugs(); ?>
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, 0); ?>
+            </div>
+            <div class="col-lg-2">
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, $paquetBridges); ?>
+            </div>
+            <div class="col-lg-2">
+                <?php echo scan_ip_bridges::bridges_printPlugs($paquetBridges, ($paquetBridges*2)); ?>
             </div>
         </div>
     </fieldset>
     <br />
 </form>
 
-<script>
-function verifCadence(declic){
-    var offline_time = $("#offline_time").val();
-    var cron_pass = $("#cron_pass").val();
-    var delta = offline_time / cron_pass;
-    
-    if(delta < 2){ 
-        $('#div_alert_config').showAlert({message: "{{Si vous valider cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
-    } 
-    else {
-        $('#div_alert_config').hide();
-    }
-}
-    
-    
-$('#cron_pass').change(function(){
-    verifCadence('change');
-});
-
-$('#offline_time').change(function(){
-    verifCadence('change');
-});
-    
-
-</script>
+<?php include_file('desktop', 'scan_ip_configuration', 'js', 'scan_ip'); ?>

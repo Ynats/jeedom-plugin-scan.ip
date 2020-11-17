@@ -24,18 +24,49 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.tools.php';
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.json.php';
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.eqLogic.php';
+    
     ajax::init();
-
-    if (init('action') == 'ouiMacSearch') {
-        scan_ip::majMacVendorApi();
+    
+    if (init('action') == 'syncEqLogicWithOpenScanId') {
+        
+        if(scan_ip_tools::lockProcess() == TRUE){
+            scan_ip_scan::syncScanIp();
+            scan_ip_tools::unlockProcess();  
+        } else {
+            event::add('jeedom::alert', array(
+                'level' => 'warning',
+                'page' => 'scan_ip',
+                'message' => 'Action annulée : Une synchronisation est déjà en cours.'
+            ));
+        }
+                
         ajax::success();
     }
     
-    if (init('action') == 'syncEqLogicWithOpenScanId') {
-        scan_ip::syncScanIp();
+    elseif (init('action') == 'recordCommentaires') {
+        
+        scan_ip_json::majNetworkCommentaires(init('data'));
         ajax::success();
+        
     }
-
+    
+    elseif (init('action') == 'addEquipement') {
+        
+        scan_ip_eqLogic::addEquipementsTab(init('data'));
+        ajax::success();
+        
+    }
+    
+    elseif (init('action') == 'removeEquipement') {
+        
+        scan_ip_json::removeEquipementsTab(init('data'));
+        ajax::success();
+        
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

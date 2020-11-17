@@ -19,8 +19,9 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-?>
+require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
+?>
 <div class="col-md-12">
     <div class="panel panel-primary" id="div_functionalityPanel">
         <div class="panel-heading">
@@ -28,7 +29,7 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printShell("sudo ip a");
+                scan_ip_shell::printShell("sudo ip a");
             ?>
         </div>
     </div>
@@ -41,14 +42,14 @@ if (!isConnect('admin')) {
         </div>
         <div class="panel-body">
             <?php
-                scan_ip::printShell("ip route show default | awk '/default/ {print $3}'");
+                scan_ip_shell::printShell("ip route show default | awk '/default/ {print $3}'");
             ?>
         </div>
     </div>
 </div>
 
 <?php
-$subReseau = scan_ip::getSubReseauEnable();
+$subReseau = scan_ip_shell::getSubReseauEnable();
 if ($subReseau["subReseauEnable"] > 0) {
     foreach ($subReseau["subReseau"] as $sub) {
         if ($sub["enable"] == 1) {
@@ -57,11 +58,11 @@ if ($subReseau["subReseauEnable"] > 0) {
             <div class="col-md-12">
                 <div class="panel panel-primary" id="div_functionalityPanel">
                     <div class="panel-heading">
-                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet</h3>
+                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt</h3>
                     </div>
                     <div class="panel-body">
                         <?php
-                        scan_ip::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet");
+                            scan_ip_shell::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
                         ?>
                     </div>
                 </div>
@@ -70,5 +71,46 @@ if ($subReseau["subReseauEnable"] > 0) {
             <?php
         }
     }
-}
+} 
+else {
 ?>
+            <div class="col-md-12">
+                <div class="panel panel-primary" id="div_functionalityPanel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"># sudo arp-scan --localnet --ouifile=oui.txt --iabfile=iab.txt</h3>
+                    </div>
+                    <div class="panel-body">
+                        <?php
+                            scan_ip_shell::printShell("sudo arp-scan --localnet --ouifile=".scan_ip::$_file_oui." --iabfile=" .  scan_ip::$_file_iab);
+                        ?>
+                    </div>
+                </div>
+            </div>
+<?php 
+} 
+?>
+<div class="col-md-12">
+    <div class="panel panel-primary" id="div_functionalityPanel">
+        <div class="panel-heading">
+            <h3 class="panel-title"># Equipements</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip_tools::printArray(scan_ip_json::getJson(scan_ip::$_jsonEquipement));
+            ?>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-primary" id="div_functionalityPanel">
+        <div class="panel-heading">
+            <h3 class="panel-title"># Mappings</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip_tools::printArray(scan_ip_json::getJson(scan_ip::$_jsonMapping));
+            ?>
+        </div>
+    </div>
+</div>

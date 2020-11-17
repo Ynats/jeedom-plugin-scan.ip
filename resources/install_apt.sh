@@ -1,4 +1,5 @@
-PROGRESS_FILE=/tmp/dependancy_scan_ip_in_progress
+PROGRESS_FILE=/tmp/scan_ip/in_progress
+OUI_FILE=/tmp/scan_ip/dependancy
 if [ ! -z $1 ]; then
 	PROGRESS_FILE=$1
 fi
@@ -9,7 +10,12 @@ echo "*             Installation des dépendances             *"
 echo "********************************************************"
 echo 0 > ${PROGRESS_FILE}
 apt-get update
+echo 50 > ${PROGRESS_FILE}
 sudo apt-get -y install arp-scan
+echo 70 > ${PROGRESS_FILE}
+sudo apt-get install -y wakeonlan 
+echo 85 > ${PROGRESS_FILE}
+sudo apt-get install -y etherwake 
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"
 echo "*             Installation terminée                    *"

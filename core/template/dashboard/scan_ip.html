@@ -2,7 +2,6 @@
     <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
         <i class="fas fa-sync"></i>
     </span>
-    <span class="cmd cmd-widget" data-cmd_id="#refresh_id#" style="display:none;"></span>
     <center class="widget-name">
         <span class="reportModeVisible">#name_display#<span class="object_name">#object_name#</span></span>
         <a href="#eqLink#" class="reportModeHidden">#name_display#<span class="object_name">#object_name#</span></a>
@@ -38,8 +37,13 @@
         <div style="text-align: center; width: 100%; color: #A9A9A9; font-size: 85%; margin-bottom: -4px;">Dernière synchro</div>
         <div style="text-align: center; width: 100%;">#update_date#</div>
     </div>
-    
 
-    
+    <div style="margin:5px 0; text-align: center; width: 100%; #enableWol#">
+        <div class="cmd wol cmd-widget" data-template="default" data-type="action" data-subtype="other" data-cmd_id="#cmdWol#" data-cmd_uid="#uid#" data-eqlogic_id="#id#" data-version="#version#">
+            <div class="content-xs">
+                <a class="btn btn-sm btn-default action wol tooltips">WoL</a>
+            </div>
+        </div>
+    </div>
 
 </div>
