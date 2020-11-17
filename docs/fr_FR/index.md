@@ -77,9 +77,9 @@ Permet d'ajouter le routeur dans la liste du réseau. A defaut celui-ci est reti
 
 ### Jeedom
 
-Permet d'ajouter le serceur Jeedom dans la liste du réseau. A defaut celui-ci est retiré.
+Permet d'ajouter le serveur Jeedom dans la liste du réseau. A defaut celui-ci est retiré.
 
-### Spécifier des plages à scanner
+### Spécifier des plages réseau à scanner
 
 Lorsque vous avez plusieurs cartes réseaux ou plus particulièrement des sous-réseaux il convient de spécifier le ou les sous réseaux à scanner.
 
