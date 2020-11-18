@@ -71,11 +71,18 @@ class scan_ip_bridges extends eqLogic {
         self::bridges_require($plug[0]);
         $class = "scan_ip_".$plug[0];
         $Maj = new $class;
-        if(empty($plug[2])) {
-            return $Maj->majIpElement($_ip, $plug[1]);
+        
+        $return = array();
+        $return["ip"] = $_ip;
+        $return["id"] = $plug[1];
+
+        if(!empty($plug[2])){
+            $return["champ"] = $plug[2];
         } else {
-            return $Maj->majIpElement($_ip, $plug[1], $plug[2]);
+            $return["champ"] = NULL;
         }
+
+        return $Maj->majIpElement($return);
     }
     
     public static function bridges_printSelectOptionEquiements(){

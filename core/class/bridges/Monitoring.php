@@ -44,19 +44,19 @@ class scan_ip_Monitoring {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id, $_champ = NULL){
+    public function majIpElement($_array){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getConfiguration('maitreesclave') == 'deporte') {
-                if ($eqLogic->getId() == $_id) { 
-                    if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                        $eqLogic->setConfiguration(self::$ip, $_ip);
+                if ($eqLogic->getId() == $_array["id"]) { 
+                    if($eqLogic->getConfiguration(self::$ip) != $_array["ip"]){
+                        $eqLogic->setConfiguration(self::$ip, $_array["ip"]);
                         $eqLogic->save(); 
                         // Retourne le deamon à lancer
                         return NULL;

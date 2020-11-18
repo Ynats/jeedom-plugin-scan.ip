@@ -44,11 +44,11 @@ class scan_ip_homepTalk {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id, $_champ = NULL){
+    public function majIpElement($_array){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 
@@ -57,12 +57,12 @@ class scan_ip_homepTalk {
             $hasChanged=false;
             
             if ($eqLogic->getConfiguration('type') != 'Group') {
-                if ($eqLogic->getId() != $_id) continue; 
+                if ($eqLogic->getId() != $_array["id"]) continue; 
                 $thisIP=$eqLogic->getConfiguration(self::$ip);
-                if ($thisIP == $_ip) continue;
+                if ($thisIP == $_array["ip"]) continue;
                 
-                $replace[$thisIP]=$_ip;
-                $eqLogic->setConfiguration(self::$ip, $_ip);
+                $replace[$thisIP]=$_array["ip"];
+                $eqLogic->setConfiguration(self::$ip, $_array["ip"]);
                 $hasChanged=true;
             }
             if($hasChanged) $eqLogic->save(true);

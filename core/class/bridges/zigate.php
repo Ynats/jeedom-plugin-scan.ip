@@ -42,16 +42,16 @@ class scan_ip_zigate {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id, $_champ = NULL){
+    public function majIpElement($_array){
         
         $old = config::byKey(self::$ip, self::$plug);
         preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);
-        if($match[0] != $_ip) { 
-            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $old);
+        if($match[0] != $_array["ip"]) { 
+            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $old);
             config::save(self::$ip, $change_ip, self::$plug);
             // Retourne le deamon à lancer
             return self::$plug;
