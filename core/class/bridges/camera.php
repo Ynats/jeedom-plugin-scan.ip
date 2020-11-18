@@ -48,19 +48,19 @@ class scan_ip_camera {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_array){
         
         $record = array(self::$ip => 0, self::$ipStream => 0);
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) { 
+            if ($eqLogic->getId() == $_array["id"]) { 
                 
-                if($eqLogic->getConfiguration(self::$ip) != $_ip){
+                if($eqLogic->getConfiguration(self::$ip) != $_array["ip"]){
                     $record[self::$ip] = 1;
                     $old_ipStream = $eqLogic->getConfiguration(self::$ipStream); 
                     if(preg_match(scan_ip_tools::getRegex("ip_v4"), $old_ipStream, $match)){ 
@@ -74,10 +74,10 @@ class scan_ip_camera {
                 }
                 
                 if($record[self::$ip] == 1) { 
-                    $eqLogic->setConfiguration(self::$ip, $_ip); 
+                    $eqLogic->setConfiguration(self::$ip, $_array["ip"]); 
                 }
                 if($record[self::$ipStream] == 1) {
-                    $change_ipStream = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $old_ipStream);
+                    $change_ipStream = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $old_ipStream);
                     $eqLogic->setConfiguration(self::$ipStream, $change_ipStream);
                 }
                 if($record[self::$ip] == 1){

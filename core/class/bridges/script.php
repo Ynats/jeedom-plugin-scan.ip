@@ -48,26 +48,26 @@ class scan_ip_script {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_array){
 
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
             foreach ($eqLogic->getCmd() as $cmd) {
-                if ($cmd->getId() == $_id) {
+                if ($cmd->getId() == $_array["id"]) {
                     $cliRequest = $cmd->getConfiguration('request');
                     if (!empty($cliRequest) AND preg_match(scan_ip_tools::getRegex("ip_v4"),$cliRequest,$old)) {
-                        if($old[0] != $_ip) {
-                            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_ip, $cliRequest);
+                        if($old[0] != $_array["ip"]) {
+                            $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $cliRequest);
                             $cmd->setConfiguration('request',$change_ip);
                             try {
                                 $cmd->save();
                             } catch (Exception $e) {
-                                 log::add('scan_ip', 'error', 'Erreur lors de la sauvegarde du script : '.$cmd->getName().' ('.$_id. ').');
+                                 log::add('scan_ip', 'error', 'Erreur lors de la sauvegarde du script : '.$cmd->getName().' ('.$_array["id"]. ').');
                             }                             
                         }
                         return NULL;

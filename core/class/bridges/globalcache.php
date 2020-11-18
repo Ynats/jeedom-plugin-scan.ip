@@ -41,19 +41,19 @@ class scan_ip_globalcache {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_array){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) { 
+            if ($eqLogic->getId() == $_array["id"]) { 
                 $cmdLogicalId = $eqLogic->getLogicalId(self::$ip);
-                if($cmdLogicalId != $_ip){
-                    $eqLogic->setLogicalId($_ip);
+                if($cmdLogicalId != $_array["ip"]){
+                    $eqLogic->setLogicalId($_array["ip"]);
                     $eqLogic->save(); 
                     // Si besoin de relancer un deamon on retourne self::$plug
                     return NULL;

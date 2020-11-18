@@ -21,6 +21,7 @@ class scan_ip_idplugin {
     * -> $return[idEquipement]["name"] = Nom de l'équipement
     * -> $return[idEquipement]["id"] = Id de l'équipement
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
+    * -> $return[idEquipement]["champ"] = ce champ est optionnel. Il est utile si il y a deux champs différent à mettre à jour sur un équipement
     */
     public function getAllElements(){
 
@@ -40,19 +41,20 @@ class scan_ip_idplugin {
     
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
-    *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * 
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
+    * @param $_array["champ"] champ spécifique à modifier (optionnel) dan sle cas de plusieurs champs différents à modifier sur un même équipement
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_array){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $eqLogic->setConfiguration(self::$ip, $_ip);
+            if ($eqLogic->getId() == $_array["id"]) { 
+                if($eqLogic->getConfiguration(self::$ip) != $_array["ip"]){
+                    $eqLogic->setConfiguration(self::$ip, $_array["ip"]);
                     $eqLogic->save(); 
                     // Si besoin de relancer un deamon on retourne self::$plug
                     return NULL;

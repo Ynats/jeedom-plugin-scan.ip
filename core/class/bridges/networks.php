@@ -11,6 +11,7 @@ class scan_ip_networks {
     */
     public static $plug = "networks";
     public static $ip = "ip";
+    public static $ipWoL = "broadcastIP";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -28,12 +29,21 @@ class scan_ip_networks {
         $eqLogics = eqLogic::byType(self::$plug); 
         
         foreach ($eqLogics as $eqLogic) {    
-            $return[$eqLogic->getId()]["plugin"] = self::$plug;
-            $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('pingMode');
-            $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
-            $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
-            $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+            $return[$eqLogic->getId().self::$ip]["plugin"] = self::$plug;
+            $return[$eqLogic->getId().self::$ip]["plugin_print"] = self::$plug . " :: ip";
+            $return[$eqLogic->getId().self::$ip]["name"] = $eqLogic->getName();
+            $return[$eqLogic->getId().self::$ip]["id"] = $eqLogic->getId();
+            $return[$eqLogic->getId().self::$ip]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+            $return[$eqLogic->getId().self::$ip]["champ"] = self::$ip;
+            
+            $return[$eqLogic->getId().self::$ipWoL]["plugin"] = self::$plug;
+            $return[$eqLogic->getId().self::$ipWoL]["plugin_print"] = self::$plug . " :: ip WoL";
+            $return[$eqLogic->getId().self::$ipWoL]["name"] = $eqLogic->getName();
+            $return[$eqLogic->getId().self::$ipWoL]["id"] = $eqLogic->getId();
+            $return[$eqLogic->getId().self::$ipWoL]["ip_v4"] = $eqLogic->getConfiguration(self::$ipWoL);
+            $return[$eqLogic->getId().self::$ipWoL]["champ"] = self::$ipWoL;
         }
+        
         return $return;
     }
     
@@ -41,18 +51,19 @@ class scan_ip_networks {
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
     *
-    * @param $_ip ip de l'adresse MAC à mettre à jour si différent
-    * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_array["ip"] ip de l'adresse MAC à mettre à jour si différent
+    * @param $_array["id"] identifiant de l'équipement associé au plugin
+    * @param $_array["champ"] champ spécifique à modifier (optionnel) dan sle cas de plusieurs champs différents à modifier sur un même équipement
     * 
     */
-    public function majIpElement($_ip ,$_id){
-        
+    public function majIpElement($_array){
+
         $eqLogics = eqLogic::byType(self::$plug); 
 
         foreach ($eqLogics as $eqLogic) {
-            if ($eqLogic->getId() == $_id) { 
-                if($eqLogic->getConfiguration(self::$ip) != $_ip){
-                    $eqLogic->setConfiguration(self::$ip, $_ip);
+            if ($eqLogic->getId() == $_array["id"]) { 
+                if($eqLogic->getConfiguration($_array["champ"]) != $_array["ip"]){
+                    $eqLogic->setConfiguration($_array["champ"], $_array["ip"]);
                     $eqLogic->save(); 
                     // Retourne le deamon à lancer
                     return NULL;

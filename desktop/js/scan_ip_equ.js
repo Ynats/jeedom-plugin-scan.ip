@@ -99,7 +99,7 @@ function verifEquipement(nb) {
 
     $.each(red, function (index, value) {
         if (value > 1) {
-            $('#div_alert').showAlert({message: "{{Attention cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'danger'});
+            $('#div_alert').showAlert({message: "{{Attention cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'warning'});
         } else {
             $('#div_alert').hide();
         }
