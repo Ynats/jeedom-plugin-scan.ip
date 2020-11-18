@@ -61,15 +61,15 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                     
                     if(!empty($allNoEquipement)){
                     
-                        foreach ($allNoEquipement as $equipement) {
+                        foreach ($allNoEquipement as $equipement) { 
                             echo '<tr>'
                                 . '<td style="text-align:center;"><input type="checkbox" onclick="is_checked_scan_ip()" id="checked_input_' . $list++  . '" data-mac="' . $equipement["mac"] . '" style="border: 1px solid var(--link-color) !important; margin-bottom: 5px;" class="form-control add_element_scan_ip"></td>'
                                 . '<td class="scanTd">' . $equipement["name"] . '</td>'
                                 . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                                 . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
-                                . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["record"]) . '</td>'
-                                . '<td class="scanTd">' . date("d/m/Y H:i:s", $equipement["time"]) . '</td>'
+                                . '<td class="scanTd">' . scan_ip_tools::printDate($equipement["record"]) . '</td>'
+                                . '<td class="scanTd">' . scan_ip_tools::printDate($equipement["time"]) . '</td>'
                                 . '</tr>';
                         }
                     } else {

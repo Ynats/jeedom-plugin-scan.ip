@@ -52,7 +52,7 @@ class scan_ip_camera {
     * @param $_id identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_ip ,$_id, $_champ = NULL){
         
         $record = array(self::$ip => 0, self::$ipStream => 0);
         $eqLogics = eqLogic::byType(self::$plug); 

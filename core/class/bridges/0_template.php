@@ -21,6 +21,7 @@ class scan_ip_idplugin {
     * -> $return[idEquipement]["name"] = Nom de l'équipement
     * -> $return[idEquipement]["id"] = Id de l'équipement
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
+    * -> $return[idEquipement]["champ"] = ce champ est optionnel. Il est utile si il y a deux champs différent à mettre à jour sur un équipement
     */
     public function getAllElements(){
 
@@ -43,9 +44,10 @@ class scan_ip_idplugin {
     *
     * @param $_ip ip de l'adresse MAC à mettre à jour si différent
     * @param $_id identifiant de l'équipement associé au plugin
+    * @param $_champ champ spécifique à modifier (optionnel) dan sle cas de plusieurs champs différents à modifier sur un même équipement
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_ip ,$_id, $_champ = NULL){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 

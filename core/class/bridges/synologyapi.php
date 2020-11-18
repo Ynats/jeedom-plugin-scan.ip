@@ -58,7 +58,7 @@ class scan_ip_synologyapi {
     * @param $_id identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_ip ,$_id, $_champ = NULL){
        
         $old = config::byKey($_id, self::$plug);
         preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);

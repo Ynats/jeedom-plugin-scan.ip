@@ -47,7 +47,7 @@ class scan_ip_JeeMySensors {
     * @param $_id identifiant de l'équipement associé au plugin
     * 
     */
-    public function majIpElement($_ip ,$_id){
+    public function majIpElement($_ip ,$_id, $_champ = NULL){
         
         $eqLogics = eqLogic::byType(self::$plug); 
 

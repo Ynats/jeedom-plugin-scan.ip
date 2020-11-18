@@ -71,7 +71,11 @@ class scan_ip_bridges extends eqLogic {
         self::bridges_require($plug[0]);
         $class = "scan_ip_".$plug[0];
         $Maj = new $class;
-        return $Maj->majIpElement($_ip, $plug[1]);
+        if(empty($plug[2])) {
+            return $Maj->majIpElement($_ip, $plug[1]);
+        } else {
+            return $Maj->majIpElement($_ip, $plug[1], $plug[2]);
+        }
     }
     
     public static function bridges_printSelectOptionEquiements(){
@@ -81,7 +85,9 @@ class scan_ip_bridges extends eqLogic {
         if($allBridges != FALSE){
             $print = $oldEquip = "";
             foreach ($allBridges["array"] as $equipement) {
-                $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"] ."\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
+                $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"];
+                if(!empty($equipement["champ"])){ $print .= "|".$equipement["champ"]; }
+                $print .= "\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
                 $oldEquip = $equipement["plugin"];
             }
             return $print;
