@@ -54,7 +54,7 @@ class scan_ip_openWrt {
             $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $old);
             config::save(self::$ip, $change_ip, self::$plug);
             // Retourne le deamon à lancer
-            return self::$plug;
+            return NULL;
         }
     }
     
