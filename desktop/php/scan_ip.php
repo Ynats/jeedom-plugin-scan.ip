@@ -181,7 +181,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{Paramètres du Widget}}");
 ?> 
                             <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Ordre d'affichage du Widget}}</sup>
+                            <label class="col-lg-3 control-label">{{Ordre d'afffichage du Widget}}</sup>
                             </label>
                             <div class="col-lg-5">
                                 <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="saveOrderColonWidegetNetwork">
@@ -191,7 +191,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                     <option value="ip">{{par "Ip"}}</option>
                                     <option value="name">{{par "Nommage"}}</option>
                                     <option value="comment">{{par "Commentaires"}}</option>
-                                    <option value="time">{{par "Mise à jour"}}</option>
+                                    <option value="time">{{par "Mide à jour"}}</option>
                                 </select> 
                             </div>
                         </div>
@@ -240,18 +240,18 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                   
                     <div id="show_off_line"<?php scan_ip_tools::showEquCadence() ?>>                        
 <?php
-                        scan_ip_tools::vueSubTitle("{{On line ou Off line ? (Mode avancé)}}");
+                        scan_ip_tools::vueSubTitle("{{On Line ou Off line ? (Mode avancé)}}");
 ?>                        
 
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est conseillé d'avoir au moins 2 rafraîchissements minimum'}}"></i></sup></label>
+                            <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est conseillé d'avoir au moins 2 raffraichissements minimum'}}"></i></sup></label>
                             <div class="col-lg-5">
                                 <input type="text" id="cronPass" data-cron="" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Présumé hors-ligne au bout de }} <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommandé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_offline_time ?> {{minutes}}"></i></sup>
+                            <label class="col-lg-3 control-label">{{Présumé hors-ligne au bout de }} <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_offline_time ?> {{minutes}}"></i></sup>
                             </label>
                             <div class="col-lg-5">
                                 <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="offline_time">
@@ -274,7 +274,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{Réveiller votre équipement à distance ?}}");
 ?> 
                         <div class="form-group">
-                            <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement est compatible et/ou que l'option a bien été activée pour que cela fonctionne}}"></i></sup>
+                            <label class="col-lg-3 control-label">{{Wake-on-LAN}} <sup><i class="fa fa-question-circle tooltips" title="{{Vérifiez que votre équipement soit compatible et/ou que l'option ait bien été activée pour que cela fonctionne}}"></i></sup>
                             </label>
                             <div class="col-lg-5">
                                 <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="enable_wol">

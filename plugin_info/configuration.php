@@ -116,8 +116,8 @@ scan_ip_tools::cleanAfterUpdate();
         scan_ip_tools::vueSubTitle("{{Cadence de rafraichissement}}", "config");
 ?>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Cadence de rafraîchissement}}
-                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommandé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_cron_pass ?> {{minute}}"></i></sup>
+            <label class="col-lg-4 control-label">{{Cadence de rafraichissement}}
+                <sup><i class="fa fa-question-circle tooltips" title="{{Il est recommendé de laisser ce paramètre à }} <?php echo scan_ip::$_defaut_cron_pass ?> {{minute}}"></i></sup>
             </label>
             <div class="col-lg-5">
                 <select class="configKey form-control" id="cron_pass" data-l1key="cron_pass">
