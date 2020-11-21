@@ -70,7 +70,8 @@ class scan_ip_tools extends eqLogic {
     public static function getRegex($_type){
         if($_type == "ip_v4") { return "/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/"; }
         elseif($_type == "mac") { return "/([a-fA-F0-9]{2}:){5}[a-fA-F0-9]{2}/"; }
-        elseif($_type == "sub_reseau") { return "/\d{1,3}\:\s(.+)\:\s/"; }
+        elseif($_type == "iproute2") { return "/\d{1,3}\:\s(.+)\:\s/"; }
+        elseif($_type == "net-tools") { return "/(.+)\:\s(flags)/"; }
         elseif($_type == "()") { return "/(\((.*?)\))/"; }
         else { return NULL; }
     }
@@ -252,7 +253,11 @@ class scan_ip_tools extends eqLogic {
     public static function printInputSubConfig(){
         log::add('scan_ip', 'debug', 'printInputSubConfig :. Lancement');
         $return = "";
-        foreach (scan_ip_shell::scanSubReseau() as $sub) {
+        
+        $allReseau = scan_ip_shell::scanSubReseau();
+        unset($allReseau["name_plage_route"]);
+        
+        foreach ($allReseau as $sub) {
             if(self::excludeSubReseau($sub["name"]) == TRUE) {
                 $return .= '<div class="form-group"">';
                 $return .= '<label class="col-sm-4 control-label">{{Scanner le sous-réseau ['.$sub["name"].']}} </label>';

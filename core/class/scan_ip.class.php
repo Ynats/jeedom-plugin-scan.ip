@@ -224,14 +224,21 @@ class scan_ip extends eqLogic {
         $return['log'] = 'scan_ip_update';
         $return['progress_file'] = jeedom::getTmpFolder('scan_ip') . '/dependance';
 
-        if (scan_ip_shell::arpVersion() != "arp-scan not found") {
-            if (exec('which etherwake | wc -l') == 1 || exec('which wakeonlan | wc -l') == 1) {
-                if (exec(" dpkg --get-selections | grep -v deinstall | grep -E 'wakeonlan|etherwake' | wc -l") == 2) {
-                    $return['state'] = 'ok';
-                }
-            }
+        if(scan_ip_shell::dependancy_iproute2()[0] == FALSE AND scan_ip_shell::dependancy_net_tools()[0] == FALSE){
+            $error++;
         }
-
+        if(scan_ip_shell::dependancy_arp_scan()[0] == FALSE){
+            $error++;
+        }
+        if(scan_ip_shell::dependancy_etherwake()[0] == FALSE){
+            $error++;
+        }
+        if(scan_ip_shell::dependancy_wakeonlan()[0] == FALSE){
+            $error++;
+        }
+        if($error == 0){
+            $return['state'] = 'ok';
+        }
         return $return;
     }
 

@@ -84,6 +84,48 @@ class scan_ip_shell extends eqLogic {
         return $return;
     }
     
+    public static function scan_ip_iproute2($_ipRoute){
+        exec('sudo ip a', $list);
+        $i = 0;
+        $return["name_plage_route"] = NULL;
+        
+        foreach ($list as $value) {
+            if(preg_match(scan_ip_tools::getRegex("iproute2"), $value)){ 
+                $name = trim(explode(":", $value)[1]);
+                $i++; 
+                $return[$i]["name"] = $name; 
+            }
+            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) {
+                $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*"; 
+                if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
+                    $return["name_plage_route"] = $name;
+                }   
+            } 
+        }
+        return $return;
+    }
+    
+    public static function scan_ip_net_tools($_ipRoute){
+        exec('sudo ifconfig', $list);
+        $i = 0;
+        $return["name_plage_route"] = NULL;
+        
+        foreach ($list as $value) {
+            if(preg_match(scan_ip_tools::getRegex("net-tools"), $value)){ 
+                $name = trim(explode(":", $value)[0]);
+                $i++; 
+                $return[$i]["name"] = $name; 
+            }
+            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) { 
+                $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("netmask",$value)[0]))).".*"; 
+                if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
+                    $return["name_plage_route"] = $name;
+                }   
+            }
+        }
+        return $return;
+    }
+    
     public static function scanSubReseau($_ipRoute = NULL){ 
         log::add('scan_ip', 'debug', 'scanSubReseau :. Lancement');
         
@@ -93,25 +135,12 @@ class scan_ip_shell extends eqLogic {
             $ipRoute = self::getIpRoute();
         }
         
-        exec('sudo ip a', $list);
-        $i = 0;
-        $return["name_plage_route"] = NULL;
+        $return = self::scan_ip_iproute2($ipRoute);
         
-        foreach ($list as $value) {
-            if(preg_match(scan_ip_tools::getRegex("sub_reseau"), $value)){ 
-                $name = trim(explode(":", $value)[1]);
-                $i++; 
-                $return[$i]["name"] = $name; 
-            }
-            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value)) {
-                $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*"; 
-                if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
-                    $return["name_plage_route"] = $name;
-                }   
-            } else {
-                $return[$i]["ip_v4"] = NULL;
-            }
+        if(empty($return[0])){
+            $return = self::scan_ip_net_tools($ipRoute); 
         }
+        
         return $return;
     }
     
@@ -137,6 +166,68 @@ class scan_ip_shell extends eqLogic {
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # GESTION DES SOUS-RESEAUX
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEPENDANCES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
+  
+    public static function dependancy_arp_scan(){
+        if (exec('which arp-scan | wc -l') == 0 OR exec("dpkg --get-selections | grep -v deinstall | grep -E 'arp-scan' | wc -l") == 0) {
+            $return[0] = FALSE;
+            $return[1] = "<span style='color:red'>error</span>";
+        } else {
+            $return[0] = TRUE;
+            $return[1] = "<span style='color:green'>OK</span>";
+        }
+        return $return;
+    }
+    
+    public static function dependancy_etherwake(){
+        if (exec('which etherwake | wc -l') == 0 OR exec("dpkg --get-selections | grep -v deinstall | grep -E 'etherwake' | wc -l") == 0) {
+            $return[0] = FALSE;
+            $return[1] = "<span style='color:red'>error</span>";
+        } else {
+            $return[0] = TRUE;
+            $return[1] = "<span style='color:green'>OK</span>";
+        }
+        return $return;
+    }
+    
+    public static function dependancy_wakeonlan(){
+        if (exec('which wakeonlan | wc -l') == 0 OR exec("dpkg --get-selections | grep -v deinstall | grep -E 'wakeonlan' | wc -l") == 0) {
+            $return[0] = FALSE;
+            $return[1] = "<span style='color:red'>error</span>";
+        } else {
+            $return[0] = TRUE;
+            $return[1] = "<span style='color:green'>OK</span>";
+        }
+        return $return;
+    }
+    
+    public static function dependancy_net_tools(){
+        if (exec('which ifconfig | wc -l') == 0 OR exec("dpkg --get-selections | grep -v deinstall | grep -E 'net-tools' | wc -l") == 0) {
+            $return[0] = FALSE;
+            $return[1] = "<span style='color:red'>error</span>";
+        } else {
+            $return[0] = TRUE;
+            $return[1] = "<span style='color:green'>OK</span>";
+        }
+        return $return;
+    }
+    
+    public static function dependancy_iproute2(){
+        if (exec('which ip | wc -l') == 0 OR exec("dpkg --get-selections | grep -v deinstall | grep -E 'iproute2' | wc -l") == 0) {
+            $return[0] = FALSE;
+            $return[1] = "<span style='color:red'>error</span>";
+        } else {
+            $return[0] = TRUE;
+            $return[1] = "<span style='color:green'>OK</span>";
+        }
+        return $return;
+    }
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# DEPENDANCES
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
   
     public static function wakeOnLan($_mac){
