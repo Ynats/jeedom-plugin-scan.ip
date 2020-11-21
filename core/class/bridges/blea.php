@@ -28,7 +28,10 @@ class scan_ip_blea {
     public function getAllElements(){
 
         $return = NULL;
-        $eqLogics = blea_remote::all();
+        if (!class_exists('blea_remote')){
+            exit();
+        }
+		$eqLogics = blea_remote::all();
 
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
@@ -51,6 +54,9 @@ class scan_ip_blea {
     */
     public function majIpElement($_array){
         
+        if (!class_exists('blea_remote')){
+            exit();
+        }
         $eqLogics = blea_remote::all();
 
         foreach ($eqLogics as $eqLogic) {
@@ -68,3 +74,4 @@ class scan_ip_blea {
     }
     
 }
+
