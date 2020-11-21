@@ -77,7 +77,7 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
 </style>
 
 <div class="col-md-6">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Votre Jeedom</h3>
         </div>
@@ -112,7 +112,7 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
 </div>
 
 <div class="col-md-6">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Votre routeur</h3>
         </div>
@@ -137,7 +137,7 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
 </div>
 
 <div class="col-md-12">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Les plages ip et adresses MAC du réseau (<?php echo $ipsReseau["infos"]["date"] ?>)
             <a id="btSaveCommentaires" class="btn btn-success btn-xs pull-right" style="top: -2px !important; right: -6px !important;"><i class="far fa-check-circle icon-white"></i> {{Sauvegarder les commentaires}}</a>

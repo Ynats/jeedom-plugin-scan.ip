@@ -111,6 +111,34 @@ scan_ip_tools::cleanAfterUpdate();
             <div class="col-lg-5"><?php echo scan_ip_tools::printFileIatExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_iab) ?>"></i></sup>
             </div>
         </div>
+<?php
+        scan_ip_tools::vueSubTitle("{{Dépendances (Mode debug)}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">iproute2</label>
+            <div class="col-lg-5"><?php echo scan_ip_shell::dependancy_iproute2()[1] ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">net-tools</label>
+            <div class="col-lg-5"><?php echo scan_ip_shell::dependancy_net_tools()[1] ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">arp-scan</label>
+            <div class="col-lg-5"><?php echo scan_ip_shell::dependancy_arp_scan()[1] ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">etherwake</label>
+            <div class="col-lg-5"><?php echo scan_ip_shell::dependancy_etherwake()[1] ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">wakeonlan</label>
+            <div class="col-lg-5"><?php echo scan_ip_shell::dependancy_wakeonlan()[1] ?>
+            </div>
+        </div>
     </div>
 <?php
         scan_ip_tools::vueSubTitle("{{Cadence de rafraichissement}}", "config");

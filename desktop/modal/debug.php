@@ -23,7 +23,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
 ?>
 <div class="col-md-12">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"># ip a</h3>
         </div>
@@ -36,7 +36,20 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 </div>
 
 <div class="col-md-12">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"># ifconfig</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip_shell::printShell("sudo ifconfig");
+            ?>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"># ip route show default</h3>
         </div>
@@ -56,7 +69,7 @@ if ($subReseau["subReseauEnable"] > 0) {
             ?>
 
             <div class="col-md-12">
-                <div class="panel panel-primary" id="div_functionalityPanel">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt</h3>
                     </div>
@@ -75,7 +88,7 @@ if ($subReseau["subReseauEnable"] > 0) {
 else {
 ?>
             <div class="col-md-12">
-                <div class="panel panel-primary" id="div_functionalityPanel">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title"># sudo arp-scan --localnet --ouifile=oui.txt --iabfile=iab.txt</h3>
                     </div>
@@ -90,7 +103,7 @@ else {
 } 
 ?>
 <div class="col-md-12">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"># Equipements</h3>
         </div>
@@ -103,7 +116,7 @@ else {
 </div>
 
 <div class="col-md-12">
-    <div class="panel panel-primary" id="div_functionalityPanel">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title"># Mappings</h3>
         </div>

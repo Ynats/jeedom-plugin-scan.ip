@@ -20,6 +20,7 @@ Avec ces informations, le plugin permet :
 Installation et dépendances
 ===
 
+- Ce plugin nécessite soit "iproute2", soit "net-tools".
 - Ce plugin nécessite impérativement "arp-scan", "wakeonlan", "etherwake".
 - L'utilisation des fichiers "oui.txt" et "iab.txt" proposés par "standards-oui.ieee.org"
 - Les API proposées par "macvendors.com" et "macvendors.co"
@@ -94,6 +95,14 @@ Lorsque vous avez plusieurs cartes réseaux ou plus particulièrement des sous-r
 Sert à vérifier la présence du fichier oui.txt et iab.txt ainsi que leurs dates de mise à jour.
 
 > Ces deux fichiers servent à faire le lien entre une adresse MAC et un constructeur
+
+## Dépendances
+
+Sert à vérifier l'état des dépendances.
+
+> A noter que pour fonctionner toutes les dépendances, à part "iproute2" et "net-tools", sont requises.
+
+> Pour "iproute2" et "net-tools" qu'une seule des deux est nécessaire.
 
 # Gestion des équipements
 
