@@ -84,25 +84,25 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
         <div class="panel-body">
         <?php if($ipsReseau["jeedom"]["name"] != "") { ?>
             <div>
-                <label class="col-sm-3 control-label">Nom : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">Nom : </label>
                 <div><?php echo $ipsReseau["jeedom"]["name"] ?></div>
             </div>
         <?php } ?>
             <div>
-                <label class="col-sm-3 control-label">ip : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">ip : </label>
                 <div><?php echo $ipsReseau["jeedom"]["ip_v4"] ?></div> 
             </div>
             <div>
-                <label class="col-sm-3 control-label">Adresse MAC : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["jeedom"]["mac"]?></div>
             </div>
             <div>
-                <label class="col-sm-3 control-label">Installation : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">Installation : </label>
                 <div><?php echo scan_ip_tools::printDate($ipsReseau["jeedom"]["record"]) ?></div> 
             </div>
             <?php if(gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) != $ipsReseau["jeedom"]["ip_v4"]) { ?>            
                 <div>
-                    <label class="col-sm-3 control-label">Host Name : </label>
+                    <label class="col-sm-3 control-label" style="margin-bottom: 0;">Host Name : </label>
                     <div><?php echo gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) ?></div>
                 </div>
             <?php } ?> 
@@ -119,16 +119,16 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
         <div class="panel-body">
             <?php if(!empty($ipsReseau["route"]["equipement"])) { ?>            
                 <div>
-                    <label class="col-sm-3 control-label">Nom : </label>
+                    <label class="col-sm-3 control-label" style="margin-bottom: 0;">Nom : </label>
                     <div><?php echo $ipsReseau["route"]["equipement"] ?></div>
                 </div>
             <?php } ?> 
             <div>
-                <label class="col-sm-3 control-label">ip : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">ip : </label>
                 <div><?php echo $ipsReseau["route"]["ip_v4"] ?></div>
             </div>
             <div>
-                <label class="col-sm-3 control-label">Adresse MAC : </label>
+                <label class="col-sm-3 control-label" style="margin-bottom: 0;">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["route"]["mac"] ?></div>
             </div>
         </div>
