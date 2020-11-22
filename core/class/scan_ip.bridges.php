@@ -175,10 +175,12 @@ class scan_ip_bridges extends eqLogic {
     public static function bridges_pluginExists($_name) {
         //log::add('scan_ip', 'debug', 'bridges_pluginExists :. Lancement');
         $bridgeExists = TRUE;
-        try {
-            $plugin = plugin::byId($_name);
-        } catch (Exception $e) {
-            $bridgeExists = FALSE;
+        if($_name !== 'core') {
+            try {
+                $plugin = plugin::byId($_name);
+            } catch (Exception $e) {
+                $bridgeExists = FALSE;
+            }
         }
         return $bridgeExists;
     }
