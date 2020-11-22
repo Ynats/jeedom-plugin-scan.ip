@@ -35,8 +35,10 @@ function hideSelect(NbSelect) {
                 $.each(tableau, function (key, value) {
                     var current = $('#scan_ip_adressMacTemp').val();
                     if (mac != current) {
-                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").remove();
+                        // hidden/display:none non reconnu sous safari dans les select option
+                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
                     }
+                    $("#plug_element_plugin_" + plug + " option[value='" + $('#plug_element_plugin_' + plug).find(":selected").val() + "']").attr('disabled',false);
                 });
             });
         }
