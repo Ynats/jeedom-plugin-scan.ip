@@ -35,7 +35,7 @@ function hideSelect(NbSelect) {
                 $.each(tableau, function (key, value) {
                     var current = $('#scan_ip_adressMacTemp').val();
                     if (mac != current) {
-                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
+                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").remove();
                     }
                 });
             });
