@@ -28,10 +28,12 @@ class scan_ip_blea {
     public function getAllElements(){
 
         $return = NULL;
+        
         if (!class_exists('blea_remote')){
-            exit();
+            return $return;
         }
-		$eqLogics = blea_remote::all();
+        
+        $eqLogics = blea_remote::all();
 
         foreach ($eqLogics as $eqLogic) {    
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
