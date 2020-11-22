@@ -57,8 +57,9 @@ class scan_ip_blea {
     public function majIpElement($_array){
         
         if (!class_exists('blea_remote')){
-            exit();
+            return NULL;
         }
+        
         $eqLogics = blea_remote::all();
 
         foreach ($eqLogics as $eqLogic) {
