@@ -95,7 +95,7 @@ class scan_ip_shell extends eqLogic {
                 $i++; 
                 $return[$i]["name"] = $name; 
             }
-            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) {
+            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($_ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) {
                 $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("/",$value)[0]))).".*"; 
                 if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
                     $return["name_plage_route"] = $name;
@@ -116,7 +116,7 @@ class scan_ip_shell extends eqLogic {
                 $i++; 
                 $return[$i]["name"] = $name; 
             }
-            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) { 
+            if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value) AND preg_match("(".scan_ip_tools::getPlageIp($_ipRoute).")", $value) AND empty($return[$i]["ip_v4"])) { 
                 $return[$i]["ip_v4"] = scan_ip_tools::getPlageIp(trim(str_replace("inet", "", explode("netmask",$value)[0]))).".*"; 
                 if(!empty($_ipRoute) AND !empty($return[$i]["ip_v4"]) AND scan_ip_tools::getPlageIp($_ipRoute) == scan_ip_tools::getPlageIp($return[$i]["ip_v4"])) {
                     $return["name_plage_route"] = $name;
