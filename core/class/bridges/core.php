@@ -60,7 +60,7 @@ class scan_ip_core {
     */
     public function majIpElement($_array){
 
-            $old = config::byKey($_array["id"], self::$plug);
+            $old = config::byKey($_array["champ"], self::$plug);
             preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);
             if($match[0] != $_array["ip"]) { 
                 $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $old);
