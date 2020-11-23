@@ -64,7 +64,7 @@ class scan_ip_core {
             preg_match(scan_ip_tools::getRegex("ip_v4"), $old, $match);
             if($match[0] != $_array["ip"]) { 
                 $change_ip = preg_replace(scan_ip_tools::getRegex("ip_v4"), $_array["ip"], $old);
-                config::save($_array["id"], $change_ip, self::$plug);
+                config::save($_array["champ"], $change_ip, self::$plug);
                 // Retourne le deamon à lancer
                 return NULL;
             }
