@@ -85,7 +85,11 @@ class scan_ip_eqLogic extends eqLogic {
                             } else {
                                 $equipement = "";
                             }
-                            $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$equipement."</a></div>";
+                            if($split[0] == 'core') {
+                                $return[$a]["plug_element_plugin"] .= "<div><a href='index.php?v=d&p=administration#".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$equipement."</a></div>";
+                            } else {
+                                $return[$a]["plug_element_plugin"] .= "<div><a href='/index.php?v=d&m=".$split[0]."&p=".$split[0]."&id=".$split[1]."' target='_blank'>#".$split[1]." (".$split[0].") ".$equipement."</a></div>";
+                            }
                         } 
                     }
                 }
