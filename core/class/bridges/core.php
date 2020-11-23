@@ -10,10 +10,10 @@ class scan_ip_core {
     * Nom de la variable ip à modifier
     */
     public static $plug = "core";
-    public static $coreIp = array('Samba Backup IP' => 'samba::backup::ip',
-                             'Samba Backup Partage' => 'samba::backup::share',
-                                    'Accès interne' => 'internalAddr',
-                                             'Push' => 'cmdPushUrl');
+    public static $coreIp = array('Samba Backup IP' => 'updatetab|samba::backup::ip',
+                             'Samba Backup Partage' => 'updatetab|samba::backup::share',
+                                    'Accès interne' => 'networktab|internalAddr',
+                                             'Push' => 'commandtab|cmdPushUrl');
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -30,14 +30,15 @@ class scan_ip_core {
 
         $i = 1;
         foreach (self::$coreIp as $name => $ip) {
-            if(!empty(config::byKey($ip, self::$plug))){
+            $split = explode("|", $ip);
+            if(!empty(config::byKey($split[1], self::$plug))){
 
                 $return[self::$plug.$i]["plugin"] = self::$plug;
                 $return[self::$plug.$i]["plugin_print"] = self::$plug;
                 $return[self::$plug.$i]["name"] = $name;
                 $return[self::$plug.$i]["id"] = $ip;
         
-                $value = config::byKey($ip, self::$plug);
+                $value = config::byKey($split[1], self::$plug);
                 if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value, $match)){
                     $return[self::$plug.$i]["ip_v4"] = $match[0];
                 } else {
