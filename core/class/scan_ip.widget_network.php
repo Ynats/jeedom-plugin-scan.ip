@@ -67,13 +67,13 @@ class scan_ip_widget_network extends eqLogic {
         $replace["#widget_network#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;" id="scan_ip_network_widget">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th data-sort="string" style="padding : 3px 0 3px 15px !important; text-align: center; width:30px;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
-                <th data-sort="int" style="text-align: center; width:30px; padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
-                <th data-sort="string" style="width:130px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Adresse MAC</span></th>
-                <th data-sort="int" style="width:110px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Ip</span></th>
-                <th data-sort="string" style="width:375px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Nom</span></th>
-                <th data-sort="string" style="width:375px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Commentaire</span></th>
-                <th data-sort="int" style="width:170px;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Date de mise à jour</span></th>
+                <th data-sort="string" style=" width:3%; padding : 3px 0 3px 15px !important; text-align: center;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
+                <th data-sort="int" style=" width:3%; text-align: center; padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b></span></th>
+                <th data-sort="string" style="width:12%;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Adresse MAC</span></th>
+                <th data-sort="int" style="width:10%;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Ip</span></th>
+                <th data-sort="string" style="width:29%;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Nom</span></th>
+                <th data-sort="string" style="width:29%;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Commentaire</span></th>
+                <th data-sort="int" style="width:14%;padding : 3px 0 3px 15px !important;"><span style="cursor: pointer !important; width: 100%;"><b class="caret"></b> Date de mise à jour</span></th>
             </tr>
         </thead>
         <tbody>';

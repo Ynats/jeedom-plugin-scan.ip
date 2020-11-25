@@ -180,7 +180,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <?php    
                         scan_ip_tools::vueSubTitle("{{Paramètres du Widget}}");
 ?> 
-                            <div class="form-group">
+                        <div class="form-group">
                             <label class="col-lg-3 control-label">{{Ordre d'affichage du Widget}}</sup>
                             </label>
                             <div class="col-lg-5">
