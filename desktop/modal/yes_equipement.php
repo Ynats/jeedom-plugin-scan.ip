@@ -36,7 +36,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <div class="col-md-12" style="padding-left: 0px !important; padding-right: 0px !important;">
     <div class="panel panel-primary" id="div_scan_ip_equipement_yes">
         <div class="panel-body">
-            <table style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_equipement">
+            <table class="table-bordered table-condensed" style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_equipement">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
                         <th data-sort="int" style="width:40px; text-align: center;"><span class="scanHender"><b class="caret"></b></th>

@@ -42,7 +42,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
     
     <div class="panel panel-primary" id="div_scan_ip_equipement_no">
         <div class="panel-body">
-            <table style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_no_equipement">
+            <table class="table-bordered table-condensed" style="width: 100%; margin: -5px -5px 10px 5px;" id="scan_ip_no_equipement">
                 <thead>
                     <tr style="background-color: grey !important; color: white !important;">
                         <th style="text-align: center; width:30px;"></th>
