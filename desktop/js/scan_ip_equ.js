@@ -35,6 +35,22 @@ function hideSelect(NbSelect) {
                 $.each(tableau, function (key, value) {
                     var current = $('#scan_ip_adressMacTemp').val();
                     if (mac != current) {
+                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
+                    }
+                });
+            });
+        }
+
+    });
+}
+
+function hideSelectSafari(NbSelect) {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+        for (let plug = 0; plug <= NbSelect; plug++) {
+            $.each(result, function (mac, tableau) {
+                $.each(tableau, function (key, value) {
+                    var current = $('#scan_ip_adressMacTemp').val();
+                    if (mac != current) {
                         // hidden/display:none non reconnu sous safari dans les select option
                         $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
                     }

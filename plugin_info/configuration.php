@@ -53,7 +53,7 @@ scan_ip_tools::cleanAfterUpdate();
                 <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher un widget avec l'ensemble du réseau}}"></i></sup>
             </label>
             <div class="col-lg-5">
-                <select class="configKey form-control" id="cron_pass" data-l1key="widget_network">
+                <select class="configKey form-control" data-l1key="widget_network">
                     <option value="1">{{Afficher le widget de votre réseau}}</option>
                     <option value="0">{{Masquer le widget de votre réseau}}</option>
                 </select> 
@@ -64,7 +64,7 @@ scan_ip_tools::cleanAfterUpdate();
                 <sup><i class="fa fa-question-circle tooltips" title="{{Permet d'afficher le widget des }} <?php echo scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements entrant dans votre réseau}}"></i></sup>
             </label>
             <div class="col-lg-5">
-                <select class="configKey form-control" id="cron_pass" data-l1key="widget_new_equipement">
+                <select class="configKey form-control" data-l1key="widget_new_equipement">
                     <option value="1">{{Afficher le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
                     <option value="0">{{Masquer le widget des }} <?php echo  scan_ip::$_defaut_alerte_new_equipement ?> {{ derniers équipements non enregistrés dans le réseau}}</option>
                 </select> 
@@ -78,7 +78,7 @@ scan_ip_tools::cleanAfterUpdate();
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Routeur}}</label>
             <div class="col-lg-5">
-                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_routeur">
+                <select class="configKey form-control" data-l1key="add_network_routeur">
                     <option value="0">{{Retirer le routeur de la liste}}</option>
                     <option value="1">{{Ajouter le routeur dans la liste}}</option>
                 </select> 
@@ -87,12 +87,28 @@ scan_ip_tools::cleanAfterUpdate();
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Jeedom}}</label>
             <div class="col-lg-5">
-                <select class="configKey form-control" id="cron_pass" data-l1key="add_network_jeedom">
+                <select class="configKey form-control" data-l1key="add_network_jeedom">
                     <option value="0">{{Retirer Jeedom de la liste}}</option>
                     <option value="1">{{Ajouter Jeedom dans la liste}}</option>
                 </select> 
             </div>
         </div>
+                      
+<?php
+        scan_ip_tools::vueSubTitle("{{Compatibilité avec le navigateur Safari (Mode avancé)}}", "config");
+?>             
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Option à n'activer que si vous utilisez Safari}}
+            <sup><i class="fa fa-question-circle tooltips" title="{{Pour désactiver les options du menu de sélection des bridges déjà associés. (Sur les autres navigateurs la donnée et cachée)}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" data-l1key="add_compatibility_safari">
+                    <option value="0">{{Désactiver le mode compatibilité}}</option>
+                    <option value="1">{{Activer le mode compatibilité}}</option>
+                </select> 
+            </div>
+        </div>
+            
     </div> 
            
     <div id="show_oui" style="display:none;">        

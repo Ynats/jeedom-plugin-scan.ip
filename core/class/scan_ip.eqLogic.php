@@ -109,6 +109,14 @@ class scan_ip_eqLogic extends eqLogic {
         }
         return $return;
     }
+    
+    public static function hideSelect(){
+        if(config::byKey('add_compatibility_safari', 'scan_ip', 0) == 0){
+            echo "hideSelect";
+        } else {
+            echo "hideSelectSafari";
+        }
+    }
 
 }
 
