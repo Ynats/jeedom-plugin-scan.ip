@@ -190,25 +190,40 @@ class scan_ip_widget_alerte extends eqLogic {
         $replace["#last_unknown_equipement#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th style="padding : 3px 0 3px 15px !important;" style="width:15%;">Date</th>
-                <th style="padding : 3px 0 3px 15px !important;" style="width:11%;">Adresse MAC</th>
-                <th style="padding : 3px 0 3px 15px !important;" style="width:10%">Ip</th>
-                <th style="padding : 3px 0 3px 15px !important;" style="width:32%">Information</th>
-                <th style="padding : 3px 0 3px 15px !important;" style="width:32%;">Vu la première fois</th>
+                <th style="padding : 3px 0 3px 15px !important; width:3%; text-align: center;"></th>
+                <th style="padding : 3px 0 3px 15px !important; width:18%;">Date</th>
+                <th style="padding : 3px 0 3px 15px !important; width:10%;">Adresse MAC</th>
+                <th style="padding : 3px 0 3px 15px !important; width:10%">Ip</th>
+                <th style="padding : 3px 0 3px 15px !important; width:39%">Information</th>
+                <th style="padding : 3px 0 3px 15px !important; width:20%;">Vu la première fois</th>
             </tr>
         </thead>
         <tbody>';
         
         for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
             if(!empty(scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip))){ 
+                
                 $record = scan_ip_cmd::getCommande("last_".$i."_record", $scan_ip, NULL);
+                $time = scan_ip_cmd::getCommande("last_".$i."_time", $scan_ip, NULL);
+                $offline_time = $scan_ip->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
+                
+               
                 if($record != NULL){
                     $record = date("d/m/Y H:i:s", $record);
                 } else {
                     $record = NULL;
                 }
                 
+                if (scan_ip_tools::isOffline($offline_time, $time) == 0) {
+                    $element["colorOnLine"] = "#50aa50";
+                    $element["titleOnLine"] = "En ligne";
+                } else {
+                    $element["colorOnLine"] = "red";
+                    $element["titleOnLine"] = "Hors ligne";
+                }
+                
                 $replace["#last_unknown_equipement#"] .= '<tr>'
+                . '<td style="padding : 3px 0 3px 15px !important;" title="' . $element["titleOnLine"] .'">' . scan_ip_tools::getCycle("15px", $element["colorOnLine"]) . '</td>'
                 . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_date", $scan_ip) . '</td>'
                 . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_mac", $scan_ip) . '</td>'
                 . '<td style="padding : 3px 0 3px 15px !important;">' . scan_ip_cmd::getCommande("last_".$i."_ip_v4", $scan_ip) . '</td>'
