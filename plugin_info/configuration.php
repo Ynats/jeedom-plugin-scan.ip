@@ -99,7 +99,7 @@ scan_ip_tools::cleanAfterUpdate();
 ?>             
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Option à n'activer que si vous utilisez Safari}}
-            <sup><i class="fa fa-question-circle tooltips" title="{{Pour désactiver les options du menu de sélection des bridges déjà associés. (Sur les autres navigateurs la donnée et cachée)}}"></i></sup>
+            <sup><i class="fa fa-question-circle tooltips" title="{{Pour désactiver les options du menu de sélection des bridges déjà associés. (Sur les autres navigateurs la donnée est cachée)}}"></i></sup>
             </label>
             <div class="col-lg-5">
                 <select class="configKey form-control" data-l1key="add_compatibility_safari">

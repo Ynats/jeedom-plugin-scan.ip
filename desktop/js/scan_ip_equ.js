@@ -29,37 +29,41 @@ if (!$("#offline_time option:selected").length) {
 }
 
 function hideSelect(NbSelect) {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
-        for (let plug = 0; plug <= NbSelect; plug++) {
-            $.each(result, function (mac, tableau) {
-                $.each(tableau, function (key, value) {
-                    var current = $('#scan_ip_adressMacTemp').val();
-                    if (mac != current) {
-                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
-                    }
+    if(NbSelect > 0){
+        $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+            for (let plug = 0; plug <= NbSelect; plug++) {
+                $.each(result, function (mac, tableau) {
+                    $.each(tableau, function (key, value) {
+                        var current = $('#scan_ip_adressMacTemp').val();
+                        if (mac != current) {
+                            $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
+                        }
+                    });
                 });
-            });
-        }
+            }
 
-    });
+        });
+    }
 }
 
 function hideSelectSafari(NbSelect) {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
-        for (let plug = 0; plug <= NbSelect; plug++) {
-            $.each(result, function (mac, tableau) {
-                $.each(tableau, function (key, value) {
-                    var current = $('#scan_ip_adressMacTemp').val();
-                    if (mac != current) {
-                        // hidden/display:none non reconnu sous safari dans les select option
-                        $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
-                    }
-                    $("#plug_element_plugin_" + plug + " option[value='" + $('#plug_element_plugin_' + plug).find(":selected").val() + "']").attr('disabled',false);
+    if(NbSelect > 0){
+           $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+            for (let plug = 0; plug <= NbSelect; plug++) {
+                $.each(result, function (mac, tableau) {
+                    $.each(tableau, function (key, value) {
+                        var current = $('#scan_ip_adressMacTemp').val();
+                        if (mac != current) {
+                            // hidden/display:none non reconnu sous safari dans les select option
+                            $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
+                        }
+                        $("#plug_element_plugin_" + plug + " option[value='" + $('#plug_element_plugin_' + plug).find(":selected").val() + "']").attr('disabled',false);
+                    });
                 });
-            });
-        }
+            }
 
-    });
+        }); 
+    }
 }
 
 $('#offline_time').change(function () {
@@ -102,27 +106,30 @@ function timeCron() {
 }
 
 function verifEquipement(nb) {
-    var cpt = 0;
-    var nbElement = [];
+    if(nb > 0){
+    
+        var cpt = 0;
+        var nbElement = [];
 
-    for (x = 1; x <= nb; x++) {
-        var val = $('#plug_element_plugin_' + x).find(":selected").val();
-        var split = val.split("|");
-        if (split[0] != "") {
-            nbElement.push(split[0]);
+        for (x = 1; x <= nb; x++) {
+            var val = $('#plug_element_plugin_' + x).find(":selected").val();
+            var split = val.split("|");
+            if (split[0] != "") {
+                nbElement.push(split[0]);
+            }
         }
+
+        red = nbElement.reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
+
+        $.each(red, function (index, value) {
+            if (value > 1) {
+                $('#div_alert').showAlert({message: "{{Attention, cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'warning'});
+            } else {
+                $('#div_alert').hide();
+            }
+        });
+    
     }
-
-    red = nbElement.reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
-
-    $.each(red, function (index, value) {
-        if (value > 1) {
-            $('#div_alert').showAlert({message: "{{Attention, cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'warning'});
-        } else {
-            $('#div_alert').hide();
-        }
-    });
-
 }
 
 // Synchro

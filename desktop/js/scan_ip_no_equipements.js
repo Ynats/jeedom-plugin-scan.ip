@@ -13,62 +13,68 @@ function is_checked_scan_ip() {
 }
 
 function removeEquipement(nb) {
-    var equipements = [];
-    for (var i = 1; i <= nb; i++) {
-        if ($("#checked_input_" + i).is(':checked')) {
-            var mac = $("#checked_input_" + i).attr('data-mac');
-            equipements.push([{mac: mac}]);
-        }
-    }
-
-    $.ajax({
-        type: "POST",
-        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
-        data: {
-            action: "removeEquipement",
-            data: equipements,
-        },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                return;
+    if(nb > 0){
+    
+        var equipements = [];
+        for (var i = 1; i <= nb; i++) {
+            if ($("#checked_input_" + i).is(':checked')) {
+                var mac = $("#checked_input_" + i).attr('data-mac');
+                equipements.push([{mac: mac}]);
             }
-            window.location.reload();
         }
-    });
+
+        $.ajax({
+            type: "POST",
+            url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
+            data: {
+                action: "removeEquipement",
+                data: equipements,
+            },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+                if (data.state != 'ok') {
+                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    return;
+                }
+                window.location.reload();
+            }
+        });
+        
+    }
 }
 
 function addEquipement(nb) {
-    var equipements = [];
-    for (var i = 1; i <= nb; i++) {
-        if ($("#checked_input_" + i).is(':checked')) {
-            var mac = $("#checked_input_" + i).attr('data-mac');
-            equipements.push([{mac: mac}]);
-        }
-    }
-
-    $.ajax({
-        type: "POST",
-        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
-        data: {
-            action: "addEquipement",
-            data: equipements,
-        },
-        dataType: 'json',
-        error: function (request, status, error) {
-            handleAjaxError(request, status, error);
-        },
-        success: function (data) {
-            if (data.state != 'ok') {
-                $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                return;
+    if(nb > 0){
+        var equipements = [];
+        for (var i = 1; i <= nb; i++) {
+            if ($("#checked_input_" + i).is(':checked')) {
+                var mac = $("#checked_input_" + i).attr('data-mac');
+                equipements.push([{mac: mac}]);
             }
-            window.location.reload();
         }
-    });
+
+        $.ajax({
+            type: "POST",
+            url: "plugins/scan_ip/core/ajax/scan_ip.ajax.php",
+            data: {
+                action: "addEquipement",
+                data: equipements,
+            },
+            dataType: 'json',
+            error: function (request, status, error) {
+                handleAjaxError(request, status, error);
+            },
+            success: function (data) {
+                if (data.state != 'ok') {
+                    $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    return;
+                }
+                window.location.reload();
+            }
+        });
+    }
 }
 
