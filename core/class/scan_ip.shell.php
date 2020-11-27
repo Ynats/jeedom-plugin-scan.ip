@@ -22,10 +22,13 @@ class scan_ip_shell extends eqLogic {
     
     public static function arpScanShell($_subReseau = NULL){
         log::add('scan_ip', 'debug', 'scan_ip_shell::arpScanShell :. Lancement');
+        
         $time = time();
         $return = array();
         
-        exec('sudo arp-scan --interface=' . $_subReseau . ' --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output);
+        $retry = config::byKey('add_retry_scan', 'scan_ip', 3);
+        
+        exec('sudo arp-scan -r ' . $retry .  ' --interface=' . $_subReseau . ' --localnet --ouifile=' . scan_ip::$_file_oui. ' --iabfile=' .  scan_ip::$_file_iab, $output);
         
         foreach ($output as $scanLine) {
             if (preg_match(scan_ip_tools::getRegex("ip_v4"), $scanLine)) {     
@@ -228,7 +231,10 @@ class scan_ip_shell extends eqLogic {
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # DEPENDANCES
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# WAKE ON LAN
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
   
     public static function wakeOnLan($_mac){
         log::add('scan_ip', 'debug', 'wakeOnLan :. wakeonlan '.$_mac);
@@ -243,5 +249,5 @@ class scan_ip_shell extends eqLogic {
             self::wakeOnLan($_mac);
         }
     }
-    
+      
 }

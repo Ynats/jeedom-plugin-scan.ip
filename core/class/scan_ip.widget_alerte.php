@@ -190,12 +190,12 @@ class scan_ip_widget_alerte extends eqLogic {
         $replace["#last_unknown_equipement#"] = '<table style="width: 100%; margin: -5px -5px 22px 0;">
         <thead>
             <tr style="background-color: grey !important; color: white !important;">
-                <th style="padding : 3px 0 3px 15px !important; width:3%; text-align: center;"></th>
-                <th style="padding : 3px 0 3px 15px !important; width:18%;">Date</th>
-                <th style="padding : 3px 0 3px 15px !important; width:10%;">Adresse MAC</th>
-                <th style="padding : 3px 0 3px 15px !important; width:10%">Ip</th>
-                <th style="padding : 3px 0 3px 15px !important; width:39%">Information</th>
-                <th style="padding : 3px 0 3px 15px !important; width:20%;">Vu la première fois</th>
+                <th style="padding : 3px 0 3px 15px !important; text-align: center;"></th>
+                <th style="padding : 3px 0 3px 15px !important;">Date</th>
+                <th style="padding : 3px 0 3px 15px !important;">Adresse MAC</th>
+                <th style="padding : 3px 0 3px 15px !important;">Ip</th>
+                <th style="padding : 3px 0 3px 15px !important;">Information</th>
+                <th style="padding : 3px 0 3px 15px !important;">Vu la première fois</th>
             </tr>
         </thead>
         <tbody>';

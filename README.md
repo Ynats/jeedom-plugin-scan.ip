@@ -79,6 +79,14 @@ Permet d'ajouter le routeur dans la liste du réseau. A defaut celui-ci est reti
 
 Permet d'ajouter le serveur Jeedom dans la liste du réseau. A defaut celui-ci est retiré.
 
+### Option Retry
+
+Cela permet de régler le nombre de tentatives lors des scans du réseaux. En effet, tous les équippements ne répondent pas en dès la première tentative de scan. A noter que plus vous avez de tentatives, plus le scan mettre du temps à répondre.
+
+### Compatibilité avec le navigateur Safari
+
+Sur le navigateur web Safari le mode caché dans le menu de sélection, qui permet de n'afficher que les bridges non utlisés, n'est pas compatible. De ce fait, en activant cette option, les menus déjà utilisés seront désactivés. Cette option n'est à activer que si vous rencontrez le problème sur Safari.
+
 ### Spécifier des plages réseau à scanner
 
 Lorsque vous avez plusieurs cartes réseaux ou plus particulièrement des sous-réseaux il convient de spécifier le ou les sous réseaux à scanner.
@@ -94,6 +102,10 @@ Lorsque vous avez plusieurs cartes réseaux ou plus particulièrement des sous-r
 Sert à vérifier la présence du fichier oui.txt et iab.txt ainsi que leurs dates de mise à jour.
 
 > Ces deux fichiers servent à faire le lien entre une adresse MAC et un constructeur
+
+## Dépendances
+
+Permet de visualiser, facilement, les dépendances qui sont en echec.
 
 # Gestion des équipements
 

@@ -93,6 +93,23 @@ scan_ip_tools::cleanAfterUpdate();
                 </select> 
             </div>
         </div>
+
+<?php
+        scan_ip_tools::vueSubTitle("{{Nombre d'essaie lors des scans (Mode avancé)}}", "config");
+?>             
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Option Retry}}
+            <sup><i class="fa fa-question-circle tooltips" title="{{Cela conditionne la durée du scan mais permet d'avoir de meilleurs retours sur l'exploration de votre réseau'}}"></i></sup>
+            </label>
+            <div class="col-lg-5">
+                <select class="configKey form-control" data-l1key="add_retry_scan">
+                    <option value="3">{{3 tentatives (à defaut)}}</option>
+                    <option value="4">{{4 tentatives}}</option>
+                    <option value="5">{{5 tentatives}}</option>
+                    <option value="6">{{6 tentatives}}</option>
+                </select> 
+            </div>
+        </div>
                       
 <?php
         scan_ip_tools::vueSubTitle("{{Compatibilité avec le navigateur Safari (Mode avancé)}}", "config");

@@ -63,6 +63,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
 <?php
 $subReseau = scan_ip_shell::getSubReseauEnable();
+$retry = config::byKey('add_retry_scan', 'scan_ip', 3);
 if ($subReseau["subReseauEnable"] > 0) {
     foreach ($subReseau["subReseau"] as $sub) {
         if ($sub["enable"] == 1) {
@@ -71,11 +72,11 @@ if ($subReseau["subReseauEnable"] > 0) {
             <div class="col-md-12">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title"># sudo arp-scan --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt</h3>
+                        <h3 class="panel-title"># sudo arp-scan -r <?php echo $retry ?> --interface=<?php echo $sub["name"] ?> --localnet --ouifile=ieee-oui.txt</h3>
                     </div>
                     <div class="panel-body">
                         <?php
-                            scan_ip_shell::printShell("sudo arp-scan --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
+                            scan_ip_shell::printShell("sudo arp-scan -r " . $retry . " --interface=" . $sub["name"] . " --localnet --ouifile=".scan_ip::$_file_oui);
                         ?>
                     </div>
                 </div>

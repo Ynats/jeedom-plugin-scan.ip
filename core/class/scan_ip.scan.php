@@ -142,52 +142,52 @@ class scan_ip_scan extends eqLogic {
             $_now = scan_ip_tools::arrayCompose($_jeedom, $_now);
         }
           
-            foreach ($_now as $mac => $scanLine) {
-                
-                if($scanLine["ip_v4"] == $_ipRoute){
-                    $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
-                    $_return["route"]["mac"] = $mac;
-                    $_return["route"]["equipement"] = $scanLine["equipement"];
-                } 
-                
-                if($add_network_routeur == 1 OR $scanLine["ip_v4"] != $_ipRoute){
-                
-                    if(!empty($_equipement[$mac]["record"])){
-                        $record = $_equipement[$mac]["record"];
-                    } else {
-                        $record = $_infoJeedom["record"];
-                    }
+        foreach ($_now as $mac => $scanLine) {
 
-                    $_return["sort"][] = array(
-                            "record" => $record,
-                            "ip_v4" => $scanLine["ip_v4"], 
-                            "mac" => $mac, 
-                            "time" => $scanLine["time"], 
-                            "equipement" => $scanLine["equipement"]
-                    );
-                    $_return["byIpv4"][$scanLine["ip_v4"]] = array(
-                        "mac" => $mac, 
-                        "equipement" => $scanLine["equipement"], 
-                        "time" => $scanLine["time"], 
-                        "record" => $record
-                        );
-                    $_return["byMac"][$mac] = array(
-                        "ip_v4" => $scanLine["ip_v4"], 
-                        "equipement" => $scanLine["equipement"], 
-                        "time" => $scanLine["time"], 
-                        "record" => $record
-                        );  
-                    $_return["byTime"][$scanLine["time"].$record][] = array(
-                        "time" => $scanLine["time"], 
-                        "mac" => $mac, "ip_v4" => $scanLine["ip_v4"], 
-                        "equipement" => $scanLine["equipement"], 
-                        "record" => $record
-                        );
+            if($scanLine["ip_v4"] == $_ipRoute){
+                $_return["route"]["ip_v4"] = $scanLine["ip_v4"];
+                $_return["route"]["mac"] = $mac;
+                $_return["route"]["equipement"] = $scanLine["equipement"];
+            } 
+                
+            if($add_network_routeur == 1 OR $scanLine["ip_v4"] != $_ipRoute){
+
+                if(!empty($_equipement[$mac]["record"])){
+                    $record = $_equipement[$mac]["record"];
+                } else {
+                    $record = $_infoJeedom["record"];
                 }
-            }
 
-            ksort($_return["sort"]);
-            krsort($_return["byTime"]);
+                $_return["sort"][] = array(
+                        "record" => $record,
+                        "ip_v4" => $scanLine["ip_v4"], 
+                        "mac" => $mac, 
+                        "time" => $scanLine["time"], 
+                        "equipement" => $scanLine["equipement"]
+                );
+                $_return["byIpv4"][$scanLine["ip_v4"]] = array(
+                    "mac" => $mac, 
+                    "equipement" => $scanLine["equipement"], 
+                    "time" => $scanLine["time"], 
+                    "record" => $record
+                    );
+                $_return["byMac"][$mac] = array(
+                    "ip_v4" => $scanLine["ip_v4"], 
+                    "equipement" => $scanLine["equipement"], 
+                    "time" => $scanLine["time"], 
+                    "record" => $record
+                    );  
+                $_return["byTime"][$scanLine["time"].$record][] = array(
+                    "time" => $scanLine["time"], 
+                    "mac" => $mac, "ip_v4" => $scanLine["ip_v4"], 
+                    "equipement" => $scanLine["equipement"], 
+                    "record" => $record
+                    );
+            }
+        }
+
+        ksort($_return["sort"]);
+        krsort($_return["byTime"]);
         
         return $_return;
     }
