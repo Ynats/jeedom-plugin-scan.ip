@@ -32,13 +32,13 @@ Afin de faciliter l'utilisation de ce plugin, celui-ci permet d'adapter les opti
 
 Le mode normal affiche les paramètres principaux et qui généralement s'adapte aux configurations standards.
 
-![scan_ip1](../images//Config.Normal.png)
+![scan_ip1](../images/Config.Normal.png)
 
 ### Widget Network
 
 Cette option permet d'afficher ou non le widget d'affichage du réseau.
 
-![scan_ip2](.../images//Widget.network.png)
+![scan_ip2](../images/Widget.network.png)
 
 > Vous avez la possibilité de trier les colonnes par un simple clic
 
@@ -48,7 +48,7 @@ Cette option permet d'afficher ou non le widget d'affichage du réseau.
 
 Cette option permet d'afficher ou non le widget d'affichage des alertes.
 
-![scan_ip5](.../images//Widget.Alerte.png)
+![scan_ip5](../images//Widget.Alerte.png)
 
 > Ce widget n'affiche que les équipements non enregistrés et l'ordre d'affichage est trié par ((dateConnexion).(datePremierReferencement)). Ainsi, un équipement tout nouveau apparaitra en première position.
 
@@ -69,7 +69,7 @@ Vous pourrez ainsi associer un équipement à un ou plusieurs plugins.
 
 ## Mode avancé
 
-![scan_ip7](.../images//Config.Avance.png)
+![scan_ip7](../images/Config.Avance.png)
 
 ### Routeur
 
@@ -95,7 +95,7 @@ Lorsque vous avez plusieurs cartes réseaux ou plus particulièrement des sous-r
 
 ## Mode debug
 
-![scan_ip7](.../images//Config.Debug.png)
+![scan_ip7](../images/Config.Debug.png)
 
 ## Fichiers présents
 
@@ -109,7 +109,7 @@ Permet de visualiser, facilement, les dépendances qui sont en echec.
 
 # Gestion des équipements
 
-![scan_ip9](.../images//AllEquipements.png)
+![scan_ip9](../images/AllEquipements.png)
 
 > Le équipements sont séparés en deux parties : "Les équipements MAC" et les "Widgets dédiés et gérés par Scan.Ip". Il convient de ne pas supprimer ses derniers sauf en cas de bug. Poru les supprimer, il vous faudra activer le mode debug pour que le bouton "supprimer" apparaisse. 
 
@@ -119,7 +119,7 @@ Permet de visualiser, facilement, les dépendances qui sont en echec.
 
 En mode debug vous verrez apparaitre une icone debug
 
-![scan_ip10](.../images//Menu.Debug.png)
+![scan_ip10](../images/Menu.Debug.png)
 
 ### Ajouter un équipement MAC
 
@@ -135,7 +135,7 @@ Force le lancement d'un nouveau scan et la mise à joru des équipements
 
 ### Réseau
 
-![scan_ip11](.../images//Modal.Network.png)
+![scan_ip11](../images/Modal.Network.png)
 
 Le tableau affiche l'ensemble du réseau :
 
@@ -151,7 +151,7 @@ Le tableau affiche l'ensemble du réseau :
 
 ### Equipements enregistrés
 
-![scan_ip12](.../images//Modal.Equipemetn.Ok.png)
+![scan_ip12](../images/Modal.Equipemetn.Ok.png)
 
 - La 1er colonne indique si le périphérique est "En ligne" ou "Hors ligne"
 - La 2em colonne indique le nom de l'équipement
@@ -163,7 +163,7 @@ Le tableau affiche l'ensemble du réseau :
 
 ### Equipements non-enregistrés
 
-![scan_ip13](.../images//Modal.Equipemetn.No.png)
+![scan_ip13](../images/Modal.Equipemetn.No.png)
 
 - La 1er colonne permet de sélectionner l'équipement* (pour l'ajouter "à la volée" parmis vos équipements ou à le supprimer des archives du réseau)
 - La 2em colonne indique le nom de l'équipement
@@ -175,11 +175,11 @@ Le tableau affiche l'ensemble du réseau :
 
 > * Lorsque vous sélectionnez un ou plusieurs éléments des boutons d'actions apparaissent
 
-![scan_ip14](.../images//Modal.Equipemetn.No.save.png)
+![scan_ip14](../images/Modal.Equipemetn.No.save.png)
 
 ### Debug (uniquemenent mode Debug)
 
-![scan_ip15](.../images//Modal.Debug.png)
+![scan_ip15](../images/Modal.Debug.png)
 
 Cette modale a pour but d'aider à comprendre les éventuels bugs qui pourraient apparaitre.
 
@@ -215,7 +215,7 @@ Ce point a déjà été traité au début.
 
 ### En mode normal
 
-![scan_ip16](.../images//Equipement.Normal.png)
+![scan_ip16](../images/Equipement.Normal.png)
 
 #### Rechercher une adresse MAC
 
@@ -241,7 +241,7 @@ Ceci permet d'ajouter une commande d'action WoL qui permettra d'allumer un équi
 
 #### Association
 
-![scan_ip6](.../images//Equipement.Bridge.png)
+![scan_ip6](../images/Equipement.Bridge.png)
 
 Comme vu dans la partie configuration, c'est ici que l'on associe les plugins à Scan.Ip avec les bridges.
 
@@ -255,7 +255,7 @@ Comme vu dans la partie configuration, c'est ici que l'on associe les plugins à
 
 ### En mode avancé
 
-![scan_ip17](.../images//Equipement.Avanced.png)
+![scan_ip17](../images/Equipement.Avanced.png)
 
 #### Rappel "Configuration"
 
@@ -272,7 +272,7 @@ Souvenez-vous, tous les équipements ne resortent pas forcément aux différents
 
 ### Commandes associées
 
-![scan_ip18](.../images//Commande.Wol.png)
+![scan_ip18](../images/Commande.Wol.png)
 
 - IpV4 (ip au format v4 de l'équipement)
 - Wol (la commande d'action pour allumer les équipement à distance)
@@ -283,11 +283,11 @@ Souvenez-vous, tous les équipements ne resortent pas forcément aux différents
 
 ### Widgets associés
 
-![scan_ip9](.../images//Widget.Normal.png)
+![scan_ip9](../images/Widget.Normal.png)
 
 # Widgets dédiés et gérés par Scan.Ip
 
-![scan_ip19](.../images//AllEquipements.png)
+![scan_ip19](../images/AllEquipements.png)
 
 A defaut, cette partie comprend 2 widgets (ils peuvent être renommés) :
 - Scan.Ip Widget Alertes
@@ -295,17 +295,17 @@ A defaut, cette partie comprend 2 widgets (ils peuvent être renommés) :
 
 Ces équipements sont directement gérés par le plugin et correspondent à ce que vous avez configuré dans le plugin.
 
-![scan_ip1](.../images//Config.Normal.png)
+![scan_ip1](../images/Config.Normal.png)
 
 > Pour rappel, pour gérer leurs affichages c'est dans l'espace de configuration que cela se passe.
 
 ## Le widget Network
 
-![scan_ip20](.../images//config.widget.network.png)
+![scan_ip20](../images/config.widget.network.png)
 
 ## Le widget Alertes
 
-![scan_ip21](.../images//config.widget.alerte.png)
+![scan_ip21](../images/config.widget.alerte.png)
 
 #### Commandes associées
 
