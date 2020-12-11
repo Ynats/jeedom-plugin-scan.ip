@@ -13,10 +13,17 @@ class scan_ip_eqLogic extends eqLogic {
     public static function getAlleqLogics(){
         log::add('scan_ip', 'debug', 'getAlleqLogics :. Lancement');
         $eqLogics = eqLogic::byType('scan_ip');
+        
         foreach ($eqLogics as $scan_ip) {
-            $return[$scan_ip->getConfiguration("adress_mac")]["name"] = $scan_ip->name;
-            $return[$scan_ip->getConfiguration("adress_mac")]["enable"] = $scan_ip->getIsEnable();
-            $return[$scan_ip->getConfiguration("adress_mac")]["offline_time"] = $scan_ip->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
+            if(empty($scan_ip->getConfiguration('adress_mac_last'))){
+                $macId = scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac"));
+            } else {
+                $macId = $scan_ip->getConfiguration('adress_mac_last');
+            }
+ 
+            $return[$macId]["name"] = $scan_ip->name;
+            $return[$macId]["enable"] = $scan_ip->getIsEnable();
+            $return[$macId]["offline_time"] = $scan_ip->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
             log::add('scan_ip', 'debug', 'getAlleqLogics :. "' . $scan_ip->name .'"');
         } 
         return $return;
@@ -73,8 +80,10 @@ class scan_ip_eqLogic extends eqLogic {
                 $return[$a]["last_ip_v4"] = scan_ip_cmd::getCommande('last_ip_v4', $scan_ip);
                 $return[$a]["update_date"] = scan_ip_cmd::getCommande('update_date', $scan_ip);
                 $return[$a]["on_line"] = scan_ip_cmd::getCommande('on_line', $scan_ip);
-
-                $return[$a]["plug_element_plugin"] = NULL;
+                     
+                if(empty($scan_ip->getConfiguration('adress_mac_last'))){
+                    $return[$a]["mac_end"] = scan_ip_tools::getLastMac($return[$a]["mac"]);
+                }
 
                 if($bridge != FALSE){
                     for ($index = 1; $index <= scan_ip_bridges::$_defaut_bridges_by_equipement; $index++) {

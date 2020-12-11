@@ -93,7 +93,6 @@ scan_ip_tools::cleanAfterUpdate();
                 </select> 
             </div>
         </div>
-
 <?php
         scan_ip_tools::vueSubTitle("{{Nombre d'essaie lors des scans (Mode avancé)}}", "config");
 ?>             

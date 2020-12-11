@@ -71,6 +71,11 @@ $('#offline_time').change(function () {
     getConstructorByMac();
 });
 
+function complete_adress_mac_last(){
+   mac = $("#scan_ip_adressMacTemp").val();      
+   $("#scan_ip_adress_last").val(mac.slice(-8));
+}
+
 function getConstructorByMac() {
     $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.by_mac.php", function (result) {
         $.each(result, function (mac, value) {

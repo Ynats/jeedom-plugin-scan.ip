@@ -81,6 +81,11 @@ class scan_ip_tools extends eqLogic {
         return $a . "." . $b . "." . $c;
     }
     
+    public static function getLastMac($_mac){
+        list($a, $b, $c, $d, $e, $f) = explode(':', $_mac);
+        return $d . ":" . $e . ":" . $f;
+    }
+    
     public static function isOffline($_expire = NULL, $_time){
         if($_expire == NULL){ $_expire = 4; }
         $expire = time() - (60 * $_expire);
@@ -292,4 +297,16 @@ class scan_ip_tools extends eqLogic {
         return $return[0];
     }
     
+    public static function MajMacToMacEnd($_array){
+        $return = array();
+        foreach ($_array as $key => $value) {
+            if(strlen($key) == 17){
+                $return[self::getLastMac($key)] = $value;
+                $return[self::getLastMac($key)]["mac"] = $key;
+            } else {
+                $return[$key] = $value;
+            }
+        }
+        return $return;
+    }
 }

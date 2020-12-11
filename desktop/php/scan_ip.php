@@ -227,7 +227,13 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
                             <div class="col-sm-5">
-                                <input type="text" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                                <input type="text" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>); complete_adress_mac_last()" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Repeteur MAC}}</label>
+                            <div class="col-sm-5">
+                                <input type="text" maxlength="17" id="scan_ip_adress_last" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac_last" style="color: #039be5 !important;" readonly="" />
                             </div>
                         </div>
                         <div class="form-group">
