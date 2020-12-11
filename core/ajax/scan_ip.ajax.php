@@ -47,7 +47,7 @@ try {
     }
     
     elseif (init('action') == 'recordCommentaires') {
-        
+
         scan_ip_json::majNetworkCommentaires(init('data'));
         ajax::success();
         

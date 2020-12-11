@@ -169,7 +169,7 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
                                 . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"], "int") . '</span>' . $device["ip_v4"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["name"], "string") . '</span>' . $element["name"] . '</td>'
-                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["printComment"], "string") . '</span><input type="text" id="input_' . $list++ . '" data-mac="' . $device["mac"] . '" value="' . $element["printComment"] . '" class="form-control input-sm" style="width:100%;"></td>'
+                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["printComment"], "string") . '</span><input type="text" id="input_' . $list++ . '" data-mac="' . $device["mac_end"] . '" value="' . $element["printComment"] . '" class="form-control input-sm" style="width:100%;"></td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["time"], "date") . '</span>' .  scan_ip_tools::printDate($device["time"]) . '</td>'
                                 . '</tr>';
                     }

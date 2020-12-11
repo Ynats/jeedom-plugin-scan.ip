@@ -17,10 +17,11 @@ class scan_ip_json extends eqLogic {
             $_mapping = self::getJson(scan_ip::$_jsonMapping);
         }
         
-        if(!empty($_mapping["byMac"][$_searchMac]["ip_v4"])){
-            $return["ip_v4"] = $_mapping["byMac"][$_searchMac]["ip_v4"];
-            $return["time"] = $_mapping["byMac"][$_searchMac]["time"];
-            $return["equipement"] = $_mapping["byMac"][$_searchMac]["equipement"];
+        if(!empty($_mapping["byMacEnd"][$_searchMac]["ip_v4"])){
+            $return["mac"] = $_mapping["byMacEnd"][$_searchMac]["mac"];
+            $return["ip_v4"] = $_mapping["byMacEnd"][$_searchMac]["ip_v4"];
+            $return["time"] = $_mapping["byMacEnd"][$_searchMac]["time"];
+            $return["equipement"] = $_mapping["byMacEnd"][$_searchMac]["equipement"];
             return $return;
         } else {
             return NULL;
@@ -30,8 +31,12 @@ class scan_ip_json extends eqLogic {
     public static function getCommentaires(){
         
         $arrayCommentMac = self::getJson(scan_ip::$_jsonCommentairesEquipement);
+
         if($arrayCommentMac != NULL){
-           foreach ($arrayCommentMac as $tempCommentMac) {
+            
+            $arrayCommentMac = MajMacComToMacEndCom($arrayCommentMac); // Pour la Maj
+            
+            foreach ($arrayCommentMac as $tempCommentMac) {
                 $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
             } 
             return $commentMac;

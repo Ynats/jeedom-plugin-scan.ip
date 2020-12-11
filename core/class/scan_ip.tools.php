@@ -309,4 +309,16 @@ class scan_ip_tools extends eqLogic {
         }
         return $return;
     }
+    
+    public static function MajMacComToMacEndCom($_array){
+        $return = array();
+        foreach ($_array as $value) {
+            if(strlen($value["mac"]) == 17){
+                $return[] = array("mac" => self::getLastMac($value["mac"]), "val" => $value["val"]);
+            } else {
+                $return[] = array("mac" => $value["mac"], "val" => $value["val"]);
+            }
+        }
+        return $return;
+    }
 }

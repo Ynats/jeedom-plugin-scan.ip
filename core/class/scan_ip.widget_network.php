@@ -160,8 +160,8 @@ class scan_ip_widget_network extends eqLogic {
             $return["lineSortOnline"] = 0;
         }
 
-        if(!empty($_commentMac[$_device["mac"]])){
-            $return["printComment"] = $_commentMac[$_device["mac"]];
+        if(!empty($_commentMac[$_device["mac_end"]])){
+            $return["printComment"] = $_commentMac[$_device["mac_end"]];
         } else {
             $return["printComment"] = "";
         }
