@@ -138,14 +138,14 @@ class scan_ip_widget_network extends eqLogic {
     
     public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
         
-        if(empty($_savingMac[$_device["mac"]]["offline_time"])){
+        if(empty($_savingMac[$_device["mac_id"]]["offline_time"])){
             $return["offline_time"] = NULL;
         } else {
-            $return["offline_time"] = $_savingMac[$_device["mac"]]["offline_time"];
+            $return["offline_time"] = $_savingMac[$_device["mac_id"]]["offline_time"];
         }
 
-        if (isset($_savingMac[$_device["mac"]]["name"])) {
-            $return["name"] = $_savingMac[$_device["mac"]]["name"];
+        if (isset($_savingMac[$_device["mac_id"]]["name"])) {
+            $return["name"] = $_savingMac[$_device["mac_id"]]["name"];
         } else {
             $return["name"] = "| ". $_device["equipement"];
         }
@@ -160,14 +160,14 @@ class scan_ip_widget_network extends eqLogic {
             $return["lineSortOnline"] = 0;
         }
 
-        if(!empty($_commentMac[$_device["mac_end"]])){
-            $return["printComment"] = $_commentMac[$_device["mac_end"]];
+        if(!empty($_commentMac[$_device["mac_id"]])){
+            $return["printComment"] = $_commentMac[$_device["mac_id"]];
         } else {
             $return["printComment"] = "";
         }
 
-        if (isset($_savingMac[$_device["mac"]]["enable"])) {
-            if ($_savingMac[$_device["mac"]]["enable"] == 1) {
+        if (isset($_savingMac[$_device["mac_id"]]["enable"])) {
+            if ($_savingMac[$_device["mac_id"]]["enable"] == 1) {
                 $return["classPresent"] = "color: green;";
                 $return["textPresent"] = '<i class="fas fa-check"></i>';
                 $return["classSuivi"] = " display: block; width: 78x !important; padding : 2px 5px; color : white; text-align: center; color: green;";

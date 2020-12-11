@@ -17,15 +17,24 @@ class scan_ip_json extends eqLogic {
             $_mapping = self::getJson(scan_ip::$_jsonMapping);
         }
         
-        if(!empty($_mapping["byMacEnd"][$_searchMac]["ip_v4"])){
-            $return["mac"] = $_mapping["byMacEnd"][$_searchMac]["mac"];
-            $return["ip_v4"] = $_mapping["byMacEnd"][$_searchMac]["ip_v4"];
-            $return["time"] = $_mapping["byMacEnd"][$_searchMac]["time"];
-            $return["equipement"] = $_mapping["byMacEnd"][$_searchMac]["equipement"];
+        if(!empty($_mapping["byId"][$_searchMac]["ip_v4"])){
+            $return["mac"] = $_mapping["byId"][$_searchMac]["mac"];
+            $return["ip_v4"] = $_mapping["byId"][$_searchMac]["ip_v4"];
+            $return["time"] = $_mapping["byId"][$_searchMac]["time"];
+            $return["equipement"] = $_mapping["byId"][$_searchMac]["equipement"];
             return $return;
         } else {
             return NULL;
         }
+    }
+    
+    public static function getMac($_macId){
+        $equipement = self::getJson(scan_ip::$_jsonEquipement);
+        $return = NULL;
+        if(!empty($equipement[$_macId]["mac"])){
+            $return = $equipement[$_macId]["mac"];
+        }
+        return $return;
     }
     
     public static function getCommentaires(){
@@ -34,11 +43,12 @@ class scan_ip_json extends eqLogic {
 
         if($arrayCommentMac != NULL){
             
-            $arrayCommentMac = MajMacComToMacEndCom($arrayCommentMac); // Pour la Maj
+            $arrayCommentMac = scan_ip_maj::MajMacComToMacEndCom($arrayCommentMac);
             
             foreach ($arrayCommentMac as $tempCommentMac) {
-                $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
+                $commentMac[$tempCommentMac[0]["id"]] = $tempCommentMac[1]["val"];
             } 
+            
             return $commentMac;
         } else {
             return NULL;
@@ -95,13 +105,20 @@ class scan_ip_json extends eqLogic {
     public static function printSelectOptionAdressMac($_selected = NULL){
         log::add('scan_ip', 'debug', 'printSelectOptionAdressMac :. Lancement');
         $record = scan_ip_eqLogic::getAlleqLogics();
-        $list = self::getJson(scan_ip::$_jsonMapping);
+        $list = self::getJson(scan_ip::$_jsonEquipement);
         $print = "";
-        foreach ($list["sort"] as $value) {
-            if(empty($record[$value["mac"]])){
-                $print .= '<option value="'. $value["mac"] .'"';
-                if($_selected != NULL AND $_selected == $value["mac"]) { $print .= ' selected'; }
-                $print .= '>' . $value["mac"] . ' | ' . $value["ip_v4"] . ' | '. $value["equipement"] .'</option>';
+        foreach ($list as $id => $value) {
+            if(empty($record[$id])){
+                
+                if(!empty($value["equipement"])){
+                    $equipement = $value["equipement"];
+                } else {
+                    $equipement = "???";
+                }
+                
+                $print .= '<option value="'. $id .'" data-mac="'. $value["mac"] .'" ';
+                if($_selected != NULL AND $_selected == $id) { $print .= ' selected'; }
+                $print .= '>' . $value["mac"] . ' | ' . $value["ip_v4"] . ' | '. $equipement .'</option>';
             }
         }  
         echo $print;
@@ -123,10 +140,10 @@ class scan_ip_json extends eqLogic {
         $savingMac = scan_ip_eqLogic::getAlleqLogics();
         
         foreach ($ipsReseau["sort"] as $device) {
-            if (empty($savingMac[$device["mac"]]["name"])) {
+            if (empty($savingMac[$device["mac_id"]]["name"])) {
                 
-                if(!empty($commentMac[$device["mac"]])){
-                    $comment = $commentMac[$device["mac"]];
+                if(!empty($commentMac[$device["mac_id"]])){
+                    $comment = $commentMac[$device["mac_id"]];
                 } else {
                     $comment = NULL;
                 }
@@ -137,7 +154,7 @@ class scan_ip_json extends eqLogic {
                     "ip_v4" => $device["ip_v4"], 
                     "comment" => $comment, 
                     "time" => $device["time"],
-                    "record" => $jsonEquipement[$device["mac"]]["record"]
+                    "record" => $jsonEquipement[$device["mac_id"]]["record"]
                 );
             }
         }
@@ -165,7 +182,7 @@ class scan_ip_json extends eqLogic {
             $del_byTime = $jsonMapping["sort"][$del_sort]["time"].$jsonEquipement[$mac]["record"];
                          
             unset($jsonEquipement[$mac]);
-            unset($jsonMapping["byMac"][$mac]);
+            unset($jsonMapping["byId"][$mac]);
             unset($jsonMapping["sort"][$del_sort]);
             unset($jsonMapping["byIpv4"][$del_byIpv4]);
             unset($jsonMapping["byTime"][$del_byTime]);

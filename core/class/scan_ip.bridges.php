@@ -156,11 +156,11 @@ class scan_ip_bridges extends eqLogic {
         log::add('scan_ip', 'debug', 'bridges_getAllAssignEquipement :. Lancement');
         $eqLogics = eqLogic::byType('scan_ip');
         foreach ($eqLogics as $scan_ip) { 
-            $mac = $scan_ip->getConfiguration("adress_mac");
+            $macId = $scan_ip->getConfiguration("mac_id");
             for($i = 1; $i <= self::$_defaut_bridges_by_equipement; $i++){ 
                 $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i);
                 if(!empty($plug)) {
-                    $return[$mac][] = $plug;
+                    $return[$macId][] = $plug;
                 }
             }  
         }

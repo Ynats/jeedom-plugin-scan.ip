@@ -34,7 +34,7 @@ function hideSelect(NbSelect) {
             for (let plug = 0; plug <= NbSelect; plug++) {
                 $.each(result, function (mac, tableau) {
                     $.each(tableau, function (key, value) {
-                        var current = $('#scan_ip_adressMacTemp').val();
+                        var current = $('#mac_id').val();
                         if (mac != current) {
                             $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
                         }
@@ -52,7 +52,7 @@ function hideSelectSafari(NbSelect) {
             for (let plug = 0; plug <= NbSelect; plug++) {
                 $.each(result, function (mac, tableau) {
                     $.each(tableau, function (key, value) {
-                        var current = $('#scan_ip_adressMacTemp').val();
+                        var current = $('#mac_id').val();
                         if (mac != current) {
                             // hidden/display:none non reconnu sous safari dans les select option
                             $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
@@ -68,20 +68,25 @@ function hideSelectSafari(NbSelect) {
 
 $('#offline_time').change(function () {
     verifCadence();
-    getConstructorByMac();
+    getEquipementById();
 });
 
-function complete_adress_mac_last(){
-   mac = $("#scan_ip_adressMacTemp").val();      
-   $("#scan_ip_adress_last").val(mac.slice(-8));
-}
-
-function getConstructorByMac() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.by_mac.php", function (result) {
-        $.each(result, function (mac, value) {
-            var current = $('#scan_ip_adressMacTemp').val();
-            if (mac == current) {
-                $("#ConstrunctorMac").val(value["equipement"]);
+function getEquipementById() {
+    $("#ConstrunctorMac").val("");
+    $("#LastMAC").val("");
+    $("#LastIp").val("");
+    
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.getEquipementById.php", function (result) {
+        $.each(result, function (id, value) {
+            var current = $('#mac_id').val();
+            if (id == current) {
+                if(value["equipement"]){
+                    $("#ConstrunctorMac").val(value["equipement"]);
+                } else {
+                    $("#ConstrunctorMac").val("???");
+                }
+                $("#LastMAC").val(value["mac"]);
+                $("#LastIp").val(value["ip_v4"]);
             }
         });
     });
@@ -165,8 +170,9 @@ function syncEqLogicWithOpenScanId() {
 
 // Au changement du menu de sélection on reproduit la valeur dans le champ
 $('#scan_ip_mac_select').change(function () {
-    var scan_ip_CopyPaste = $('#scan_ip_mac_select').find(":selected").val();
-    $("#scan_ip_adressMacTemp").val(scan_ip_CopyPaste);
+    var scan_ip_CopyMacId = $('#scan_ip_mac_select').find(":selected").val();
+    $("#mac_id").val(scan_ip_CopyMacId);
+    getEquipementById();
 });
 
 function addCmdToTable(_cmd) {

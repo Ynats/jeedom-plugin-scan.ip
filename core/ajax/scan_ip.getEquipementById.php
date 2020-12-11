@@ -26,7 +26,7 @@ try {
     
     require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.json.php';
     
-    echo json_encode(scan_ip_json::getJson(scan_ip::$_jsonMapping)["byMacEnd"]);
+    echo json_encode(scan_ip_json::getJson(scan_ip::$_jsonEquipement));
     
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

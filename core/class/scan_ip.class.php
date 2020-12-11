@@ -272,7 +272,7 @@ class scan_ipCmd extends cmd {
                 break;
             case 'wol': 
                 log::add('scan_ip', 'debug', 'execute :. Lancement de la commande wol : #ID#' . $eqlogic->getId());
-                scan_ip_shell::wakeOnLanByCmd($eqlogic->getConfiguration("adress_mac"));
+                scan_ip_shell::wakeOnLanByCmd(scan_ip_json::getMac($eqlogic->getConfiguration("mac_id"))); 
                 log::add('scan_ip', 'debug', '---------------------------------------------------------------------------------------');
                 break;
         }

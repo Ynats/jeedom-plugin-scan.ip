@@ -87,7 +87,7 @@ class scan_ip_scan extends eqLogic {
         
         $old = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
         
-        $old = scan_ip_tools::MajMacToMacEnd($old); // Pour le passage à la version MAC à MAC END
+        $old = scan_ip_maj::MajMacToMacEnd($old); // Pour le passage à la version MAC à MAC END
         
         if($old != NULL){
             
@@ -169,42 +169,34 @@ class scan_ip_scan extends eqLogic {
                 }
 
                 $_return["sort"][] = array(
-                        "record" => $record,
-                        "ip_v4" => $scanLine["ip_v4"], 
-                        "mac" => $scanLine["mac"], 
-                        "mac_end" => $macEnd,
-                        "time" => $scanLine["time"], 
-                        "equipement" => $scanLine["equipement"]
+                    "record" => $record,
+                    "ip_v4" => $scanLine["ip_v4"], 
+                    "mac" => $scanLine["mac"], 
+                    "mac_id" => $macEnd,
+                    "time" => $scanLine["time"], 
+                    "equipement" => $scanLine["equipement"]
                 );
                 
                 $_return["byIpv4"][$scanLine["ip_v4"]] = array(
                     "mac" => $scanLine["mac"], 
-                    "mac_end" => $macEnd,
+                    "mac_id" => $macEnd,
                     "equipement" => $scanLine["equipement"], 
                     "time" => $scanLine["time"], 
                     "record" => $record
                     );
                 
-                $_return["byMacEnd"][$macEnd] = array(
+                $_return["byId"][$macEnd] = array(
                     "mac" => $scanLine["mac"],
                     "ip_v4" => $scanLine["ip_v4"], 
                     "equipement" => $scanLine["equipement"], 
                     "time" => $scanLine["time"], 
                     "record" => $record
-                    );
-                
-                $_return["byMac"][$scanLine["mac"]] = array(
-                    "ip_v4" => $scanLine["ip_v4"], 
-                    "mac_end" => $macEnd, 
-                    "equipement" => $scanLine["equipement"], 
-                    "time" => $scanLine["time"], 
-                    "record" => $record
-                    );  
+                    ); 
                 
                 $_return["byTime"][$scanLine["time"].$record][] = array(
                     "time" => $scanLine["time"], 
                     "mac" => $scanLine["mac"], 
-                    "mac_end" => $macEnd,
+                    "mac_id" => $macEnd,
                     "ip_v4" => $scanLine["ip_v4"],
                     "equipement" => $scanLine["equipement"], 
                     "record" => $record

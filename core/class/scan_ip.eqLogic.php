@@ -15,11 +15,7 @@ class scan_ip_eqLogic extends eqLogic {
         $eqLogics = eqLogic::byType('scan_ip');
         
         foreach ($eqLogics as $scan_ip) {
-            if(empty($scan_ip->getConfiguration('adress_mac_last'))){
-                $macId = scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac"));
-            } else {
-                $macId = $scan_ip->getConfiguration('adress_mac_last');
-            }
+            $macId = $scan_ip->getConfiguration('mac_id');
  
             $return[$macId]["name"] = $scan_ip->name;
             $return[$macId]["enable"] = $scan_ip->getIsEnable();
@@ -53,7 +49,7 @@ class scan_ip_eqLogic extends eqLogic {
         $eqLogic->setIsEnable(0);
         $eqLogic->setIsVisible(1);
         $eqLogic->setName($_mac);
-        $eqLogic->setConfiguration('adress_mac', $_mac);
+        $eqLogic->setConfiguration('mac_id', scan_ip_tools::getLastMac($_mac));
         $eqLogic->save();
     }
     
@@ -75,14 +71,14 @@ class scan_ip_eqLogic extends eqLogic {
             
                 $return[$a]["name"] = $scan_ip->name;
                 $return[$a]["link"] = "<a href='/index.php?v=d&m=scan_ip&p=scan_ip&id=".$scan_ip->getId()."'>".$scan_ip->name."</a>";
-                $return[$a]["mac"] = $scan_ip->getConfiguration("adress_mac");
+                $return[$a]["mac"] = $scan_ip->getConfiguration("adress_mac"); // A faire Ynats
                 $return[$a]["ip_v4"] = scan_ip_cmd::getCommande('ip_v4', $scan_ip);
                 $return[$a]["last_ip_v4"] = scan_ip_cmd::getCommande('last_ip_v4', $scan_ip);
                 $return[$a]["update_date"] = scan_ip_cmd::getCommande('update_date', $scan_ip);
                 $return[$a]["on_line"] = scan_ip_cmd::getCommande('on_line', $scan_ip);
                      
-                if(empty($scan_ip->getConfiguration('adress_mac_last'))){
-                    $return[$a]["mac_end"] = scan_ip_tools::getLastMac($return[$a]["mac"]);
+                if(empty($scan_ip->getConfiguration('mac_id'))){
+                    $return[$a]["mac_id"] = scan_ip_tools::getLastMac($return[$a]["mac"]);
                 }
 
                 if($bridge != FALSE){
@@ -108,12 +104,12 @@ class scan_ip_eqLogic extends eqLogic {
        return $return;
     }
     
-    public static function getEquipementsbyMac(){
+    public static function getEquipementsbyId(){
         $eqLogics = eqLogic::byType('scan_ip');
         $return = NULL;
         foreach ($eqLogics as $scan_ip) {
             if(scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
-                $return[] = $scan_ip->getConfiguration("adress_mac");
+                $return[] = scan_ip_json::getMac($eqlogic->getConfiguration("mac_id")); 
             }
         }
         return $return;
