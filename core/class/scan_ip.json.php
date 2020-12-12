@@ -39,21 +39,16 @@ class scan_ip_json extends eqLogic {
     
     public static function getCommentaires(){
         
-        $arrayCommentMac = self::getJson(scan_ip::$_jsonCommentairesEquipement);
-
+        $arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
+        $commentMac = NULL;
+        
         if($arrayCommentMac != NULL){
-            
-            $arrayCommentMac = scan_ip_maj::MajMacComToMacEndCom($arrayCommentMac);
-            
-            foreach ($arrayCommentMac as $tempCommentMac) {
-                $commentMac[$tempCommentMac[0]["id"]] = $tempCommentMac[1]["val"];
-            } 
-            
-            return $commentMac;
-        } else {
-            return NULL;
+            foreach ($arrayCommentMac as $comment) {
+                $commentMac[$comment[0]["id"]] = $comment[1]["val"];
+            }
         }
         
+        return $commentMac;
     }
     
     public static function majNetworkCommentaires($_array){

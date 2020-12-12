@@ -55,7 +55,7 @@ class scan_ip_scan extends eqLogic {
                 $new = scan_ip_tools::arrayCompose($new, $scanResult);
             }
         }
-
+        
         if(count($new) == 0){            
             log::add('scan_ip', 'error', "Aucun élément n'a été trouvé sur vos réseaux. Vérifiez vos configurations.");
             event::add('jeedom::alert', array(
@@ -65,6 +65,11 @@ class scan_ip_scan extends eqLogic {
             )); 
         } 
         else {
+            
+            if(config::byKey('add_network_jeedom', 'scan_ip', 0) == 1){
+                $new = scan_ip_tools::arrayCompose($new, self::createEquipementJeedom($infoJeedom));
+            } 
+            
             $equipement = self::createArchiveEquipement($new);
             $now = scan_ip_tools::arrayCompose($equipement, $new);       
             $now = scan_ip_tools::cleanArrayEquipement($now); 
@@ -83,11 +88,22 @@ class scan_ip_scan extends eqLogic {
         
     }
     
+    public static function createEquipementJeedom($_infoJeedom){
+        $return = array(
+            "mac" => $_infoJeedom["mac"],
+            "equipement" =>$_infoJeedom["name"],
+            "ip_v4" => $_infoJeedom["ip_v4"],
+            "time" => time(),
+        );
+        
+        return $return;
+    }
+    
     public static function createArchiveEquipement($_new){
         
         $old = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
         
-        $old = scan_ip_maj::MajMacToMacEnd($old); // Pour le passage à la version MAC à MAC END
+        $old = scan_ip_maj::majMacToMacEnd($old); // Pour le passage à la version MAC à MAC END
         
         if($old != NULL){
             
@@ -114,8 +130,10 @@ class scan_ip_scan extends eqLogic {
                 elseif(!empty($old[$macId]["time"])){ $return[$macId]["time"] = $old[$macId]["time"]; }
                 else { $return[$macId]["time"] = "..."; }
                 
-                $return[$macId]["mac"] = $_new[$macId]["mac"];
-                
+                if(!empty($_new[$macId]["mac"])){ $return[$macId]["mac"] = $_new[$macId]["mac"]; } 
+                elseif(!empty($old[$macId]["mac"])){ $return[$macId]["mac"] = $old[$macId]["mac"]; }
+                else { $return[$macId]["mac"] = "..."; }
+
             }
         } else {
             foreach ($_new as $macId => $scanLine) {
@@ -134,21 +152,6 @@ class scan_ip_scan extends eqLogic {
         $timeNow = time();
         $_return = array();
         $add_network_routeur = config::byKey('add_network_routeur', 'scan_ip', 0);
-        $add_network_jeedom = config::byKey('add_network_jeedom', 'scan_ip', 0);
-        
-        if($add_network_jeedom == 1){
-            
-            $id_mac = scan_ip_tools::getLastMac($_infoJeedom["mac"]);
-            
-            $_jeedom[$id_mac] = array(
-                "ip_v4" => $_infoJeedom["ip_v4"], 
-                "equipement" => $_infoJeedom["name"], 
-                "time" => $_infoJeedom["time"], 
-                "record" => $_infoJeedom["record"],
-                "mac" => $_infoJeedom["mac"]
-            );
-            $_now = scan_ip_tools::arrayCompose($_jeedom, $_now);
-        }
           
         foreach ($_now as $mac_id => $scanLine) {
 
@@ -162,8 +165,8 @@ class scan_ip_scan extends eqLogic {
                 
                 $macEnd = scan_ip_tools::getLastMac($scanLine["mac"]);
 
-                if(!empty($_equipement[$mac]["record"])){
-                    $record = $_equipement[$mac]["record"];
+                if(!empty($_equipement[$mac_id]["record"])){
+                    $record = $_equipement[$mac_id]["record"];
                 } else {
                     $record = $_infoJeedom["record"];
                 }
@@ -172,20 +175,20 @@ class scan_ip_scan extends eqLogic {
                     "record" => $record,
                     "ip_v4" => $scanLine["ip_v4"], 
                     "mac" => $scanLine["mac"], 
-                    "mac_id" => $macEnd,
+                    "mac_id" => $mac_id,
                     "time" => $scanLine["time"], 
                     "equipement" => $scanLine["equipement"]
                 );
                 
                 $_return["byIpv4"][$scanLine["ip_v4"]] = array(
                     "mac" => $scanLine["mac"], 
-                    "mac_id" => $macEnd,
+                    "mac_id" => $mac_id,
                     "equipement" => $scanLine["equipement"], 
                     "time" => $scanLine["time"], 
                     "record" => $record
                     );
                 
-                $_return["byId"][$macEnd] = array(
+                $_return["byId"][$mac_id] = array(
                     "mac" => $scanLine["mac"],
                     "ip_v4" => $scanLine["ip_v4"], 
                     "equipement" => $scanLine["equipement"], 
@@ -196,7 +199,7 @@ class scan_ip_scan extends eqLogic {
                 $_return["byTime"][$scanLine["time"].$record][] = array(
                     "time" => $scanLine["time"], 
                     "mac" => $scanLine["mac"], 
-                    "mac_id" => $macEnd,
+                    "mac_id" => $mac_id,
                     "ip_v4" => $scanLine["ip_v4"],
                     "equipement" => $scanLine["equipement"], 
                     "record" => $record

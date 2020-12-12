@@ -30,7 +30,7 @@ if (!$("#offline_time option:selected").length) {
 
 function hideSelect(NbSelect) {
     if(NbSelect > 0){
-        $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+        $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.associations.php", function (result) {
             for (let plug = 0; plug <= NbSelect; plug++) {
                 $.each(result, function (mac, tableau) {
                     $.each(tableau, function (key, value) {
@@ -48,7 +48,7 @@ function hideSelect(NbSelect) {
 
 function hideSelectSafari(NbSelect) {
     if(NbSelect > 0){
-           $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.associations.php", function (result) {
+           $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.associations.php", function (result) {
             for (let plug = 0; plug <= NbSelect; plug++) {
                 $.each(result, function (mac, tableau) {
                     $.each(tableau, function (key, value) {
@@ -69,6 +69,7 @@ function hideSelectSafari(NbSelect) {
 $('#offline_time').change(function () {
     verifCadence();
     getEquipementById();
+    getEquipementCommentaire();
 });
 
 function getEquipementById() {
@@ -76,7 +77,7 @@ function getEquipementById() {
     $("#LastMAC").val("");
     $("#LastIp").val("");
     
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.getEquipementById.php", function (result) {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.getEquipementById.php", function (result) {
         $.each(result, function (id, value) {
             var current = $('#mac_id').val();
             if (id == current) {
@@ -87,6 +88,19 @@ function getEquipementById() {
                 }
                 $("#LastMAC").val(value["mac"]);
                 $("#LastIp").val(value["ip_v4"]);
+            }
+        });
+    });
+}
+
+function getEquipementCommentaire() {
+    $("#Commentaire").val("");
+
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.getCommentaireById.php", function (result) {
+        $.each(result, function (id, value) {
+            var current = $('#mac_id').val();
+            if (id == current) {
+                $("#Commentaire").val(value);
             }
         });
     });
@@ -105,7 +119,7 @@ function verifCadence() {
 }
 
 function timeCron() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.config.php", function (result) { console.log(result["mode_plugin"]);
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.config.php", function (result) { console.log(result["mode_plugin"]);
         if(result["mode_plugin"] === "debug"){ 
             $("[data-action='remove']").show();
         } 
@@ -173,6 +187,7 @@ $('#scan_ip_mac_select').change(function () {
     var scan_ip_CopyMacId = $('#scan_ip_mac_select').find(":selected").val();
     $("#mac_id").val(scan_ip_CopyMacId);
     getEquipementById();
+    getEquipementCommentaire();
 });
 
 function addCmdToTable(_cmd) {

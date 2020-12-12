@@ -213,7 +213,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{Associer une adresse MAC}}");
 ?>                   
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
+                            <label class="col-sm-3 control-label">{{Rechercher et associer une adresse MAC}}</label>
                             <div class="col-sm-5">
                                 <select id="scan_ip_mac_select" class="form-control">
                                     <option value="">Sélectionner parmi les adresses Mac non enregistrées</option>
@@ -246,6 +246,12 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                             <label class="col-lg-3 control-label">{{Constructeur}}</label>
                             <div class="col-lg-5">
                                 <input type="text" id="ConstrunctorMac" class="form-control" style="color: #039be5 !important;" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Commentaire}}</label>
+                            <div class="col-lg-5">
+                                <input type="text" id="Commentaire" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
                         </div>
                      

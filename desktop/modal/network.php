@@ -29,13 +29,7 @@ if (empty($ipsReseau)) {
 }
 
 $savingMac = scan_ip_eqLogic::getAlleqLogics();
-$arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
-
-$arrayCommentMac = scan_ip_maj::MajMacComToMacEndCom($arrayCommentMac);
-
-foreach ($arrayCommentMac as $tempCommentMac) {
-    $commentMac[$tempCommentMac[0]["id"]] = $tempCommentMac[1]["val"];
-}
+$commentMac = scan_ip_json::getCommentaires();
 
 $eqLogic = scan_ip_eqLogic::searcheqLogicByType("network");
 $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);

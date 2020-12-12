@@ -136,7 +136,7 @@ class scan_ip_widget_network extends eqLogic {
         }
     }
     
-    public static function getElementVueNetwork($_device, $_savingMac, $_commentMac){
+    public static function getElementVueNetwork($_device, $_savingMac, $_commentMac = NULL){
         
         if(empty($_savingMac[$_device["mac_id"]]["offline_time"])){
             $return["offline_time"] = NULL;
