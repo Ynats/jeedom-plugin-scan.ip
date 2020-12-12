@@ -35,9 +35,9 @@ class scan_ip_maj extends eqLogic {
     
     public static function printCheckPlugin($_statut = FALSE){
         if($_statut == FALSE){
-            return "<span style='color:red;'>Error</span>";
+            return "<span style='color:red;'>Pas à jour</span>";
         } else {
-            return "<span style='color:green;'>Ok</span>";
+            return "<span style='color:green;'>A jour</span>";
         }
     }
     
@@ -64,11 +64,11 @@ class scan_ip_maj extends eqLogic {
     public static function majJsonCommentaires_v1_1(){
         
         $commentMac = NULL;
-        $arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
+        $OldCommentaires = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
         
-        if(empty($arrayCommentMac[0][0]["id"]) and !$arrayCommentMac($_array[0][0]["mac"])){
-            foreach ($arrayCommentMac[0] as $tempCommentMac) {
-                $commentMac[] = array("id" => scan_ip_tools::getLastMac($value["mac"]), "val" => $value["val"]);
+        if(empty($OldCommentaires[0][0]["id"]) and !empty($OldCommentaires[0][0]["mac"])){
+            foreach ($OldCommentaires[0] as $tempCommentMac) {
+                $commentMac[0][] = array("id" => scan_ip_tools::getLastMac($tempCommentMac["mac"]), "val" => $tempCommentMac["val"]);
             }
             scan_ip_json::majNetworkCommentaires($commentMac);
         }
@@ -77,8 +77,8 @@ class scan_ip_maj extends eqLogic {
     
     public static function checkJsonCommentaires_v1_1(){
         $array = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
-        if(empty($array[0]["mac"])){ return TRUE; }
-        elseif(!empty($array[0]["if"]) OR empty($array)){ return TRUE; }
+        if(empty($array[0][0]["mac"])){ return TRUE; }
+        elseif(!empty($array[0][0]["if"]) OR empty($array)){ return TRUE; }
         else{ return FALSE; }
     }
     
