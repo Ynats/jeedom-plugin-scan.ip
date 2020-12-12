@@ -76,7 +76,7 @@ class scan_ip_maj extends eqLogic {
     
     public static function saveAllEquipement(){
         log::add('scan_ip', 'info', '>  Mise à jour des équipements');
-        foreach (scan_ip::byType('scan_ip') as $scan_ip) {
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) {
             try {
                 $scan_ip->save();
             } catch (Exception $e) { }
@@ -140,17 +140,21 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function majAllEquipements_v1_1(){
-        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements :Lancement');
         
-        foreach (scan_ip::byType('scan_ip') as $scan_ip) {
-            if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
-                $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
-                $scan_ip->save();
-            } else {
-                $scan_ip->setConfiguration('mac_id', "");
-                $scan_ip->save();
-            }
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) {
+            try {
+                if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
+                    $scan_ip->save();
+                } else {
+                    $scan_ip->setConfiguration('mac_id', "");
+                    $scan_ip->save();
+                }
+            } catch (Exception $e) { }
         } 
+        
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements : Fin');
     }
     
     public static function checkJsonEquipements_v1_1(){
