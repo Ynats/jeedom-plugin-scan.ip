@@ -17,46 +17,72 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
-require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.widgets.php";
-require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.tools.php";
+require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
 function scan_ip_install() {
     
-    if (config::byKey('cron_pass', 'scan_ip') == '') {
-            config::save('cron_pass', 1, 'scan_ip');
-    }
-    if (config::byKey('offline_time', 'scan_ip') == '') {
-            config::save('offline_time', 4, 'scan_ip');
-    }
+    log::add('scan_ip', 'info', '--------------------------------------------');
+    log::add('scan_ip', 'info', '>  Installation :. Démarrage');
     
-    scan_ip_widget_network::getWidgetNetwork();
-    scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
+    try {
+        scan_ip_maj::activationCron(0);
+        scan_ip_maj::setConfigBase();
+        
+        log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
+        scan_ip_widget_network::getWidgetNetwork();
+        
+        log::add('scan_ip', 'info', '>  Initialisation le Widget Alerte');
+        scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
+        
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Installation :. Fin');
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        
+    } catch (Exception $exc) {
+        log::add('scan_ip', 'info', '>  Installation :. ERROR : ' . $exc);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+    }
+
 }
 
 function scan_ip_update() {
     
-    if (config::byKey('cron_pass', 'scan_ip') == '') {
-            config::save('cron_pass', 1, 'scan_ip');
-    }
-    if (config::byKey('offline_time', 'scan_ip') == '') {
-            config::save('offline_time', 4, 'scan_ip');
-    }
+    log::add('scan_ip', 'info', '--------------------------------------------');
+    log::add('scan_ip', 'info', '>  Mise à jour :. Démarrage v'.scan_ip_maj::$_versionPlugin);
     
-    scan_ip_widget_network::getWidgetNetwork();
-    scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
-    
-    scan_ip_tools::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
-    
-    if(@is_file(__DIR__ . "/../../../plugins/scan_ip/core/json/mapping.json")){
-        shell_exec("sudo mv " . __DIR__ . "/../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
-    }    
-    
-    foreach (scan_ip::byType('scan_ip') as $scan_ip) {
-        try {
-            $scan_ip->save();
-        } catch (Exception $e) {
+    try {
+        
+        log::add('scan_ip', 'info', '>  Désactivation du CRON');
+        scan_ip_maj::activationCron(0);
+        
+        log::add('scan_ip', 'info', '>  Check des fichiers Json');
+        if(@is_file(__DIR__ . "/../../../plugins/scan_ip/core/json/mapping.json")){ 
+            shell_exec("sudo mv " . __DIR__ . "/../../../plugins/scan_ip/core/json/*.json " . __DIR__ . "/../../../../plugins/scan_ip/data/json");
         }
-    }  
+        
+        scan_ip_maj::setConfigBase(); 
+        scan_ip_maj::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
+        scan_ip_maj::majJsonCommentaires_v1_1();
+        scan_ip_maj::majJsonEquipements_v1_1();
+        scan_ip_maj::majAllEquipements_v1_1();
+        
+        log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
+        scan_ip_widget_network::getWidgetNetwork();
+        
+        log::add('scan_ip', 'info', '>  Initialisation le Widget Alerte');
+        scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
+        
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Mise à jour :. Fin v'.scan_ip_maj::$_versionPlugin);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+
+    } catch (Exception $exc) {
+        log::add('scan_ip', 'info', '|  Mise à jour :. ERROR : ' . $exc);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+    }
+
 }
 
 

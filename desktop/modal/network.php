@@ -24,16 +24,12 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 
 if (empty($ipsReseau)) {
-    scan_ip_scan::syncScanIp();
+    if(scan_ip_maj::checkPluginVersionAJour() == TRUE){ scan_ip_scan::syncScanIp(); }
     $ipsReseau = scan_ip_json::getJson(scan_ip::$_jsonMapping);
 }
 
 $savingMac = scan_ip_eqLogic::getAlleqLogics();
-$arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
-
-foreach ($arrayCommentMac as $tempCommentMac) {
-    $commentMac[$tempCommentMac[0]["mac"]] = $tempCommentMac[1]["val"];
-}
+$commentMac = scan_ip_json::getCommentaires();
 
 $eqLogic = scan_ip_eqLogic::searcheqLogicByType("network");
 $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
@@ -169,7 +165,7 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
                                 . '<td class="scanTd ' . $element["classPresent"] . '">' . $device["mac"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["ip_v4"], "int") . '</span>' . $device["ip_v4"] . '</td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '" style="text-overflow: ellipsis;"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["name"], "string") . '</span>' . $element["name"] . '</td>'
-                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["printComment"], "string") . '</span><input type="text" id="input_' . $list++ . '" data-mac="' . $device["mac"] . '" value="' . $element["printComment"] . '" class="form-control input-sm" style="width:100%;"></td>'
+                                . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($element["printComment"], "string") . '</span><input type="text" id="input_' . $list++ . '" data-id="' . $device["mac_id"] . '" value="' . $element["printComment"] . '" class="form-control input-sm" style="width:100%;"></td>'
                                 . '<td class="scanTd ' . $element["classPresent"] . '"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($device["time"], "date") . '</span>' .  scan_ip_tools::printDate($device["time"]) . '</td>'
                                 . '</tr>';
                     }

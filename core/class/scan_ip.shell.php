@@ -37,9 +37,12 @@ class scan_ip_shell extends eqLogic {
                     
                     $mac = strtoupper($sortMac[0]);
                     
-                    $return[$mac]["equipement"] = self::getEquipement($scanLine);
-                    $return[$mac]["ip_v4"] = $sortIp[0];
-                    $return[$mac]["time"] = $time;
+                    $id_mac = scan_ip_tools::getLastMac($mac);
+                    
+                    $return[$id_mac]["mac"] = $mac;
+                    $return[$id_mac]["equipement"] = self::getEquipement($scanLine);
+                    $return[$id_mac]["ip_v4"] = $sortIp[0];
+                    $return[$id_mac]["time"] = $time;
             }
         }
         return $return;
@@ -80,7 +83,7 @@ class scan_ip_shell extends eqLogic {
                 $return["mac"] = strtoupper(trim(str_replace("link/ether", "", explode("brd",$list[$i-1])[0])));
                 $return["name"] = config::byKey('name');
                 $return["time"] = time();
-                $return["record"] =scan_ip_tools::getInstallJeedom();
+                $return["record"] = scan_ip_tools::getInstallJeedom();
                 break;
             }
         }

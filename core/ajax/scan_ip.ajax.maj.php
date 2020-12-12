@@ -24,10 +24,29 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.json.php';
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php';
     
-    echo json_encode(scan_ip_json::getJson(scan_ip::$_jsonMapping)["byMac"]);
+    ajax::init();
     
+    if (init('action') == 'reloadMaj') {
+        
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Démarrage v'.scan_ip_maj::$_versionPlugin);
+        
+        scan_ip_maj::activationCron(0);
+        scan_ip_maj::majJsonCommentaires_v1_1();
+        scan_ip_maj::majJsonEquipements_v1_1();
+        scan_ip_maj::majAllEquipements_v1_1();
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Fin v'.scan_ip_maj::$_versionPlugin);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        
+        ajax::success();
+        
+    }
+    
+    throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
     ajax::error(displayException($e), $e->getCode());

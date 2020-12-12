@@ -22,6 +22,6 @@ echo 80 > ${PROGRESS_FILE}
 sudo apt-get install -y etherwake 
 echo 100 > ${PROGRESS_FILE}
 echo "********************************************************"
-echo "*             Installation terminée                    *"
+echo "*             Installation des dépendances terminée    *"
 echo "********************************************************"
 rm ${PROGRESS_FILE}

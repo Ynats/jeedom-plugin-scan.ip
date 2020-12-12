@@ -12,7 +12,7 @@ class scan_ip_widget_normal extends eqLogic {
     
     public static function cmdRefreshWidgetNormal($_eqlogic, $_mapping = NULL){
         
-        $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("adress_mac"), $_mapping);
+        $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("mac_id"), $_mapping);
         $offline_time = $_eqlogic->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
 
         if(scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
@@ -166,7 +166,7 @@ class scan_ip_widget_normal extends eqLogic {
         if(!empty(scan_ip_cmd::getCommande('update_date', $scan_ip))){ $replace["#update_date#"] = scan_ip_cmd::getCommande('update_date', $scan_ip); } 
         else { $replace["#update_date#"] = "..."; }
 
-        $replace["#mac#"] = $scan_ip->getConfiguration("adress_mac");
+        $replace["#mac#"] = scan_ip_json::getMac($scan_ip->getConfiguration("mac_id"));
 
         if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
         else{ $replace["#etat_cycle#"] = "#50aa50"; } 
