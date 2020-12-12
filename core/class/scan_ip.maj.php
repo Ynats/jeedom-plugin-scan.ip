@@ -140,20 +140,19 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function majAllEquipements_v1_1(){
-        log::add('scan_ip', 'info', '>  Mise à jour des équipements Yop 0');
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
 
-        foreach (eqLogic::byType('scan_ip') as $scan_ip) { log::add('scan_ip', 'info', '>  Yop 1');
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) { 
             if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
                 log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getConfiguration("adress_mac"));
                 $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
                 $scan_ip->save();
             } else {
-                $scan_ip->setConfiguration('mac_id', ""); log::add('scan_ip', 'info', '>  Yop 2');
+                $scan_ip->setConfiguration('mac_id', ""); 
                 $scan_ip->save();
             }
-        }  log::add('scan_ip', 'info', '>  Yop 3');
-        
-        log::add('scan_ip', 'info', '>  Fin de la mise à jour des équipements');            
+        }  
+                    
     }
     
     public static function checkJsonEquipements_v1_1(){
