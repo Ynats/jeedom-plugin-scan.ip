@@ -30,6 +30,9 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function activationCron($_active = 0){
+        if($_active == 0){ log::add('scan_ip', 'info', '>  Désactivation du CRON');
+        } else { log::add('scan_ip', 'info', '>  Réactivation du CRON'); }
+        
         config::save('functionality::cron::enable', $_active, 'scan_ip');
     }
     
@@ -61,6 +64,7 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function majAllEquipement(){
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
         foreach (scan_ip::byType('scan_ip') as $scan_ip) {
             try {
                 $scan_ip->save();
@@ -69,6 +73,7 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function setConfigBase(){
+        log::add('scan_ip', 'info', '>  Initialisation des configs');
         if (config::byKey('cron_pass', 'scan_ip') == '') {
             config::save('cron_pass', 1, 'scan_ip');
         }
@@ -81,6 +86,8 @@ class scan_ip_maj extends eqLogic {
 // Release 1.1
     
     public static function majJsonCommentaires_v1_1(){
+        
+        log::add('scan_ip', 'info', '>  Mise à jour du JSON des commentaires');
         
         $commentMac = NULL;
         $OldCommentaires = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
@@ -103,6 +110,8 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function majJsonEquipements_v1_1(){
+        
+        log::add('scan_ip', 'info', '>  Mise à jour du JSON des équipements');
         
         $array = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
         
@@ -137,7 +146,9 @@ class scan_ip_maj extends eqLogic {
 ///////////////////////////////////////////////////////////////////////////////
 // Release Beta
     
-    public static function cleanAfterUpdate($_path = NULL){   
+    public static function cleanAfterUpdate($_path = NULL){ 
+        log::add('scan_ip', 'info', '>  Nettoyage des données Beta');
+        
         if($_path == NULL){
              $resources = __DIR__ . "/../../../../plugins/scan_ip/resources/";
         } else {

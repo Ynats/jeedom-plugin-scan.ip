@@ -29,11 +29,18 @@ try {
     ajax::init();
     
     if (init('action') == 'reloadMaj') {
-
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Démarrage v'.scan_ip_maj::$_versionPlugin);
+        
+        scan_ip_maj::activationCron(0);
         scan_ip_maj::majJsonCommentaires_v1_1();
         scan_ip_maj::majJsonEquipements_v1_1();
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Fin v'.scan_ip_maj::$_versionPlugin);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        
         ajax::success();
-        reloadModal("network");
         
     }
     
