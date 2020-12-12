@@ -10,6 +10,12 @@ require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_
 
 class scan_ip_tools extends eqLogic {
     
+    public static function printDebug($_data){
+        echo"<pre>";
+        var_dump($_data);
+        echo"</pre>";
+    }
+
     public static function arrayCompose($_arrayOld = NULL, $_arrayNew){
         if(is_array($_arrayNew)){
             if($_arrayOld == NULL){ 

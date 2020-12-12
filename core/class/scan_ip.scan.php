@@ -89,7 +89,7 @@ class scan_ip_scan extends eqLogic {
     }
     
     public static function createEquipementJeedom($_infoJeedom){
-        $return = array(
+        $return[scan_ip_tools::getLastMac($_infoJeedom["mac"])] = array(
             "mac" => $_infoJeedom["mac"],
             "equipement" =>$_infoJeedom["name"],
             "ip_v4" => $_infoJeedom["ip_v4"],
@@ -102,9 +102,7 @@ class scan_ip_scan extends eqLogic {
     public static function createArchiveEquipement($_new){
         
         $old = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
-        
-        $old = scan_ip_maj::majMacToMacEnd($old); // Pour le passage à la version MAC à MAC END
-        
+
         if($old != NULL){
             
             foreach (array_merge($_new, $old) as $macId => $scanLine) {

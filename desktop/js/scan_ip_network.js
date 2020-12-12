@@ -31,7 +31,6 @@ function btSaveCommentaires(nb){
                     $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     return;
                 }
-                reloadModal("network");
             }
         });
     }

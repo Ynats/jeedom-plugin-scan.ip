@@ -31,7 +31,9 @@ try {
     if (init('action') == 'reloadMaj') {
 
         scan_ip_maj::majJsonCommentaires_v1_1();
+        scan_ip_maj::majJsonEquipements_v1_1();
         ajax::success();
+        reloadModal("network");
         
     }
     

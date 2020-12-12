@@ -149,13 +149,18 @@ scan_ip_maj::cleanAfterUpdate();
         scan_ip_tools::vueSubTitle("{{Check de la version (Mode debug)}}", "config");
 ?>
         <div class="form-group">
-            <label class="col-lg-4 control-label">Vérification des données de la version du Plugin</label>
+            <label class="col-lg-4 control-label">Vérification des données</label>
             <div class="col-lg-5"><?php echo scan_ip_maj::printVersionPlugin(); ?>
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-4 control-label">Vérification des commentaires</label>
             <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkJsonCommentaires_v1_1()); ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Vérification des équipements</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkJsonEquipements_v1_1()); ?>
             </div>
         </div>
 <?php

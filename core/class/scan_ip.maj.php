@@ -7,11 +7,30 @@ class scan_ip_maj extends eqLogic {
     public static $_versionPlugin = 1.1;
     
     public static function pluginAJour(){
-        if(self::getVersionPlugin() != self::$_versionPlugin){
-            return FALSE;
-        } else {
-            return TRUE;
+        
+        $checkData = 0;
+        if(self::checkJsonCommentaires_v1_1() == TRUE){
+            $checkData++;
         }
+        
+        if(self::checkJsonEquipements_v1_1() == TRUE){
+            $checkData++;
+        }
+        
+        if($checkData == 2){
+            self::setVersionPlugin();
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
+    public static function etatCron(){
+        return config::byKey('functionality::cron::enable', 'scan_ip');
+    }
+    
+    public static function activationCron($_active = 0){
+        config::save('functionality::cron::enable', $_active, 'scan_ip');
     }
     
     public static function getVersionPlugin(){
@@ -27,9 +46,9 @@ class scan_ip_maj extends eqLogic {
     
     public static function printVersionPlugin(){
         if(self::pluginAJour() == FALSE){
-            return '<a class="btn btn-warning btn-sm" id="reloadMajPlugin" style="position:relative;top:-5px;"><i class="fas fa-bicycle"></i> Pas à jour encore en v'.self::getVersionPlugin().' (Relancer)</a>';
+            return '<a class="btn btn-warning btn-sm" id="reloadMajPlugin" style="position:relative;top:-5px;"><i class="fas fa-bicycle"></i> Pas compatibles v'.self::getVersionPlugin().' (Relancer)</a>';
         } else {
-            return "<span style='color:green;'>A jour (".self::getVersionPlugin().")</span>";
+            return "<span style='color:green;'>Compatibles v".self::getVersionPlugin()."</span>";
         }
     }
     
@@ -66,13 +85,14 @@ class scan_ip_maj extends eqLogic {
         $commentMac = NULL;
         $OldCommentaires = scan_ip_json::getJson(scan_ip::$_jsonCommentairesEquipement);
         
-        if(empty($OldCommentaires[0][0]["id"]) and !empty($OldCommentaires[0][0]["mac"])){
-            foreach ($OldCommentaires[0] as $tempCommentMac) {
-                $commentMac[0][] = array("id" => scan_ip_tools::getLastMac($tempCommentMac["mac"]), "val" => $tempCommentMac["val"]);
+        if(self::checkJsonCommentaires_v1_1() == FALSE){ 
+            foreach ($OldCommentaires as $tempCommentMac) { 
+                $commentMac[] = array(
+                    array("id" => scan_ip_tools::getLastMac($tempCommentMac[0]["mac"])), 
+                    array("val" => $tempCommentMac[1]["val"]));
             }
             scan_ip_json::majNetworkCommentaires($commentMac);
         }
- 
     }
     
     public static function checkJsonCommentaires_v1_1(){
@@ -82,42 +102,36 @@ class scan_ip_maj extends eqLogic {
         else{ return FALSE; }
     }
     
-    public static function checkJsonEquipements_v1_1(){
-        $arrayCommentMac = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
-        if($arrayCommentMac == NULL){ return TRUE; }
-        elseif(empty($arrayCommentMac[0]["id"])){ return TRUE; }
-        else{ return FALSE; }
-    }
-    
-    public static function majMacToMacEnd($_array){ // Pour la 1.1
-        $return = array();
-        foreach ($_array as $key => $value) {
-            if(strlen($key) == 17){
-                $return[scan_ip_tools::getLastMac($key)] = $value;
-                $return[scan_ip_tools::getLastMac($key)]["mac"] = $key;
-            } else {
-                $return[$key] = $value;
+    public static function majJsonEquipements_v1_1(){
+        
+        $array = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
+        
+        if(self::checkJsonEquipements_v1_1() == FALSE){
+            $new = array();
+            foreach ($array as $key => $value) {
+                $new[scan_ip_tools::getLastMac($key)] = $value;
+                $new[scan_ip_tools::getLastMac($key)]["mac"] = $key;
             }
+            scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $new);
+            
+            scan_ip_scan::syncScanIp();
         }
-        return $return;
+        
     }
     
-    public static function majMacComToMacEndCom($_array){ // Pour la 1.1
-
-        if(empty($_array[0]["id"]) and !empty($_array[0]["mac"])){
-            $return = array();
-            foreach ($_array as $value) {
-                if(strlen($value["mac"]) == 17){
-                    $return[0][] = array("id" => scan_ip_tools::getLastMac($value["mac"]), "val" => $value["val"]);
+    public static function checkJsonEquipements_v1_1(){
+        $array = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
+        if(!empty($array)){
+            foreach ($array as $key => $value) {
+                if(strlen($key) == 8){
+                    return TRUE;
                 } else {
-                    $return[0][] = array("id" => $value["mac"], "val" => $value["val"]);
+                    return FALSE;
                 }
             }
         } else {
-            $return = $_array;
+            return TRUE;
         }
-        
-        return $return;
     }
     
 ///////////////////////////////////////////////////////////////////////////////
