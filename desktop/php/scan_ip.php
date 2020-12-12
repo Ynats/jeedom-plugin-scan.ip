@@ -51,6 +51,13 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                 <br>
                 <span>{{Configuration}}</span>
             </div>
+<?php if(scan_ip_dev::$_modeDeveloppeur == 1){ ?>
+            <div class="cursor logoSecondary" id="bt_scan_ip_dev">
+                <i class="fas fa-magic" style="color:red;"></i>
+                <br>
+                <span style="color:red;">{{Reset (Dev)}}</span>
+            </div>
+<?php  }  ?>
         </div>
         <legend><i class="fas fa-table"></i> {{Mes configurations}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />

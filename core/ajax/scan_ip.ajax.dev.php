@@ -28,42 +28,11 @@ try {
     
     ajax::init();
     
-    if (init('action') == 'syncEqLogicWithOpenScanId') {
-        
-        if(scan_ip_tools::lockProcess() == TRUE){
-            scan_ip_scan::syncScanIp();
-            scan_ip_tools::unlockProcess();  
-        } else {
-            event::add('jeedom::alert', array(
-                'level' => 'warning',
-                'page' => 'scan_ip',
-                'message' => 'Action annulée : Une synchronisation est déjà en cours.'
-            ));
-        }
-                
+    if (init('action') == 'reset') {
+        scan_ip_dev::reset();     
         ajax::success();
     }
-    
-    elseif (init('action') == 'recordCommentaires') {
 
-        scan_ip_json::majNetworkCommentaires(init('data'));
-        ajax::success();
-        
-    }
-    
-    elseif (init('action') == 'addEquipement') {
-        
-        scan_ip_eqLogic::addEquipementsTab(init('data'));
-        ajax::success();
-        
-    }
-    
-    elseif (init('action') == 'removeEquipement') {
-        
-        scan_ip_json::removeEquipementsTab(init('data'));
-        ajax::success();
-        
-    }
     
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

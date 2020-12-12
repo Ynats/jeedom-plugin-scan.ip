@@ -6,6 +6,14 @@ class scan_ip_maj extends eqLogic {
     
     public static $_versionPlugin = 1.1;
     
+    public static function checkPluginVersionAJour(){
+        if(self::getVersionPlugin() == self::$_versionPlugin){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+    
     public static function pluginAJour(){
         
         $checkData = 0;
@@ -49,7 +57,7 @@ class scan_ip_maj extends eqLogic {
     
     public static function printVersionPlugin(){
         if(self::pluginAJour() == FALSE){
-            return '<a class="btn btn-warning btn-sm" id="reloadMajPlugin" style="position:relative;top:-5px;"><i class="fas fa-bicycle"></i> Pas compatibles v'.self::getVersionPlugin().' (Relancer)</a>';
+            return '<a class="btn btn-danger btn-sm" id="reloadMajPlugin" style="position:relative;top:-5px;"><i class="fas fa-exclamation-triangle"></i> Données non compatibles avec la version '.self::$_versionPlugin.' (Cliquez-ici pour corriger le problème)</a>';
         } else {
             return "<span style='color:green;'>Compatibles v".self::getVersionPlugin()."</span>";
         }
@@ -63,7 +71,7 @@ class scan_ip_maj extends eqLogic {
         }
     }
     
-    public static function majAllEquipement(){
+    public static function saveAllEquipement(){
         log::add('scan_ip', 'info', '>  Mise à jour des équipements');
         foreach (scan_ip::byType('scan_ip') as $scan_ip) {
             try {
@@ -122,10 +130,26 @@ class scan_ip_maj extends eqLogic {
                 $new[scan_ip_tools::getLastMac($key)]["mac"] = $key;
             }
             scan_ip_json::createJsonFile(scan_ip::$_jsonEquipement, $new);
-            
+            scan_ip_maj::setVersionPlugin();
             scan_ip_scan::syncScanIp();
         }
         
+    }
+    
+    public static function majAllEquipements_v1_1(){
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
+        
+        foreach (scan_ip::byType('scan_ip') as $scan_ip) {
+            try {
+                if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
+                    $scan_ip->save();
+                } else {
+                    $scan_ip->setConfiguration('mac_id', "");
+                    $scan_ip->save();
+                }
+            } catch (Exception $e) { }
+        } 
     }
     
     public static function checkJsonEquipements_v1_1(){

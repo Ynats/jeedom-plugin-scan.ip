@@ -128,7 +128,7 @@ class scan_ip_json extends eqLogic {
         $jsonEquipement = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
 
         if (empty($ipsReseau)) {
-            scan_ip_scan::syncScanIp();
+            if(scan_ip_maj::checkPluginVersionAJour() == TRUE){ scan_ip_scan::syncScanIp(); }
             $ipsReseau = self::getJson(scan_ip::$_jsonMapping);
         }
         

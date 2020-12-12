@@ -29,8 +29,6 @@ require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.t
 // Brigde affachés par paquet de ...
 $paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
 
-scan_ip_maj::cleanAfterUpdate();
-
 ?>
 <form class="form-horizontal">
     
