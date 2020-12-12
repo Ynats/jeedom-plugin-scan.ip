@@ -147,6 +147,7 @@ class scan_ip_maj extends eqLogic {
         foreach ($eqLogics as $scan_ip) {
             try {
                 if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getConfiguration("adress_mac"));
                     $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
                     $scan_ip->save();
                 } else {
@@ -156,6 +157,7 @@ class scan_ip_maj extends eqLogic {
             } catch (Exception $e) { }
         } 
         
+        log::add('scan_ip', 'info', '>  Fin de la mise à jour des équipements');            
     }
     
     public static function checkJsonEquipements_v1_1(){
