@@ -26,18 +26,20 @@ function scan_ip_install() {
     
     try {
         scan_ip_maj::activationCron(0);
-        scan_ip_maj::setConfigBase();
+        
+        sscan_ip_maj::setConfigBase();
+        
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Installation :. Fin');
+        log::add('scan_ip', 'info', '--------------------------------------------');
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
         scan_ip_widget_network::getWidgetNetwork();
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Alerte');
         scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
-        
-        scan_ip_maj::activationCron(1);
-        
-        log::add('scan_ip', 'info', '>  Installation :. Fin');
-        log::add('scan_ip', 'info', '--------------------------------------------');
+
         
     } catch (Exception $exc) {
         log::add('scan_ip', 'info', '>  Installation :. ERROR : ' . $exc);
@@ -67,16 +69,18 @@ function scan_ip_update() {
         scan_ip_maj::majJsonEquipements_v1_1();
         scan_ip_maj::majAllEquipements_v1_1();
         
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Mise à jour :. Fin v'.scan_ip_maj::$_versionPlugin);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        
         log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
         scan_ip_widget_network::getWidgetNetwork();
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Alerte');
         scan_ip_widget_alerte::getWidgetAlerteNewEquipement();
         
-        scan_ip_maj::activationCron(1);
         
-        log::add('scan_ip', 'info', '>  Mise à jour :. Fin v'.scan_ip_maj::$_versionPlugin);
-        log::add('scan_ip', 'info', '--------------------------------------------');
 
     } catch (Exception $exc) {
         log::add('scan_ip', 'info', '|  Mise à jour :. ERROR : ' . $exc);
