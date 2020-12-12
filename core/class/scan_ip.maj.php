@@ -143,15 +143,13 @@ class scan_ip_maj extends eqLogic {
         log::add('scan_ip', 'info', '>  Mise à jour des équipements');
         
         foreach (scan_ip::byType('scan_ip') as $scan_ip) {
-            try {
-                if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
-                    $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
-                    $scan_ip->save();
-                } else {
-                    $scan_ip->setConfiguration('mac_id', "");
-                    $scan_ip->save();
-                }
-            } catch (Exception $e) { }
+            if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
+                $scan_ip->save();
+            } else {
+                $scan_ip->setConfiguration('mac_id', "");
+                $scan_ip->save();
+            }
         } 
     }
     
