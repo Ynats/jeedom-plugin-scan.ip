@@ -183,6 +183,7 @@ class scan_ip_tools extends eqLogic {
         $return = "";
         
         $allReseau = scan_ip_shell::scanSubReseau();
+
         unset($allReseau["name_plage_route"]);
         
         foreach ($allReseau as $sub) {

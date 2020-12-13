@@ -21,11 +21,15 @@ require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.r
 
 function scan_ip_install() {
     
-    log::add('scan_ip', 'info', '--------------------------------------------');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
     log::add('scan_ip', 'info', '>  Installation :. Démarrage');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
     
     try {
         scan_ip_maj::activationCron(0);
+        
         scan_ip_maj::setConfigBase();
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
@@ -36,20 +40,27 @@ function scan_ip_install() {
         
         scan_ip_maj::activationCron(1);
         
+        log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'info', '>  Installation :. Fin');
-        log::add('scan_ip', 'info', '--------------------------------------------');
         
     } catch (Exception $exc) {
+        log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'info', '>  Installation :. ERROR : ' . $exc);
-        log::add('scan_ip', 'info', '--------------------------------------------');
     }
+    
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
 
 }
 
 function scan_ip_update() {
     
-    log::add('scan_ip', 'info', '--------------------------------------------');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
     log::add('scan_ip', 'info', '>  Mise à jour :. Démarrage v'.scan_ip_maj::$_versionPlugin);
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
     
     try {
         
@@ -66,6 +77,7 @@ function scan_ip_update() {
         scan_ip_maj::majJsonCommentaires_v1_1();
         scan_ip_maj::majJsonEquipements_v1_1();
         scan_ip_maj::majAllEquipements_v1_1();
+
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
         scan_ip_widget_network::getWidgetNetwork();
@@ -75,13 +87,17 @@ function scan_ip_update() {
         
         scan_ip_maj::activationCron(1);
         
+        log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'info', '>  Mise à jour :. Fin v'.scan_ip_maj::$_versionPlugin);
-        log::add('scan_ip', 'info', '--------------------------------------------');
 
     } catch (Exception $exc) {
+        log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'info', '|  Mise à jour :. ERROR : ' . $exc);
-        log::add('scan_ip', 'info', '--------------------------------------------');
     }
+    
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
+    log::add('scan_ip', 'info', '////////////////////////////////////////////////////////////////////');
 
 }
 
