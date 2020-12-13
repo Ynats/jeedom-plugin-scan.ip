@@ -93,6 +93,18 @@ class scan_ip_maj extends eqLogic {
         }
     }
     
+    public static function backUpJson(){
+        self::createJsonBackup(scan_ip::$_jsonEquipement, file_get_contents(scan_ip::$_jsonEquipement.".json"));
+        self::createJsonBackup(scan_ip::$_jsonCommentairesEquipement, file_get_contents(scan_ip::$_jsonCommentairesEquipement.".json"));
+        self::createJsonBackup(scan_ip::$_jsonMapping, file_get_contents(scan_ip::$_jsonMapping.".json"));
+    }
+    
+    public static function createJsonBackup($_file, $_data){
+        $fichier = fopen($_file."_backup_v1.json", 'w');
+        fputs($fichier, $_data);
+        fclose($fichier);
+    }
+    
 ///////////////////////////////////////////////////////////////////////////////
 // Release 1.1
     

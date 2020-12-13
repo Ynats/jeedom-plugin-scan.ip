@@ -74,6 +74,8 @@ function scan_ip_update() {
         
         scan_ip_maj::setConfigBase(); 
         scan_ip_maj::cleanAfterUpdate(dirname(__FILE__) . '/../../../');
+        
+        scan_ip_maj::backUpJson();
         scan_ip_maj::majJsonCommentaires_v1_1();
         scan_ip_maj::majJsonEquipements_v1_1();
         scan_ip_maj::majAllEquipements_v1_1();
