@@ -163,14 +163,14 @@ class scan_ip_bridges extends eqLogic {
         foreach ($eqLogics as $scan_ip) { 
             $macId = $scan_ip->getConfiguration("mac_id");
             for($i = 1; $i <= self::$_defaut_bridges_by_equipement; $i++){ 
-                $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i); 
+                $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i);
                 if(!empty($plug)) {
-                    $plugTest = explode("|", $plug); //var_dump($plugTest);
-                    if(eqLogic::byId($plugTest[1]) != FALSE OR $plugTest[0] == "core"){ 
-                        $return[$macId][] = $plug;
-                    } else {
+                    $plugTest = explode("|", $plug); 
+                    if((is_numeric($plugTest[1]) AND eqLogic::byId($plugTest[1]) == FALSE)){ 
                         $scan_ip->setConfiguration("plug_element_plugin_".$i, NULL);
                         $scan_ip->save();
+                    } else {
+                        $return[$macId][] = $plug;
                     }
                 } 
             }  
