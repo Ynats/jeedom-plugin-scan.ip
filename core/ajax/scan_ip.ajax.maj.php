@@ -34,28 +34,19 @@ try {
         log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Démarrage v'.scan_ip_maj::$_versionPlugin);
         
         scan_ip_maj::activationCron(0);
-        scan_ip_maj::majJsonCommentaires_v1_1();
-        scan_ip_maj::majJsonEquipements_v1_1();
-        scan_ip_maj::majAllEquipements_v1_1();
+        
+        if(scan_ip_maj::checkJsonCommentaires_v1_1() == FALSE) { 
+            scan_ip_maj::majJsonCommentaires_v1_1(); }
+            
+        if(scan_ip_maj::checkJsonEquipements_v1_1() == FALSE) {
+            scan_ip_maj::majJsonEquipements_v1_1(); }
+            
+        if(scan_ip_maj::checkAllEquipements_v1_1() == FALSE) {
+            scan_ip_maj::majAllEquipements_v1_1(); }
+            
         scan_ip_maj::activationCron(1);
         
         log::add('scan_ip', 'info', '>  Mise à jour manuelle :. Fin v'.scan_ip_maj::$_versionPlugin);
-        log::add('scan_ip', 'info', '--------------------------------------------');
-        
-        ajax::success();
-        
-    }
-    
-    if (init('action') == 'cleanEqLogic') {
-        
-        log::add('scan_ip', 'info', '--------------------------------------------');
-        log::add('scan_ip', 'info', '>  Réparation Equipements :. Démarrage v'.scan_ip_maj::$_versionPlugin);
-        
-        scan_ip_maj::activationCron(0);
-        scan_ip_maj::majAllEquipements_v1_1();
-        scan_ip_maj::activationCron(1);
-        
-        log::add('scan_ip', 'info', '>  Réparation Equipements :. Fin v'.scan_ip_maj::$_versionPlugin);
         log::add('scan_ip', 'info', '--------------------------------------------');
         
         ajax::success();

@@ -14,7 +14,7 @@ class scan_ip_scan extends eqLogic {
         log::add('scan_ip', 'debug', '////////////////////////////////////////////////////////////////////');
         log::add('scan_ip', 'debug', 'syncScanIp :. Lancement du scan du réseau');
         
-        if(scan_ip_maj::checkPluginVersionAJour() == FALSE AND scan_ip_dev::$_modeDeveloppeur == 0){
+        if(scan_ip_maj::checkPluginVersionAJour() == FALSE AND scan_ip_dev::modeDeveloppeur() == FALSE){
             $texteError = "Incident de mise à jour : Synchronisation annulée car les données ne sont pas au format de la version installée. Allez dans la configuration du plugin et activez le mode debug pour corriger le problème.";
             log::add('scan_ip', 'info', $texteError);
             scan_ip_tools::unlockProcess();

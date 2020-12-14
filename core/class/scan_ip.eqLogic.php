@@ -48,6 +48,7 @@ class scan_ip_eqLogic extends eqLogic {
         $eqLogic->setIsEnable(0);
         $eqLogic->setIsVisible(1);
         $eqLogic->setName($_mac);
+        $eqLogic->setConfiguration('adress_mac', $_mac);
         $eqLogic->setConfiguration('mac_id', scan_ip_tools::getLastMac($_mac));
         $eqLogic->save();
     }

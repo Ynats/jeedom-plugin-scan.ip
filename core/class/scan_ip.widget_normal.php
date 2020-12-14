@@ -20,9 +20,11 @@ class scan_ip_widget_normal extends eqLogic {
             $last_ip_v4 = scan_ip_cmd::getCommande('last_ip_v4', $_eqlogic);
             if($last_ip_v4 == "") { $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
             $_eqlogic->checkAndUpdateCmd('on_line', 1); 
+            $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]); 
         } else {
             $_eqlogic->checkAndUpdateCmd('on_line', 0);
             $_eqlogic->checkAndUpdateCmd('ip_v4', NULL);
+            $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]);
             $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
 
@@ -72,6 +74,19 @@ class scan_ip_widget_normal extends eqLogic {
             $info->setName(__('IpV4', __FILE__));
         }
         $info->setLogicalId('ip_v4');
+        $info->setEqLogic_id($_scanIp->getId());
+        $info->setIsHistorized(0);
+        $info->setIsVisible(0);
+        $info->setType('info');
+        $info->setSubType('string');
+        $info->save();
+        
+        $info = $_scanIp->getCmd(null, 'mac');
+        if (!is_object($info)) {
+            $info = new scan_ipCmd();
+            $info->setName(__('mac', __FILE__));
+        }
+        $info->setLogicalId('mac');
         $info->setEqLogic_id($_scanIp->getId());
         $info->setIsHistorized(0);
         $info->setIsVisible(0);
@@ -166,7 +181,8 @@ class scan_ip_widget_normal extends eqLogic {
         if(!empty(scan_ip_cmd::getCommande('update_date', $scan_ip))){ $replace["#update_date#"] = scan_ip_cmd::getCommande('update_date', $scan_ip); } 
         else { $replace["#update_date#"] = "..."; }
 
-        $replace["#mac#"] = scan_ip_json::getMac($scan_ip->getConfiguration("mac_id"));
+        if(!empty(scan_ip_cmd::getCommande('mac', $scan_ip))){ $replace["#mac#"] = scan_ip_cmd::getCommande('mac', $scan_ip); }
+        else { $replace["#mac#"] = "..."; }
 
         if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
         else{ $replace["#etat_cycle#"] = "#50aa50"; } 

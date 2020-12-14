@@ -51,7 +51,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                 <br>
                 <span>{{Configuration}}</span>
             </div>
-<?php if(scan_ip_dev::$_modeDeveloppeur == 1){ ?>
+<?php if(scan_ip_dev::modeDeveloppeur() == TRUE){ ?>
             <div class="cursor logoSecondary" id="bt_scan_ip_dev">
                 <i class="fas fa-magic" style="color:red;"></i>
                 <br>

@@ -25,8 +25,12 @@ class scan_ip_maj extends eqLogic {
             if(self::checkJsonEquipements_v1_1() == TRUE){
                 $checkData++;
             }
+            
+            if(self::checkAllEquipements_v1_1() == TRUE){
+                $checkData++;
+            }
 
-            if($checkData == 2){
+            if($checkData == 3){
                 self::setVersionPlugin();
                 return TRUE;
             } else {
@@ -169,22 +173,6 @@ class scan_ip_maj extends eqLogic {
         
     }
     
-    public static function majAllEquipements_v1_1(){
-        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
-
-        foreach (eqLogic::byType('scan_ip') as $scan_ip) { 
-            if(!empty($scan_ip->getConfiguration("adress_mac")) AND $scan_ip->getConfiguration('type_widget', 'normal') == "normal"){
-                log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getConfiguration("adress_mac"));
-                $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
-                $scan_ip->save();
-            } else {
-                $scan_ip->setConfiguration('mac_id', ""); 
-                $scan_ip->save();
-            }
-        }  
-                    
-    }
-    
     public static function checkJsonEquipements_v1_1(){
         $array = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
         $i = 0;
@@ -206,10 +194,34 @@ class scan_ip_maj extends eqLogic {
         }
     }
     
-    public static function cleanEquipements(){
-        return '<a class="btn btn-warning btn-sm" id="cleanEqLogic" style="position:relative;top:-5px;"><i class="fas fa-sync-alt"></i> Réparer les équipements post Maj. v1.1</a>';
+    public static function majAllEquipements_v1_1(){
+        log::add('scan_ip', 'info', '>  Mise à jour des équipements');
+        $i = 0; 
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) { 
+            if(!empty($scan_ip->getConfiguration("adress_mac")) AND empty($scan_ip->getConfiguration("mac_id")) AND $scan_ip->getConfiguration('type_widget', 'normal') == "normal"){
+                log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getId());
+                $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
+                $scan_ip->save();
+                $i++;
+            }
+        }  
+        if($i == 0){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
     
+    public static function checkAllEquipements_v1_1(){
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            if(empty($scan_ip->getConfiguration('mac_id')) AND scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
+                return FALSE;
+            }
+        } 
+        return TRUE;
+    }
+     
 ///////////////////////////////////////////////////////////////////////////////
 // Release Beta
     

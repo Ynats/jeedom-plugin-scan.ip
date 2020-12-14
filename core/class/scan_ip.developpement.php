@@ -10,10 +10,18 @@ require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_
 
 class scan_ip_dev extends eqLogic {
     
-    public static $_modeDeveloppeur = 0;
-    public static $_jsonDevEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json_dev/equipements.json";
-    public static $_jsonDevCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/json_dev/commentMac.json";
-    public static $_jsonDevMapping = __DIR__ . "/../../../../plugins/scan_ip/data/json_dev/mapping.json";
+    public static $_fileDev = __DIR__ . "/../../../../plugins/scan_ip/data/dev/modeDev";
+    public static $_jsonDevEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/dev/v1/equipements.json";
+    public static $_jsonDevCommentairesEquipement = __DIR__ . "/../../../../plugins/scan_ip/data/dev/v1/commentMac.json";
+    public static $_jsonDevMapping = __DIR__ . "/../../../../plugins/scan_ip/data/dev/v1/mapping.json";
+    
+    public static function modeDeveloppeur(){
+        if(is_file(self::$_fileDev)){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
     
     public static function printDebug($_data){
         echo"<pre>";
@@ -28,6 +36,8 @@ class scan_ip_dev extends eqLogic {
         
         config::save('versionPlugin', 1, 'scan_ip');
         
+        self::resetAllEqLogics();
+        
         self::reset_json(scan_ip::$_jsonEquipement, self::$_jsonDevEquipement);
         self::reset_json(scan_ip::$_jsonCommentairesEquipement, self::$_jsonDevCommentairesEquipement);
         self::reset_json(scan_ip::$_jsonMapping, self::$_jsonDevMapping);
@@ -39,6 +49,16 @@ class scan_ip_dev extends eqLogic {
         $fichier = fopen($_file.'.json', 'w');
         fputs($fichier, @file_get_contents($_fileDev));
         fclose($fichier);
+    }
+    
+    public static function resetAllEqLogics(){
+        $eqLogics = eqLogic::byType('scan_ip');
+        foreach ($eqLogics as $scan_ip) {
+            if(scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
+                $scan_ip->setConfiguration('mac_id', NULL);
+                $scan_ip->save();
+            }
+        } 
     }
 
 }
