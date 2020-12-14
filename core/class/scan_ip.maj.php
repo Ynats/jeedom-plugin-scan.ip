@@ -183,14 +183,20 @@ class scan_ip_maj extends eqLogic {
     
     public static function checkJsonEquipements_v1_1(){
         $array = scan_ip_json::getJson(scan_ip::$_jsonEquipement);
+        $i = 0;
         if(!empty($array)){
             foreach ($array as $key => $value) {
-                if(strlen($key) == 8){
-                    return TRUE;
-                } else {
-                    return FALSE;
+                if(strlen($key) > 8){
+                    $i++;
                 }
             }
+            
+            if($i == 0){
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+            
         } else {
             return TRUE;
         }

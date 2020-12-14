@@ -66,7 +66,6 @@ function scan_ip_update() {
     
     try {
         
-        log::add('scan_ip', 'info', '>  Désactivation du CRON');
         scan_ip_maj::activationCron(0);
         
         scan_ip_maj::waitUnlock();
