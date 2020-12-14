@@ -51,6 +51,13 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                 <br>
                 <span>{{Configuration}}</span>
             </div>
+<?php if(scan_ip_dev::modeDeveloppeur() == TRUE){ ?>
+            <div class="cursor logoSecondary" id="bt_scan_ip_dev">
+                <i class="fas fa-magic" style="color:red;"></i>
+                <br>
+                <span style="color:red;">{{Reset (Dev)}}</span>
+            </div>
+<?php  }  ?>
         </div>
         <legend><i class="fas fa-table"></i> {{Mes configurations}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
@@ -213,9 +220,9 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{Associer une adresse MAC}}");
 ?>                   
                         <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Rechercher une adresse MAC}}</label>
+                            <label class="col-sm-3 control-label">{{Rechercher et associer une adresse MAC}}</label>
                             <div class="col-sm-5">
-                                <select id="scan_ip_mac_select" style="color: #039be5 !important;" class="form-control">
+                                <select id="scan_ip_mac_select" class="form-control">
                                     <option value="">Sélectionner parmi les adresses Mac non enregistrées</option>
                                     <?php
                                         scan_ip_json::printSelectOptionAdressMac();
@@ -224,16 +231,34 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Adresse MAC associée}}</label>
+                        <div class="form-group" style="display:none;">
+                            <label class="col-sm-3 control-label">{{MAC Id}}</label>
                             <div class="col-sm-5">
-                                <input type="text" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" maxlength="17" id="scan_ip_adressMacTemp" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="adress_mac" placeholder="{{##:##:##:##:##:##}}" />
+                                <input type="text" maxlength="17" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" id="mac_id" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="mac_id" style="color: #039be5 !important;" readonly="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Adresse MAC}}</label>
+                            <div class="col-sm-5">
+                                <input type="text" maxlength="17" id="LastMAC" class="form-control eqLogicAttr" style="color: #039be5 !important;" readonly="" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Dernière Ip}}</label>
+                            <div class="col-sm-5">
+                                <input type="text" maxlength="17" id="LastIp" class="form-control eqLogicAttr" style="color: #039be5 !important;" readonly="" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-lg-3 control-label">{{Constructeur}}</label>
                             <div class="col-lg-5">
                                 <input type="text" id="ConstrunctorMac" class="form-control" style="color: #039be5 !important;" readonly="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">{{Commentaire}}</label>
+                            <div class="col-lg-5">
+                                <input type="text" id="Commentaire" class="form-control" style="color: #039be5 !important;" readonly="">
                             </div>
                         </div>
                      

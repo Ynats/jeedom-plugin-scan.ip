@@ -9,7 +9,7 @@
 require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php";
 
 class scan_ip_tools extends eqLogic {
-    
+
     public static function arrayCompose($_arrayOld = NULL, $_arrayNew){
         if(is_array($_arrayNew)){
             if($_arrayOld == NULL){ 
@@ -32,6 +32,14 @@ class scan_ip_tools extends eqLogic {
                 return $_arrayOld;
             }
         } 
+    }
+    
+    public static function isLockProcess(){
+       if(file_exists(scan_ip::$_file_lock)) {
+           return TRUE;
+       } else {
+           return FALSE;
+       }
     }
     
     public static function lockProcess(){
@@ -79,6 +87,11 @@ class scan_ip_tools extends eqLogic {
     public static function getPlageIp($_ip){
         list($a, $b, $c) = explode('.', $_ip);
         return $a . "." . $b . "." . $c;
+    }
+    
+    public static function getLastMac($_mac){
+        list($a, $b, $c, $d, $e, $f) = explode(':', $_mac);
+        return $d . ":" . $e . ":" . $f;
     }
     
     public static function isOffline($_expire = NULL, $_time){
@@ -165,83 +178,6 @@ class scan_ip_tools extends eqLogic {
         return $return;
     }
     
-    public static function cleanAfterUpdate($_path = NULL){   
-        if($_path == NULL){
-             $resources = __DIR__ . "/../../../../plugins/scan_ip/resources/";
-        } else {
-            $resources = $_path."plugins/scan_ip/resources/";
-        }
-       
-        if(@file_exists($resources . "ieee-oui.txt") == TRUE){
-            unlink($resources . "ieee-oui.txt");
-        }
-        if(@file_exists($resources . "ieee-oui.txt") == TRUE){
-            unlink($resources . "ieee-oui.txt.bak");
-        }
-        if(@file_exists($resources . "ieee-iab.txt") == TRUE){
-            unlink($resources . "ieee-iab.txt");
-        }
-        if(@file_exists($resources . "ieee-iab.txt.bak") == TRUE){
-            unlink($resources . "ieee-iab.txt.bak");
-        }
-        if(@file_exists($resources . "install_scan_ip.sh") == TRUE){
-            unlink($resources . "install_scan_ip.sh");
-        }
-        if(@file_exists($resources . "upload.oui.sh") == TRUE){
-            unlink($resources . "upload.oui.sh");
-        }
-        if(@file_exists($resources . "Autre") == TRUE){
-            unlink($resources . "Autre");
-        }
-        
-        if($_path == NULL){
-             $bridge = __DIR__ . "/../../../../plugins/scan_ip/core/bridges/";
-        } else {
-            $bridge = $_path."plugins/scan_ip/core/bridges/";
-        }
-        if(@file_exists($bridge . "template.php") == TRUE){
-            unlink($bridge . "template.php");
-        }
-        
-        if($_path == NULL){
-             $json = __DIR__ . "/../../../../plugins/scan_ip/core/json/";
-        } else {
-            $json = $_path."plugins/scan_ip/core/json/";
-        }
-        if(@file_exists($json . "macaddress.temp") == TRUE){
-            unlink($json . "macaddress.temp");
-        }
-        if(@file_exists($json . "serialize.temp") == TRUE){
-            unlink($json . "serialize.temp");
-        }
-        if(@file_exists($json . "bridges.json") == TRUE){
-            unlink($json . "bridges.json");
-        }
-        
-        if($_path == NULL){
-             $subPlugs = __DIR__ . "/../../../../plugins/scan_ip/core/subPlugs";
-        } else {
-            $subPlugs = $_path."plugins/scan_ip/core/subPlugs/";
-        }
-        if(@is_dir($subPlugs)){
-            if(@file_exists($subPlugs . "/broadlink.php") == TRUE){
-                unlink($subPlugs . "/broadlink.php");
-            }
-            if(@file_exists($subPlugs . "/googlecast.php") == TRUE){
-                unlink($subPlugs . "/googlecast.php");
-            }
-            if(@file_exists($subPlugs . "/template.php") == TRUE){
-                unlink($subPlugs . "/template.php");
-            }
-            if(@file_exists($subPlugs . "/xiaomihome.php") == TRUE){
-                unlink($subPlugs . "/xiaomihome.php");
-            }
-        
-            rmdir($subPlugs);
-        }
-        
-    }
-    
     public static function showEquCadence() {
         if (scan_ip::getConfigMode() == "normal") {
             echo " style='display:none;'";
@@ -255,6 +191,7 @@ class scan_ip_tools extends eqLogic {
         $return = "";
         
         $allReseau = scan_ip_shell::scanSubReseau();
+
         unset($allReseau["name_plage_route"]);
         
         foreach ($allReseau as $sub) {
@@ -291,5 +228,5 @@ class scan_ip_tools extends eqLogic {
         asort($return);
         return $return[0];
     }
-    
+
 }

@@ -24,11 +24,17 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
     
-    echo json_encode(array(
-        "cron_pass" => config::byKey('cron_pass', 'scan_ip', 1), 
-        "mode_plugin" => config::byKey('mode_plugin', 'scan_ip', "normal"))
-    );
+    require_once dirname(__FILE__) . '/../../../../plugins/scan_ip/core/class/scan_ip.require_once.php';
     
+    ajax::init();
+    
+    if (init('action') == 'reset') {
+        scan_ip_dev::reset();     
+        ajax::success();
+    }
+
+    
+    throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
     ajax::error(displayException($e), $e->getCode());

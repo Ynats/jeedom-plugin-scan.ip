@@ -87,15 +87,17 @@ class scan_ip_bridges extends eqLogic {
     
     public static function bridges_printSelectOptionEquiements(){
         
-        $allBridges = self::bridges_getElements();
+        $allBridges = self::bridges_getElements(); 
         
         if($allBridges != FALSE){
             $print = $oldEquip = "";
             foreach ($allBridges["array"] as $equipement) {
-                $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"];
-                if(!empty($equipement["champ"])){ $print .= "|".$equipement["champ"]; }
-                $print .= "\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
-                $oldEquip = $equipement["plugin"];
+                if(!empty($equipement["id"])){ 
+                    $print .= "<option value=\"". $equipement["plugin"] ."|".$equipement["id"];
+                    if(!empty($equipement["champ"])){ $print .= "|".$equipement["champ"]; }
+                    $print .= "\">[ " . $equipement["plugin_print"] . " ][ ". $equipement["ip_v4"] ." ] " . $equipement["name"] . "</option>";
+                    $oldEquip = $equipement["plugin"];
+                }
             }
             return $print;
         } else {
@@ -113,7 +115,7 @@ class scan_ip_bridges extends eqLogic {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<select class="form-control eqLogicAttr" onchange="verifEquipement('. self::$_defaut_bridges_by_equipement .')" data-l1key="configuration"  data-l2key="plug_element_plugin_'.$index.'" id="plug_element_plugin_'.$index.'">';
+                echo '<select class="form-control eqLogicAttr plug_element_plugin plug_element_plugin_'.$index.'" onchange="verifEquipement('. self::$_defaut_bridges_by_equipement .');" data-l1key="configuration" data-l2key="plug_element_plugin_'.$index.'">';
                 echo '<option value="">Sélectionnez un élément</option>';
                 echo $selection;
                 echo '</select>';
@@ -155,13 +157,22 @@ class scan_ip_bridges extends eqLogic {
     public static function bridges_getAllAssignEquipement($_ouput = NULL){ 
         log::add('scan_ip', 'debug', 'bridges_getAllAssignEquipement :. Lancement');
         $eqLogics = eqLogic::byType('scan_ip');
+        
+        $return = NULL;
+        
         foreach ($eqLogics as $scan_ip) { 
-            $mac = $scan_ip->getConfiguration("adress_mac");
+            $macId = $scan_ip->getConfiguration("mac_id");
             for($i = 1; $i <= self::$_defaut_bridges_by_equipement; $i++){ 
-                $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i);
+                $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i); 
                 if(!empty($plug)) {
-                    $return[$mac][] = $plug;
-                }
+                    $plugTest = explode("|", $plug); //var_dump($plugTest);
+                    if(eqLogic::byId($plugTest[1]) != FALSE OR $plugTest[0] == "core"){ 
+                        $return[$macId][] = $plug;
+                    } else {
+                        $scan_ip->setConfiguration("plug_element_plugin_".$i, NULL);
+                        $scan_ip->save();
+                    }
+                } 
             }  
         }
         
