@@ -33,6 +33,20 @@ class scan_ip_maj extends eqLogic {
         }
     }
     
+    public static function waitUnlock(){
+        log::add('scan_ip', 'info', '>  Vérification des scans en cours');
+        
+        for ($i = 1; $i <= 100; $i++) {
+            if(scan_ip_tools::isLockProcess() == TRUE){
+                log::add('scan_ip', 'info', '>  Un scan est en cours. Attente de 5 secondes.');
+                sleep(5);
+            } else {
+                log::add('scan_ip', 'info', '>  Aucun scan en cours.');
+                return TRUE;
+            }
+        }
+    }
+    
     public static function etatCron(){
         return config::byKey('functionality::cron::enable', 'scan_ip');
     }
@@ -154,7 +168,7 @@ class scan_ip_maj extends eqLogic {
     public static function majAllEquipements_v1_1(){
         log::add('scan_ip', 'info', '>  Mise à jour des équipements');
 
-        foreach (eqLogic::byType('scan_ip') as $scan_ip) { scan_ip_dev::printDebug($scan_ip->getConfiguration("adress_mac"));
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) { 
             if(!empty($scan_ip->getConfiguration("adress_mac")) AND $scan_ip->getConfiguration('type_widget', 'normal') == "normal"){
                 log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getConfiguration("adress_mac"));
                 $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  

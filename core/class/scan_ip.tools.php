@@ -34,6 +34,14 @@ class scan_ip_tools extends eqLogic {
         } 
     }
     
+    public static function isLockProcess(){
+       if(file_exists(scan_ip::$_file_lock)) {
+           return TRUE;
+       } else {
+           return FALSE;
+       }
+    }
+    
     public static function lockProcess(){
         if(file_exists(scan_ip::$_file_lock)) {
             if((time() - filemtime (scan_ip::$_file_lock)) > 180){
