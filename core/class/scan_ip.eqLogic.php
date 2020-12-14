@@ -133,7 +133,7 @@ class scan_ip_eqLogic extends eqLogic {
         $return = NULL;
         foreach ($eqLogics as $scan_ip) {
             if(scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
-                $return[] = scan_ip_json::getMac($scan_ip->getConfiguration("mac_id")); 
+                $return[] = $scan_ip->getConfiguration("mac_id"); 
             }
         }
         return $return;
