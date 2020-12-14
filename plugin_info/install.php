@@ -30,6 +30,8 @@ function scan_ip_install() {
     try {
         scan_ip_maj::activationCron(0);
         
+        scan_ip_maj::waitUnlock();
+        
         scan_ip_maj::setConfigBase();
         
         log::add('scan_ip', 'info', '>  Initialisation le Widget Network');
@@ -66,6 +68,8 @@ function scan_ip_update() {
         
         log::add('scan_ip', 'info', '>  Désactivation du CRON');
         scan_ip_maj::activationCron(0);
+        
+        scan_ip_maj::waitUnlock();
         
         log::add('scan_ip', 'info', '>  Check des fichiers Json');
         if(@is_file(__DIR__ . "/../../../plugins/scan_ip/core/json/mapping.json")){ 
