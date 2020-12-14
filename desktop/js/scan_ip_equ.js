@@ -36,7 +36,7 @@ function hideSelect(NbSelect) {
                     $.each(tableau, function (key, value) {
                         var current = $('#mac_id').val();
                         if (mac != current) {
-                            $("#plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
+                            $(".plug_element_plugin_" + plug + " option[value='" + value + "']").hide();
                         }
                     });
                 });
@@ -55,9 +55,9 @@ function hideSelectSafari(NbSelect) {
                         var current = $('#mac_id').val();
                         if (mac != current) {
                             // hidden/display:none non reconnu sous safari dans les select option
-                            $("#plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
+                            $(".plug_element_plugin_" + plug + " option[value='" + value + "']").attr('disabled',true);
                         }
-                        $("#plug_element_plugin_" + plug + " option[value='" + $('#plug_element_plugin_' + plug).find(":selected").val() + "']").attr('disabled',false);
+                        $(".plug_element_plugin_" + plug + " option[value='" + $('.plug_element_plugin_' + plug).find(":selected").val() + "']").attr('disabled',false);
                     });
                 });
             }
@@ -119,7 +119,7 @@ function verifCadence() {
 }
 
 function timeCron() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.config.php", function (result) { console.log(result["mode_plugin"]);
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.config.php", function (result) { 
         if(result["mode_plugin"] === "debug"){ 
             $("[data-action='remove']").show();
         } 
@@ -136,11 +136,13 @@ function verifEquipement(nb) {
         var nbElement = [];
 
         for (x = 1; x <= nb; x++) {
-            var val = $('#plug_element_plugin_' + x).find(":selected").val();
-            var split = val.split("|");
-            if (split[0] != "") {
-                nbElement.push(split[0]);
-            }
+            var val = $('.plug_element_plugin_' + x).find(":selected").val();
+            if(val){
+                var split = val.split("|");
+                if (split[0] != "") {
+                    nbElement.push(split[0]);
+                }
+            } 
         }
 
         red = nbElement.reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
