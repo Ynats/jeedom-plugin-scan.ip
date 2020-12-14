@@ -46,6 +46,22 @@ try {
         
     }
     
+    if (init('action') == 'cleanEqLogic') {
+        
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        log::add('scan_ip', 'info', '>  Réparation Equipements :. Démarrage v'.scan_ip_maj::$_versionPlugin);
+        
+        scan_ip_maj::activationCron(0);
+        scan_ip_maj::majAllEquipements_v1_1();
+        scan_ip_maj::activationCron(1);
+        
+        log::add('scan_ip', 'info', '>  Réparation Equipements :. Fin v'.scan_ip_maj::$_versionPlugin);
+        log::add('scan_ip', 'info', '--------------------------------------------');
+        
+        ajax::success();
+        
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

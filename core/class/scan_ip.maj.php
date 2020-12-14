@@ -65,7 +65,7 @@ class scan_ip_maj extends eqLogic {
             return "<span style='color:green;'>Compatibles v".self::getVersionPlugin()."</span>";
         }
     }
-    
+ 
     public static function printCheckPlugin($_statut = FALSE){
         if($_statut == FALSE){
             return "<span style='color:red;'>Pas à jour</span>";
@@ -154,8 +154,8 @@ class scan_ip_maj extends eqLogic {
     public static function majAllEquipements_v1_1(){
         log::add('scan_ip', 'info', '>  Mise à jour des équipements');
 
-        foreach (eqLogic::byType('scan_ip') as $scan_ip) { 
-            if(!empty($scan_ip->getConfiguration("adress_mac")) AND $eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+        foreach (eqLogic::byType('scan_ip') as $scan_ip) { scan_ip_dev::printDebug($scan_ip->getConfiguration("adress_mac"));
+            if(!empty($scan_ip->getConfiguration("adress_mac")) AND $scan_ip->getConfiguration('type_widget', 'normal') == "normal"){
                 log::add('scan_ip', 'info', '>  Maj ' . $scan_ip->getConfiguration("adress_mac"));
                 $scan_ip->setConfiguration('mac_id', scan_ip_tools::getLastMac($scan_ip->getConfiguration("adress_mac")));  
                 $scan_ip->save();
@@ -180,6 +180,10 @@ class scan_ip_maj extends eqLogic {
         } else {
             return TRUE;
         }
+    }
+    
+    public static function cleanEquipements(){
+        return '<a class="btn btn-warning btn-sm" id="cleanEqLogic" style="position:relative;top:-5px;"><i class="fas fa-sync-alt"></i> Réparer les équipements post Maj. v1.1</a>';
     }
     
 ///////////////////////////////////////////////////////////////////////////////

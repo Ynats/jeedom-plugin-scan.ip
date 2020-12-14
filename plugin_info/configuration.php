@@ -161,6 +161,13 @@ $paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
             <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkJsonEquipements_v1_1()); ?>
             </div>
         </div>
+<?php if(scan_ip_dev::$_modeDeveloppeur == 1){ ?>        
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Réparation des équipements</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::cleanEquipements(); ?>
+            </div>
+        </div>
+<?php } ?>
 <?php
         scan_ip_tools::vueSubTitle("{{Dépendances (Mode debug)}}", "config");
 ?>
