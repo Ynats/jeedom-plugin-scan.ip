@@ -16,20 +16,24 @@ class scan_ip_maj extends eqLogic {
     
     public static function pluginAJour(){
         
-        $checkData = 0;
-        if(self::checkJsonCommentaires_v1_1() == TRUE){
-            $checkData++;
-        }
-        
-        if(self::checkJsonEquipements_v1_1() == TRUE){
-            $checkData++;
-        }
-        
-        if($checkData == 2){
-            self::setVersionPlugin();
-            return TRUE;
+        if(self::checkPluginVersionAJour() == FALSE){
+            $checkData = 0;
+            if(self::checkJsonCommentaires_v1_1() == TRUE){
+                $checkData++;
+            }
+
+            if(self::checkJsonEquipements_v1_1() == TRUE){
+                $checkData++;
+            }
+
+            if($checkData == 2){
+                self::setVersionPlugin();
+                return TRUE;
+            } else {
+                return FALSE;
+            }
         } else {
-            return FALSE;
+            return TRUE;
         }
     }
     
