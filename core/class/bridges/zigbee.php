@@ -24,21 +24,25 @@ class scan_ip_zigbee {
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
     */
     public function getAllElements(){
-        
+
         for($i = 1; $i <= self::$nb; $i++){
-            $return[self::$plug.$i]["plugin"] = self::$plug;
-            $return[self::$plug.$i]["plugin_print"] = self::$plug . ": Démon " . $i;
-            $return[self::$plug.$i]["name"] = "ZiGate Wifi ".$i;
-            $return[self::$plug.$i]["id"] = self::$ip.$i;
-        
-            $value = config::byKey(self::$ip.$i, self::$plug);       
-            if(!empty($value)){
-                if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value, $match)){
-                    $return[self::$plug.$i]["ip_v4"] = $match[0];
-                } else {
-                   $return[self::$plug.$i]["ip_v4"] =  NULL; 
+                
+            if(config::byKey("port_".$i, self::$plug) == "wifizigate" AND config::byKey("enable_deamon_".$i, self::$plug) == 1){
+                $return[self::$plug.$i]["plugin"] = self::$plug;
+                $return[self::$plug.$i]["plugin_print"] = self::$plug . ": Démon " . $i;
+                $return[self::$plug.$i]["name"] = "ZiGate Wifi ".$i;
+                $return[self::$plug.$i]["id"] = self::$ip.$i;
+
+                $value = config::byKey(self::$ip.$i, self::$plug);       
+                if(!empty($value)){
+                    if(preg_match(scan_ip_tools::getRegex("ip_v4"), $value, $match)){
+                        $return[self::$plug.$i]["ip_v4"] = $match[0];
+                    } else {
+                       $return[self::$plug.$i]["ip_v4"] =  NULL; 
+                    }
                 }
             }
+        
         }
         
         return $return;
