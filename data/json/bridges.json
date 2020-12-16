@@ -1,6 +1,7 @@
 [
     "Abeille",
     "AndroidTV",
+    "DaikinOnlineCtrl",
     "JPI",
     "Jailbreak",
     "JeeMySensors",
@@ -29,6 +30,7 @@
     "openWrt",
     "pjlink",
     "script",
+    "Shelly",
     "sonoffdiy",
     "sonybravia",
     "sshcommander",
@@ -39,6 +41,7 @@
     "webosTv",
     "wifilightV2",
     "xiaomihome",
+    "YamahaMusiccast",
     "zigate",
     "zigbee"
 ]
