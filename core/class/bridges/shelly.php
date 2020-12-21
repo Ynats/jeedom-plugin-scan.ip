@@ -4,13 +4,13 @@
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
 
-class scan_ip_Shelly {
+class scan_ip_shelly {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "Shelly";
+    public static $plug = "shelly";
     public static $ip = "addr";
     
 	
