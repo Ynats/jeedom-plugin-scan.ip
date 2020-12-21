@@ -103,7 +103,7 @@ class scan_ip_tools extends eqLogic {
     
     public static function excludeSubReseau($_string){
         if($_string == ""){ return FALSE; }
-        if($_string == "lo"){ return FALSE; }
+        elseif($_string == "lo"){ return FALSE; }
         elseif(preg_match('/(tun)[0-9]*/', $_string)){ return FALSE; }
         else { return TRUE; }
     }

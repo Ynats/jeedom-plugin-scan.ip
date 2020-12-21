@@ -147,7 +147,7 @@ class scan_ip_bridges extends eqLogic {
     public static function bridges_existId($_id){
         $bridgeExist = TRUE;
         try {
-            $return = eqLogic::byId($_id);
+            eqLogic::byId($_id);
         } catch (Exception $e) {
             $bridgeExist = FALSE;
         }
@@ -188,7 +188,7 @@ class scan_ip_bridges extends eqLogic {
         $bridgeExists = TRUE;
         if($_name !== 'core') {
             try {
-                $plugin = plugin::byId($_name);
+                plugin::byId($_name);
             } catch (Exception $e) {
                 $bridgeExists = FALSE;
             }

@@ -41,17 +41,17 @@ function recordBtMac() {
 function scan_ip_mode_plugin() { 
     var mode = $( "#scan_ip_mode" ).val();
     if(mode == "normal"){
-        $('#show_oui').hide();
+        $('#show_debug').hide();
         $('#show_sous_reseau').hide();
         $('#show_avance').hide();
     } 
     else if(mode == "advanced"){
-        $('#show_oui').hide();
+        $('#show_debug').hide();
         $('#show_sous_reseau').show();
         $('#show_avance').show();
     }
     else if(mode == "debug"){
-        $('#show_oui').show();
+        $('#show_debug').show();
         $('#show_sous_reseau').show();
         $('#show_avance').show();
     }

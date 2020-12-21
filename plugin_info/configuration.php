@@ -127,7 +127,7 @@ $paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
             
     </div> 
            
-    <div id="show_oui" style="display:none;">        
+    <div id="show_debug" style="display:none;">        
 <?php
         scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
 ?>
