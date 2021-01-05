@@ -126,13 +126,13 @@ class scan_ip_widget_alerte extends eqLogic {
         
         $temp = array();
         
-        $mac = scan_ip_eqLogic::getEquipementsbyMac();
+        $mac_id = scan_ip_eqLogic::getEquipementsbyId();
         
-        if($mac != NULL){
+        if($mac_id != NULL){
             
             foreach ($_mapping["byTime"] as $allElement) { 
                 foreach ($allElement as $element) { 
-                    if(!in_array($element["mac"], $mac)){
+                    if(!in_array($element["mac_id"], $mac_id)){
                         $temp[] = array(
                             "time" => $element["time"], 
                             "record" => $element["record"],

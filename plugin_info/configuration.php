@@ -29,8 +29,6 @@ require_once dirname(__FILE__) . "/../../../plugins/scan_ip/core/class/scan_ip.t
 // Brigde affachés par paquet de ...
 $paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
 
-scan_ip_tools::cleanAfterUpdate();
-
 ?>
 <form class="form-horizontal">
     
@@ -43,6 +41,8 @@ scan_ip_tools::cleanAfterUpdate();
             </select>
         </div>
     </div>
+    
+    <div id="dataConfig"></div>
     
     <fieldset>
 <?php
@@ -93,7 +93,6 @@ scan_ip_tools::cleanAfterUpdate();
                 </select> 
             </div>
         </div>
-
 <?php
         scan_ip_tools::vueSubTitle("{{Nombre d'essaie lors des scans (Mode avancé)}}", "config");
 ?>             
@@ -128,7 +127,7 @@ scan_ip_tools::cleanAfterUpdate();
             
     </div> 
            
-    <div id="show_oui" style="display:none;">        
+    <div id="show_debug" style="display:none;">        
 <?php
         scan_ip_tools::vueSubTitle("{{Base de données OUI (Mode debug)}}", "config");
 ?>
@@ -142,6 +141,29 @@ scan_ip_tools::cleanAfterUpdate();
         <div class="form-group">
             <label class="col-lg-4 control-label"></label>
             <div class="col-lg-5"><?php echo scan_ip_tools::printFileIatExist() ?> <sup><i class="fa fa-question-circle tooltips" title="{{Mise à jour le}} <?php echo scan_ip_tools::getDateFile(scan_ip::$_file_iab) ?>"></i></sup>
+            </div>
+        </div>
+<?php
+        scan_ip_tools::vueSubTitle("{{Check de la version (Mode debug)}}", "config");
+?>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Vérification des données</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::printVersionPlugin(); ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Vérification du Json commentaires</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkJsonCommentaires_v1_1()); ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Vérification du Json équipements</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkJsonEquipements_v1_1()); ?>
+            </div>
+        </div>      
+        <div class="form-group">
+            <label class="col-lg-4 control-label">Vérification des équipements</label>
+            <div class="col-lg-5"><?php echo scan_ip_maj::printCheckPlugin(scan_ip_maj::checkAllEquipements_v1_1()); ?>
             </div>
         </div>
 <?php

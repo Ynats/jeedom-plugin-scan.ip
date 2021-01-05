@@ -38,6 +38,24 @@ $('#bt_scanIpDebug').off('click').on('click', function () {
     $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=debug').dialog('open');
 });
 
+// Sur la partie Développeur
+$('#bt_scan_ip_dev').off('click').on('click', function () {
+    $.ajax({
+        type: "POST",
+        url: "plugins/scan_ip/core/ajax/scan_ip.ajax.dev.php",
+        data: {
+            action: "reset",
+        },
+        dataType: 'json',
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error);
+        },
+        success: function (data) {
+            $('#div_alert').showAlert({message: "Mode développeur : Reset Ok (Penser à réactiver le CRON)", level: 'warning'});
+        }
+    });
+});
+
 function reloadModal(idModal) {
     $('#md_modal').load('index.php?v=d&plugin=scan_ip&modal=' + idModal).dialog('close');
     setTimeout(function () {

@@ -12,7 +12,7 @@ class scan_ip_widget_normal extends eqLogic {
     
     public static function cmdRefreshWidgetNormal($_eqlogic, $_mapping = NULL){
         
-        $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("adress_mac"), $_mapping);
+        $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("mac_id"), $_mapping);
         $offline_time = $_eqlogic->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
 
         if(scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
@@ -20,9 +20,11 @@ class scan_ip_widget_normal extends eqLogic {
             $last_ip_v4 = scan_ip_cmd::getCommande('last_ip_v4', $_eqlogic);
             if($last_ip_v4 == "") { $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
             $_eqlogic->checkAndUpdateCmd('on_line', 1); 
+            $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]); 
         } else {
             $_eqlogic->checkAndUpdateCmd('on_line', 0);
             $_eqlogic->checkAndUpdateCmd('ip_v4', NULL);
+            $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]);
             $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
         }
 
@@ -72,6 +74,19 @@ class scan_ip_widget_normal extends eqLogic {
             $info->setName(__('IpV4', __FILE__));
         }
         $info->setLogicalId('ip_v4');
+        $info->setEqLogic_id($_scanIp->getId());
+        $info->setIsHistorized(0);
+        $info->setIsVisible(0);
+        $info->setType('info');
+        $info->setSubType('string');
+        $info->save();
+        
+        $info = $_scanIp->getCmd(null, 'mac');
+        if (!is_object($info)) {
+            $info = new scan_ipCmd();
+            $info->setName(__('mac', __FILE__));
+        }
+        $info->setLogicalId('mac');
         $info->setEqLogic_id($_scanIp->getId());
         $info->setIsHistorized(0);
         $info->setIsVisible(0);
@@ -166,7 +181,8 @@ class scan_ip_widget_normal extends eqLogic {
         if(!empty(scan_ip_cmd::getCommande('update_date', $scan_ip))){ $replace["#update_date#"] = scan_ip_cmd::getCommande('update_date', $scan_ip); } 
         else { $replace["#update_date#"] = "..."; }
 
-        $replace["#mac#"] = $scan_ip->getConfiguration("adress_mac");
+        if(!empty(scan_ip_cmd::getCommande('mac', $scan_ip))){ $replace["#mac#"] = scan_ip_cmd::getCommande('mac', $scan_ip); }
+        else { $replace["#mac#"] = "..."; }
 
         if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
         else{ $replace["#etat_cycle#"] = "#50aa50"; } 
