@@ -124,7 +124,7 @@ function timeCron() {
             $("[data-action='remove']").show();
         } 
         $("#cronPass").attr('data-cron', result["cron_pass"]);
-        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " + result["cron_pass"] + " minutes");
+        $("#cronPass").val("La cadence de rafraichissement se fait toutes les " + result["cron_pass"] + " minute(s)");
         verifCadence();
     });
 }
@@ -135,6 +135,7 @@ function verifEquipement(nb) {
         var cpt = 0;
         var nbElement = [];
         var listCore = [];
+        var valueEquipement = "";
         
         $('#div_alert_scan_ip_equipement_core').hide();
 
@@ -157,11 +158,15 @@ function verifEquipement(nb) {
 
         $.each(red, function (index1, value1) {
             if (value1 > 1) {
-                $('#div_alert_scan_ip_equipement').showAlert({message: "{{Attention, cet équipement est associé " + value1 + " fois au plugin " + index1 + " ! Il est probable que cela génère un conflit dans le plugin " + index1 + ".}}", level: 'warning'});
-            } else {
-                $('#div_alert_scan_ip_equipement').hide();
-            }
+                valueEquipement += "Attention, cet équipement est associé " + value1 + " fois au plugin <span style='font-weight: bold;'>" + index1 + "</span>.<br />";
+            } 
         });
+        
+        if (valueEquipement != "") {
+            $('#div_alert_scan_ip_equipement').showAlert({message: valueEquipement + "Il est possible que cela génère des conflits s'il s'agit d'une erreur de votre part.", level: 'warning'});
+        } else {
+            $('#div_alert_scan_ip_equipement').hide();
+        }
         
         $.each(listCore, function (index2, value2) {
             if(value2 != ""){ 
