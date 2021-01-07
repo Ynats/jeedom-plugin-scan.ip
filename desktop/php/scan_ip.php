@@ -312,7 +312,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <?php
                             scan_ip_tools::vueSubTitle("Associer cette adresse MAC à un ou plusieurs bridges (optionnel)");
                             scan_ip_bridges::bridges_printOptionEquiements();
- ?>
+?>
                    
                         </div>
                     </fieldset>

@@ -109,7 +109,7 @@ class scan_ip_bridges extends eqLogic {
     public static function bridges_printOptionEquiements(){
         
         $selection = self::bridges_printSelectOptionEquiements();
-        
+          
         if($selection != FALSE){
             for ($index = 1; $index <= self::$_defaut_bridges_by_equipement; $index++) {
                 echo '<div class="form-group">';
@@ -166,7 +166,7 @@ class scan_ip_bridges extends eqLogic {
                 $plug = $scan_ip->getConfiguration("plug_element_plugin_".$i);
                 if(!empty($plug)) {
                     $plugTest = explode("|", $plug); 
-                    if((is_numeric($plugTest[1]) AND eqLogic::byId($plugTest[1]) == FALSE)){ 
+                    if(is_numeric($plugTest[1]) AND eqLogic::byId($plugTest[1]) == FALSE){ 
                         $scan_ip->setConfiguration("plug_element_plugin_".$i, NULL);
                         $scan_ip->save();
                     } else {
@@ -184,7 +184,6 @@ class scan_ip_bridges extends eqLogic {
     }
     
     public static function bridges_pluginExists($_name) {
-        //log::add('scan_ip', 'debug', 'bridges_pluginExists :. Lancement');
         $bridgeExists = TRUE;
         if($_name !== 'core') {
             try {
