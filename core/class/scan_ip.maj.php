@@ -117,7 +117,7 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function createJsonBackup($_file, $_data){
-        $fichier = fopen($_file."_backup_v1.json", 'w');
+        $fichier = fopen($_file."_backup_v.".self::getVersionPlugin().".json", 'w');
         fputs($fichier, $_data);
         fclose($fichier);
     }
