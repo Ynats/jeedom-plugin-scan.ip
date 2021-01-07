@@ -112,9 +112,9 @@ function verifCadence() {
     var delta = offline_time / cron_pass;
 
     if (delta < 2) {
-        $('#div_alert').showAlert({message: "{{Si vous validez cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
+        $('#div_alert_scan_ip_cadence').showAlert({message: "{{Si vous validez cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
     } else {
-        $('#div_alert').hide();
+        $('#div_alert_scan_ip_cadence').hide();
     }
 }
 
@@ -134,6 +134,9 @@ function verifEquipement(nb) {
     
         var cpt = 0;
         var nbElement = [];
+        var listCore = [];
+        
+        $('#div_alert_scan_ip_equipement_core').hide();
 
         for (x = 1; x <= nb; x++) {
             var val = $('.plug_element_plugin_' + x).find(":selected").val();
@@ -142,19 +145,31 @@ function verifEquipement(nb) {
                 if (split[0] != "") {
                     nbElement.push(split[0]);
                 }
+                if (split[0] == "core") {
+                    listCore.push(x);
+                }
             } 
+            
+            $('.plug_element_plugin_' + x).attr("style", "");
         }
 
         red = nbElement.reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
 
-        $.each(red, function (index, value) {
-            if (value > 1) {
-                $('#div_alert').showAlert({message: "{{Attention, cet équipement est associé " + value + " fois au plugin " + index + " ! Il est fort probable que cela génère un conflit dans le plugin " + index + ".}}", level: 'warning'});
+        $.each(red, function (index1, value1) {
+            if (value1 > 1) {
+                $('#div_alert_scan_ip_equipement').showAlert({message: "{{Attention, cet équipement est associé " + value1 + " fois au plugin " + index1 + " ! Il est probable que cela génère un conflit dans le plugin " + index1 + ".}}", level: 'warning'});
             } else {
-                $('#div_alert').hide();
+                $('#div_alert_scan_ip_equipement').hide();
             }
         });
-    
+        
+        $.each(listCore, function (index2, value2) {
+            if(value2 != ""){ 
+                $('#div_alert_scan_ip_equipement_core').showAlert({message: "{{Attention, cet équipement est associé au bridge core de votre Jeedom !<br />Ce qui veut dire que Scan.Ip peut modifier votre configuration Jeedom.<br />Cette association s'adresse à des utilisateurs avancés car cela peut générer des erreurs dans votre config globale ou sur le bon fonctionnement d'autres plugins.}}", level: 'warning'});
+                $('.plug_element_plugin_' + value2).attr("style", "color : #cc8500 !important;");
+            }  
+        });
+
     }
 }
 

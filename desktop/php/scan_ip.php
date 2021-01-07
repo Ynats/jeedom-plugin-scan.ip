@@ -114,6 +114,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
             <div role="tabpanel" class="tab-pane active" id="eqlogictab">
                 
                 <br />
+                
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
@@ -268,6 +269,13 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         scan_ip_tools::vueSubTitle("{{On line ou Off line ? (Mode avancé)}}");
 ?>                        
 
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-7">
+                                <div id="div_alert_scan_ip_cadence" style="display:none; margin-bottom: 19px;"></div>  
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
                             <label class="col-lg-3 control-label">{{Rappel "Configuration"}} <sup><i class="fa fa-question-circle tooltips" title="{{Il est conseillé d'avoir au moins 2 rafraîchissements minimum'}}"></i></sup></label>
                             <div class="col-lg-5">
@@ -308,9 +316,18 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 </select> 
                             </div>
                         </div>
-                        
+                                             
 <?php
                             scan_ip_tools::vueSubTitle("Associer cette adresse MAC à un ou plusieurs bridges (optionnel)");
+?>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-7">
+                                <div id="div_alert_scan_ip_equipement" style="display:none; margin-bottom: 19px;"></div>
+                                <div id="div_alert_scan_ip_equipement_core" style="display:none; margin-bottom: 19px;"></div>   
+                            </div>
+                        </div>
+<?php
                             scan_ip_bridges::bridges_printOptionEquiements();
 ?>
                    
