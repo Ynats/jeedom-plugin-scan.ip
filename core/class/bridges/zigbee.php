@@ -25,6 +25,8 @@ class scan_ip_zigbee {
     */
     public function getAllElements(){
 
+        $return = NULL;
+        
         for($i = 1; $i <= self::$nb; $i++){
                 
             if(config::byKey("port_".$i, self::$plug) == "wifizigate" AND config::byKey("enable_deamon_".$i, self::$plug) == 1){

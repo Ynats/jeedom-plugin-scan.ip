@@ -173,7 +173,8 @@ class scan_ip_widget_normal extends eqLogic {
         $replace = $_replace;
 
         $replace["#ip_v4#"] = scan_ip_cmd::getCommande('ip_v4', $scan_ip);
-        if($replace["#ip_v4#"] == ""){ $replace["#ip_v4#"] = "..."; }
+        if($replace["#ip_v4#"] == "" OR $replace["#ip_v4#"] == 0){ $replace["#ip_v4#"] = "..."; $replace["#etat_cycle#"] = "red"; }
+        else { $replace["#etat_cycle#"] = "#50aa50"; }
 
         if(!empty(scan_ip_cmd::getCommande('last_ip_v4', $scan_ip))){ $replace["#last_ip_v4#"] = scan_ip_cmd::getCommande('last_ip_v4', $scan_ip); } 
         else { $replace["#last_ip_v4#"] = "..."; }
@@ -184,8 +185,8 @@ class scan_ip_widget_normal extends eqLogic {
         if(!empty(scan_ip_cmd::getCommande('mac', $scan_ip))){ $replace["#mac#"] = scan_ip_cmd::getCommande('mac', $scan_ip); }
         else { $replace["#mac#"] = "..."; }
 
-        if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
-        else{ $replace["#etat_cycle#"] = "#50aa50"; } 
+//        if($replace["#ip_v4#"] == "..."){ $replace["#etat_cycle#"] = "red"; } 
+//        else{ $replace["#etat_cycle#"] = "#50aa50"; } 
 
         if($replace["#last_ip_v4#"] != $replace["#ip_v4#"] AND $replace["#ip_v4#"] != "..."){ $replace["#etat_last_ip#"] = ' color:orange;'; } 
         else { $replace["#etat_last_ip#"] = ''; }

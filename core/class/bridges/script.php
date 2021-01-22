@@ -20,6 +20,7 @@ class scan_ip_script {
     * -> $return[idEquipement]["name"] = Nom de l'équipement
     * -> $return[idEquipement]["id"] = Id de l'équipement
     * -> $return[idEquipement]["ip_v4"] = l'ip enregistré au format v4
+    * -> $return[idEquipement]["champ"] = l'id de la commande
     */
     public function getAllElements(){
         
@@ -29,21 +30,22 @@ class scan_ip_script {
         foreach ($eqLogics as $eqLogic) {
             $eqName = trim($eqLogic->getName());
             foreach ($eqLogic->getCmd() as $cmd) {
+                $idEqLogic = $eqLogic->getId();
                 $cliRequest = $cmd->getConfiguration('request');
                 $cmdId = $cmd->getId();
 		if (!empty($cmd->getConfiguration('request')) AND preg_match(scan_ip_tools::getRegex("ip_v4"),$cliRequest,$match)) {
-                    $return[self::$plug.$cmdId]["plugin"] = self::$plug;
-                    $return[self::$plug.$cmdId]["plugin_print"] = self::$plug . " :: " . $eqName;
-                    $return[self::$plug.$cmdId]["name"] = $cmd->getName();
-                    $return[self::$plug.$cmdId]["id"] = $cmdId;
-                    $return[self::$plug.$cmdId]["ip_v4"] = $match[0];
+                    $return[$idEqLogic.$cmdId]["plugin"] = self::$plug;
+                    $return[$idEqLogic.$cmdId]["plugin_print"] = self::$plug . " :: " . $eqName;
+                    $return[$idEqLogic.$cmdId]["name"] = $cmd->getName();
+                    $return[$idEqLogic.$cmdId]["id"] = $eqLogic->getId();
+                    $return[$idEqLogic.$cmdId]["champ"] = $cmdId; // champ est égal à l'id de la commande
+                    $return[$idEqLogic.$cmdId]["ip_v4"] = $match[0];
                 }
             }
         }
         return $return;
         
     }
-    
     
     /**
     * majIpElement sert à mettre à jour l'ip de l'élément si celui-ci est différent
@@ -58,7 +60,7 @@ class scan_ip_script {
 
         foreach ($eqLogics as $eqLogic) {
             foreach ($eqLogic->getCmd() as $cmd) {
-                if ($cmd->getId() == $_array["id"]) {
+                if ($cmd->getId() == $_array["champ"]) {
                     $cliRequest = $cmd->getConfiguration('request');
                     if (!empty($cliRequest) AND preg_match(scan_ip_tools::getRegex("ip_v4"),$cliRequest,$old)) {
                         if($old[0] != $_array["ip"]) {
@@ -67,7 +69,7 @@ class scan_ip_script {
                             try {
                                 $cmd->save();
                             } catch (Exception $e) {
-                                 log::add('scan_ip', 'error', 'Erreur lors de la sauvegarde du script : '.$cmd->getName().' ('.$_array["id"]. ').');
+                                 log::add('scan_ip', 'error', 'Erreur lors de la sauvegarde du script : '.$cmd->getName().' ('.$_array["champ"]. ').');
                             }                             
                         }
                         return NULL;
