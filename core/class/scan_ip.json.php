@@ -164,20 +164,20 @@ class scan_ip_json extends eqLogic {
         
         foreach ($_array as $delete) {
             
-            $mac = $delete[0]["mac"];
+            $mac_id = scan_ip_tools::getLastMac($delete[0]["mac"]);
             
             foreach ($jsonMapping["sort"] as $key => $sort) {
-                if($sort["mac"] == $mac){
+                if($sort["mac_id"] == $mac_id){
                     $del_sort = $key;
                     break;
                 }
             }
             
             $del_byIpv4 = $jsonMapping["sort"][$del_sort]["ip_v4"];
-            $del_byTime = $jsonMapping["sort"][$del_sort]["time"].$jsonEquipement[$mac]["record"];
+            $del_byTime = $jsonMapping["sort"][$del_sort]["time"].$jsonEquipement[$mac_id]["record"];
                          
-            unset($jsonEquipement[$mac]);
-            unset($jsonMapping["byId"][$mac]);
+            unset($jsonEquipement[$mac_id]);
+            unset($jsonMapping["byId"][$mac_id]);
             unset($jsonMapping["sort"][$del_sort]);
             unset($jsonMapping["byIpv4"][$del_byIpv4]);
             unset($jsonMapping["byTime"][$del_byTime]);
