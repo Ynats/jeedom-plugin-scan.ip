@@ -152,6 +152,12 @@ class scan_ip_tools extends eqLogic {
         if (preg_match(self::getRegex("ip_v4"), $_string)) { 
             return str_replace(".", "", $_string);
         } 
+        elseif($_type == "date"){
+            $tmp = explode(" ", $_string);
+            $tmp1 = explode("/", $tmp[0]);
+            $tmp2 = str_replace(":", "", $tmp[1]);
+            return $tmp1[2].$tmp1[1].$tmp1[0].$tmp2;
+        }
         if($_string == "..."){
             if($_type == "int"){
                 return 9999999999999;

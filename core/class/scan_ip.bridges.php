@@ -221,7 +221,7 @@ class scan_ip_bridges extends eqLogic {
                     
                     if(self::bridges_pluginExists($testBridge[0])){
                         if(self::bridges_existId($testBridge[1]) == TRUE){
-                            if($_device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
+                            if(!empty($_device["ip_v4"]) AND $_device["ip_v4"] != "" AND $plug_element_plugin != ""){ 
                                 $add_deamon = self::bridges_majElement($_device["ip_v4"], $plug_element_plugin);
                                 $deamons = scan_ip_tools::arrayCompose($deamons, $add_deamon);
                             }

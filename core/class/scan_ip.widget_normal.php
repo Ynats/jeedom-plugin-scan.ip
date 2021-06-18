@@ -15,7 +15,7 @@ class scan_ip_widget_normal extends eqLogic {
         $device = scan_ip_json::searchByMac($_eqlogic->getConfiguration("mac_id"), $_mapping);
         $offline_time = $_eqlogic->getConfiguration("offline_time", scan_ip::$_defaut_offline_time);
 
-        if(scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
+        if(!empty($device["time"]) AND scan_ip_tools::isOffline($offline_time, $device["time"]) == 0){
             $_eqlogic->checkAndUpdateCmd('ip_v4', $device["ip_v4"]); 
             $last_ip_v4 = scan_ip_cmd::getCommande('last_ip_v4', $_eqlogic);
             if($last_ip_v4 == "") { $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]); }
@@ -24,8 +24,19 @@ class scan_ip_widget_normal extends eqLogic {
         } else {
             $_eqlogic->checkAndUpdateCmd('on_line', 0);
             $_eqlogic->checkAndUpdateCmd('ip_v4', NULL);
-            $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]);
-            $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+            
+            if(!empty($device["mac"])){
+                $_eqlogic->checkAndUpdateCmd('mac', $device["mac"]);
+            } else {
+                $_eqlogic->checkAndUpdateCmd('mac', NULL);
+            }
+            
+            if(!empty($device["ip_v4"])){
+                $_eqlogic->checkAndUpdateCmd('last_ip_v4', $device["ip_v4"]);
+            } else {
+                $_eqlogic->checkAndUpdateCmd('last_ip_v4', NULL);
+            }
+            
         }
 
         ///////////////////////////////////////////
