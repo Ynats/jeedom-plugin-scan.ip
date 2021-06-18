@@ -1,3 +1,8 @@
+# 18/06/2021 | Stable
+
+* Merge Beta v1.1.1
+* Fix bug : trie par date (#61919)
+
 # 07/12/2021 | Beta v1.1.1
 
 * Correction du bridge "script" (erreur d'enregistrement et de mise à jour)
