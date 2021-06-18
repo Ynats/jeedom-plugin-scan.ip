@@ -93,7 +93,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                                 . '<td class="scanTd"><span style="display:none;">' . $sortip_v4 . '</span>' . $equipement["ip_v4"] . '</td>'
                                 . '<td class="scanTd" style="'.$style_last.'"><span style="display:none;">' . $sortlast_ip_v4 . '</span>' . $equipement["last_ip_v4"] . '</td>'
-                                . '<td class="scanTd">' . $equipement["update_date"] . '</td>'
+                                . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["update_date"], "date") . '</span>' . $equipement["update_date"] . '</td>'
                                 . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["plug_element_plugin"]) . '</span>' . $equipement["plug_element_plugin"] . '</td>'
                                 . '</tr>';
 

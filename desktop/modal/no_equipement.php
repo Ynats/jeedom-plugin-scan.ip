@@ -68,8 +68,8 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 . '<td class="scanTd""><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["comment"]) . '</span>' . $equipement["comment"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                                 . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["ip_v4"]) . '</span>' . $equipement["ip_v4"] . '</td>'
-                                . '<td class="scanTd">' . scan_ip_tools::printDate($equipement["record"]) . '</td>'
-                                . '<td class="scanTd">' . scan_ip_tools::printDate($equipement["time"]) . '</td>'
+                                . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["record"]) . '</span>' . scan_ip_tools::printDate($equipement["record"]) . '</td>'
+                                . '<td class="scanTd"><span style="display:none;">' . scan_ip_tools::getCleanForSortTable($equipement["time"]) . '</span>' . scan_ip_tools::printDate($equipement["time"]) . '</td>'
                                 . '</tr>';
                         }
                     } else {
