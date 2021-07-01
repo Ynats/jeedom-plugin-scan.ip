@@ -128,3 +128,22 @@ else {
         </div>
     </div>
 </div>
+<?php
+$errorMacIp = scan_ip_maj::getCheckAllEquipements_v1_1();
+if($errorMacIp != NULL){
+?>
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title"># Mappings</h3>
+        </div>
+        <div class="panel-body">
+            <?php
+                scan_ip_tools::printArray($errorMacIp);
+            ?>
+        </div>
+    </div>
+</div>
+<?php
+}
+?>
