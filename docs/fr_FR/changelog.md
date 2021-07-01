@@ -1,3 +1,7 @@
+# 01/07/2021 | Beta
+
+* Affichage du MAC Id en mode Debug
+
 # 18/06/2021 | Stable
 
 * Merge Beta v1.1.1
