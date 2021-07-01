@@ -2,6 +2,7 @@
 
 * Affichage du MAC Id en mode Debug
 * Ajout des erreurs MAC Id dans la modale Debug
+* Maj. Documentation sous réseau
 
 # 18/06/2021 | Stable
 
