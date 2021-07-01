@@ -216,7 +216,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
-                        </div>          
+                        </div>                        
 <?php    
                         scan_ip_tools::vueSubTitle("{{Associer une adresse MAC}}");
 ?>                   
@@ -231,9 +231,9 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 </select>
                             </div>
                         </div>
-                        
-                        <div class="form-group" style="display:none;">
-                            <label class="col-sm-3 control-label">{{MAC Id}}</label>
+     
+                        <div class="form-group" style="<?php if(scan_ip::getConfigMode() != "debug"){ echo "display:none;"; } ?>">
+                            <label class="col-sm-3 control-label" style="color: red !important;">{{MAC Id (Mode debug)}}</label>
                             <div class="col-sm-5">
                                 <input type="text" maxlength="17" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" id="mac_id" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="mac_id" style="color: #039be5 !important;" readonly="" />
                             </div>
