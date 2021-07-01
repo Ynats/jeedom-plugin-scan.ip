@@ -1,4 +1,4 @@
-# 01/07/2021 | Beta
+# 01/07/2021 | Beta & Stable
 
 * Affichage du MAC Id en mode Debug
 * Ajout des erreurs MAC Id dans la modale Debug
