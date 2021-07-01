@@ -311,7 +311,7 @@ Ces équipements sont directement gérés par le plugin et correspondent à ce q
 
 10 groupes de commande sont créées et correspondent au 10 derniers équipements non enregistrés qui se sont conectés. L'ordre chronologique commence à zéro (le plus récent) et se termine à neuf (le plus ancien).
 
-Chaque élément comporte 6 sous commande :
+Chaque élément comporte 6 sous-commandes :
 
 - Connexion 0 Création (Date au format timestamp du premier référencement)
 - Connexion 0 Date (Date au format JJ/MM/AAAA HH:MM:SS de sa dernière apparition)
@@ -319,3 +319,12 @@ Chaque élément comporte 6 sous commande :
 - Connexion 0 Equipement (Nom du constructeur si référencé)
 - Connexion 0 IpV4 (IP au format v4 qui lui est attribué)
 - Connexion 0 MAC (Adresse MAC du l'équipement)
+
+#### Si vous souhaitez gérer plusiers réseau (Ex. vous posédez un Hub connecté à votre routeur)
+
+Scan.Ip est capable de gérer plusieurs réseaux en même temps.
+Pour cela il vous faut connecter votre Jeedom aux réseaux.
+Pour se faire vous avez, par exemple, la possibilité de connecter le wifi de votre pc jeddom sur un réseau et le LAN sur l'autre. Ou tout simplement brancher des adaptateurs usb/LAN ou usb/Wifi à votre jeedom.
+Scan.Ip vous affichera les sous-réseaux que vous pourrez en suite activer dans la partie de configuration du plugin (en mode avancé).
+
+![scan_ip22](../images/config.widget.reseaux.png)
