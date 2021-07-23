@@ -1,3 +1,6 @@
+# 23/07/2021 | Beta & Stable
+* Fix bug au niveau des tries d'IP v4
+
 # 01/07/2021 | Beta & Stable
 
 * Affichage du MAC Id en mode Debug
