@@ -67,8 +67,11 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
             <?php
             foreach ($eqLogics as $eqLogic) {
                 if($eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    $online_cmd = $eqLogic->getCmd('info', 'on_line');
+                    $color = (is_object($online_cmd) && $online_cmd->execCmd()) ? "green" : "red";
                     $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
                     echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
+                    echo '<i class="status-circle fas fa-circle" style="font-size:1em !important;position:absolute;margin-top:22px;margin-left:55px;color:' . $color . '"></i>';
                     echo '<img src="' . scan_ip::$_pngIconMac . '"/>';
                     echo '<br>';
                     echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
@@ -355,4 +358,5 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'scan_ip_equ', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
+
 
