@@ -1,3 +1,7 @@
+# 03/08/2021
+* Ajouter un point vert/rouge indiquant online/offline par Flobul
+* Pour éviter les espaces entre les boutons (mode rounded) par Flobul
+
 # 23/07/2021 | Beta & Stable
 * Fix bug au niveau des tries d'IP v4
 
