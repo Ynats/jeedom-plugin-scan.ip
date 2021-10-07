@@ -67,8 +67,11 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
             <?php
             foreach ($eqLogics as $eqLogic) {
                 if($eqLogic->getConfiguration('type_widget', 'normal') == "normal"){
+                    $online_cmd = $eqLogic->getCmd('info', 'on_line');
+                    $color = (is_object($online_cmd) && $online_cmd->execCmd()) ? "green" : "red";
                     $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
                     echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
+                    echo '<i class="status-circle fas fa-circle" style="font-size:1em !important;position:absolute;margin-top:22px;margin-left:55px;color:' . $color . '"></i>';
                     echo '<img src="' . scan_ip::$_pngIconMac . '"/>';
                     echo '<br>';
                     echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
@@ -98,12 +101,10 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
     <div class="col-xs-12 eqLogic" style="display: none;">
         <div class="input-group pull-right" style="display:inline-flex">
-            <span class="input-group-btn">
-                <a class="btn btn-default btn-sm eqLogicAction roundedLeft" data-action="configure"><i class="fa fa-cogs"></i> {{Configuration avancée}}</a>
-                <a class="btn btn-default btn-sm eqLogicAction" data-action="copy"><i class="fas fa-copy"></i> {{Dupliquer}}</a>
-                <a class="btn btn-sm btn-success eqLogicAction" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}</a>
-                <a class="btn btn-danger btn-sm eqLogicAction roundedRight" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}</a>
-            </span>
+            <a class="btn btn-default btn-sm eqLogicAction roundedLeft" data-action="configure"><i class="fa fa-cogs"></i> {{Configuration avancée}}</a>
+            <a class="btn btn-default btn-sm eqLogicAction" data-action="copy"><i class="fas fa-copy"></i> {{Dupliquer}}</a>
+            <a class="btn btn-sm btn-success eqLogicAction" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}</a>
+            <a class="btn btn-danger btn-sm eqLogicAction roundedRight" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}</a>
         </div>
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
@@ -216,7 +217,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
-                        </div>          
+                        </div>                        
 <?php    
                         scan_ip_tools::vueSubTitle("{{Associer une adresse MAC}}");
 ?>                   
@@ -231,9 +232,9 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                                 </select>
                             </div>
                         </div>
-                        
-                        <div class="form-group" style="display:none;">
-                            <label class="col-sm-3 control-label">{{MAC Id}}</label>
+     
+                        <div class="form-group" style="<?php if(scan_ip::getConfigMode() != "debug"){ echo "display:none;"; } ?>">
+                            <label class="col-sm-3 control-label" style="color: red !important;">{{MAC Id (Mode debug)}}</label>
                             <div class="col-sm-5">
                                 <input type="text" maxlength="17" onchange="<?php scan_ip_eqLogic::hideSelect() ?>(<?php echo scan_ip_bridges::$_defaut_bridges_by_equipement ?>);" id="mac_id" class="form-control eqLogicAttr" data-l1key="configuration"  data-l2key="mac_id" style="color: #039be5 !important;" readonly="" />
                             </div>
@@ -355,4 +356,5 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 <?php include_file('desktop', 'scan_ip', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'scan_ip_equ', 'js', 'scan_ip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
+
 

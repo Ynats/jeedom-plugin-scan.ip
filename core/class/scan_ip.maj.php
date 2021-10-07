@@ -216,6 +216,25 @@ class scan_ip_maj extends eqLogic {
         } 
         return TRUE;
     }
+    
+    public static function getCheckAllEquipements_v1_1(){
+        $eqLogics = eqLogic::byType('scan_ip');
+        $return = array();
+        foreach ($eqLogics as $scan_ip) {
+            if(scan_ip_widgets::getWidgetType($scan_ip) == "normal"){
+                if(empty($scan_ip->getConfiguration('mac_id'))){ $error = "ERROR : MAC Id Vide !"; }
+                else { $error = "OK"; }
+                $return[] = array("Id" => $scan_ip->getId(), "Name" => $scan_ip->getName(), "MAC Id" => $scan_ip->getConfiguration('mac_id'), "Analyse" => $error);
+            }
+        } 
+        
+        if(isset($return[1]["Id"])){
+            return $return;  
+        } else {
+            return NULL;
+        }
+        
+    }
      
 ///////////////////////////////////////////////////////////////////////////////
 // Release Beta

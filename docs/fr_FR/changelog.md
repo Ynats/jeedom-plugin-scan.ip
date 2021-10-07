@@ -1,3 +1,16 @@
+# 03/08/2021
+* Ajouter un point vert/rouge indiquant online/offline par Flobul
+* Pour éviter les espaces entre les boutons (mode rounded) par Flobul
+
+# 23/07/2021 | Beta & Stable
+* Fix bug au niveau des tries d'IP v4
+
+# 01/07/2021 | Beta & Stable
+
+* Affichage du MAC Id en mode Debug
+* Ajout des erreurs MAC Id dans la modale Debug
+* Maj. Documentation sous réseau
+
 # 18/06/2021 | Stable
 
 * Merge Beta v1.1.1

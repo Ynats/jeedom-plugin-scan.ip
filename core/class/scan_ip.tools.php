@@ -148,9 +148,26 @@ class scan_ip_tools extends eqLogic {
         }
     }
     
+    public static function getIpv4ToSort($_string){
+        $a = explode(".", $_string);
+        $b = "";
+        foreach ($a as $key => $value) {
+            if($value < 10){
+                $b .= "00".$value;
+            }
+            elseif($value < 100){
+                $b .= "0".$value;
+            }
+            else {
+                $b .= $value;
+            }
+        }
+        return $b;
+    }
+    
     public static function getCleanForSortTable($_string, $_type = NULL){
         if (preg_match(self::getRegex("ip_v4"), $_string)) { 
-            return str_replace(".", "", $_string);
+            return self::getIpv4ToSort($_string);
         } 
         elseif($_type == "date"){
             $tmp = explode(" ", $_string);
