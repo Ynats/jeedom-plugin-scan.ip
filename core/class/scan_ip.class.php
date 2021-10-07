@@ -86,8 +86,10 @@ class scan_ip extends eqLogic {
         
         if(config::byKey('widget_new_equipement', 'scan_ip', '1') == 1) {
             $eqLogic->setIsVisible(1);
+            $eqLogic->setIsEnable(1);
         } else {
             $eqLogic->setIsVisible(0);
+            $eqLogic->setIsEnable(0);
         }
         
         $eqLogic->save();        
