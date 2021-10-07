@@ -1,3 +1,6 @@
+# 07/10/2021
+* Fix bug : désactivation du widget d'Alerte (#66586)
+
 # 03/08/2021
 * Ajouter un point vert/rouge indiquant online/offline par Flobul
 * Pour éviter les espaces entre les boutons (mode rounded) par Flobul
