@@ -95,5 +95,5 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
 </script>  
 
-<?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>
+<?php include_file('3rdparty', 'stupidtable.min', 'js', 'scan_ip'); ?>
 <?php include_file('desktop', 'scan_ip_no_equipements', 'js', 'scan_ip'); ?>

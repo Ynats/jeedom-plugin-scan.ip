@@ -95,7 +95,7 @@ class scan_ip_widget_network extends eqLogic {
         }
 
         $replace["#widget_network#"] .= '</tbody></table>';
-        $replace["#widget_network#"] .= '<script src="plugins/scan_ip/desktop/js/lib/stupidtable.min.js"/></script>';
+        $replace["#widget_network#"] .= '<script src="plugins/scan_ip/3rdparty/stupidtable.min.js"/></script>';
         $replace["#widget_network#"] .= '<script>$(document).ready(function ($) { var $table = $("#scan_ip_network_widget").stupidtable(); var $th_to_sort = $table.find("thead th").eq('.self::getOrderBy(self::getConfigOrder($_this)).'); $th_to_sort.stupidsort(); });</script>';
         
         return $replace;
