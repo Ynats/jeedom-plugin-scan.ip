@@ -192,4 +192,4 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
 </script>
 
 <?php include_file('desktop', 'scan_ip_network', 'js', 'scan_ip'); ?>
-<?php include_file('desktop', 'lib/stupidtable.min', 'js', 'scan_ip'); ?>
+<?php include_file('desktop', 'stupidtable.min', 'js', 'scan_ip'); ?>
