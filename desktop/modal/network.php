@@ -80,25 +80,25 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
         <div class="panel-body">
         <?php if($ipsReseau["jeedom"]["name"] != "") { ?>
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Nom : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Nom : </label>
                 <div><?php echo $ipsReseau["jeedom"]["name"] ?></div>
             </div>
         <?php } ?>
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">ip : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">ip : </label>
                 <div><?php echo $ipsReseau["jeedom"]["ip_v4"] ?></div> 
             </div>
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Adresse MAC : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["jeedom"]["mac"]?></div>
             </div>
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Installation : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Installation : </label>
                 <div><?php echo scan_ip_tools::printDate($ipsReseau["jeedom"]["record"]) ?></div> 
             </div>
             <?php if(gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) != $ipsReseau["jeedom"]["ip_v4"]) { ?>            
                 <div>
-                    <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Host Name : </label>
+                    <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Host Name : </label>
                     <div><?php echo gethostbyaddr($ipsReseau["jeedom"]["ip_v4"]) ?></div>
                 </div>
             <?php } ?> 
@@ -115,16 +115,16 @@ $orderBy = scan_ip_widget_network::getConfigOrder($eqLogic);
         <div class="panel-body">
             <?php if(!empty($ipsReseau["route"]["equipement"])) { ?>            
                 <div>
-                    <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Nom : </label>
+                    <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Nom : </label>
                     <div><?php echo $ipsReseau["route"]["equipement"] ?></div>
                 </div>
             <?php } ?> 
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">ip : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">ip : </label>
                 <div><?php echo $ipsReseau["route"]["ip_v4"] ?></div>
             </div>
             <div>
-                <label style="width:15%; text-align: right; margin: 0px 5px 0 0; float:left;">Adresse MAC : </label>
+                <label style="width:130px; text-align: right; margin: 0px 5px 0 0; float:left;">Adresse MAC : </label>
                 <div><?php echo $ipsReseau["route"]["mac"] ?></div>
             </div>
         </div>
