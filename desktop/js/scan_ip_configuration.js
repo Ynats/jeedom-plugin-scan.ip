@@ -2,7 +2,7 @@
 getDataConfig();
 
 function getDataConfig() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.config.php", function (result) {
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.conf.php", function (result) {
         $("#dataConfig").html("");
         $.each(result, function (key, value) {
             $("#dataConfig").append("<div id='"+key+"' data-config='"+value+"'></div>");
@@ -12,7 +12,7 @@ function getDataConfig() {
 
 function showVersion(){
     var giveVersionByJeedom = $("#span_plugin_install_date").html();
-    var versionPlugin = $("#version_plugin").html();
+    var versionPlugin = $("#version_plugin").attr("data-config");
     $("#span_plugin_install_date").html("");
     $("#span_plugin_install_date").append( "v" + versionPlugin + " ("+giveVersionByJeedom+")");
 }

@@ -119,7 +119,7 @@ function verifCadence() {
 }
 
 function timeCron() {
-    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.config.php", function (result) { 
+    $.getJSON("/plugins/scan_ip/core/ajax/scan_ip.ajax.conf.php", function (result) { 
         if(result["mode_plugin"] === "debug"){ 
             $("[data-action='remove']").show();
         } 

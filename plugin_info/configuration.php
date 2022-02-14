@@ -236,6 +236,4 @@ $paquetBridges = ceil(count(scan_ip_bridges::getJsonBridges())/3);
     <br />
 </form>
 
-<div id="version_plugin" class="display:none;"><?php echo scan_ip_maj::$_versionPlugin; ?></div>
-
 <?php include_file('desktop', 'scan_ip_configuration', 'js', 'scan_ip'); ?>
