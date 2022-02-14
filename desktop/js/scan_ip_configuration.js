@@ -12,7 +12,7 @@ function getDataConfig() {
 
 function showVersion(){
     var giveVersionByJeedom = $("#span_plugin_install_date").html();
-    var versionPlugin = $("#version_plugin").attr("data-config");
+    var versionPlugin = $("#version_plugin").html();
     $("#span_plugin_install_date").html("");
     $("#span_plugin_install_date").append( "v" + versionPlugin + " ("+giveVersionByJeedom+")");
 }
