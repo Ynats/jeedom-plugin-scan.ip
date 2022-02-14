@@ -30,6 +30,18 @@ function scan_ip_install() {
     try {
         scan_ip_maj::activationCron(0);
         
+        $cron = cron::byClassAndFunction('scan_ip', 'scan');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass('scan_ip');
+            $cron->setFunction('scan');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
+            $cron->setSchedule('* * * * *');
+            $cron->setTimeout(60);
+            $cron->save();
+        }
+        
         scan_ip_maj::waitUnlock();
         
         scan_ip_maj::setConfigBase();
@@ -67,6 +79,24 @@ function scan_ip_update() {
     try {
         
         scan_ip_maj::activationCron(0);
+        
+        $cron = cron::byClassAndFunction('scan_ip', 'scan');
+        if (!is_object($cron)) {
+            $cron = new cron();
+        }
+        $cron->setClass('scan_ip');
+        $cron->setFunction('scan');
+        $cron->setEnable(1);
+        $cron->setDeamon(0);
+        $cron->setSchedule('* * * * *');
+        $cron->setTimeout(60);
+        $cron->save();
+        $cron->stop();
+        foreach(eqLogic::byType('scan_ip') as $eqLogic){
+            $ping = $eqLogic->getCmd(null, 'ping');	
+            $ping->setConfiguration('repeatEventManagement','never');
+            $ping->save();
+        }
         
         scan_ip_maj::waitUnlock();
         
@@ -109,7 +139,10 @@ function scan_ip_update() {
 
 
 function scan_ip_remove() {
-    
+    $cron = cron::byClassAndFunction('scan_ip', 'scan');
+	if (is_object($cron)) {
+		$cron->remove();
+	}
 }
 
 ?>

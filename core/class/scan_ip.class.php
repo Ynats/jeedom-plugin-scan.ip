@@ -178,7 +178,7 @@ class scan_ip extends eqLogic {
 # TACHES CRON
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    public static function cron() {
+    public static function scan() {
   
         $cronConfig = config::byKey('cron_pass', 'scan_ip', 1);
 
