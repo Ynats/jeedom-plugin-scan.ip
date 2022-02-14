@@ -89,7 +89,7 @@ function scan_ip_update() {
         $cron->setEnable(1);
         $cron->setDeamon(0);
         $cron->setSchedule('* * * * *');
-        $cron->setTimeout(30);
+        $cron->setTimeout(60);
         $cron->save();
         $cron->stop();
         foreach(eqLogic::byType('scan_ip') as $eqLogic){
