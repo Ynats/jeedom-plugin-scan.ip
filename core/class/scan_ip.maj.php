@@ -51,7 +51,7 @@ class scan_ip_maj extends eqLogic {
     }
     
     public static function etatCron(){
-        return config::byKey('functionality::cron::enable', 'scan_ip');
+        return config::byKey('functionality::scan::enable', 'scan_ip');
     }
     
     public static function activationCron($_active){
@@ -61,7 +61,7 @@ class scan_ip_maj extends eqLogic {
             log::add('scan_ip', 'info', '>  Réactivation du CRON'); 
         }
         
-        config::save('functionality::cron::enable', $_active, 'scan_ip');
+        config::save('functionality::scan::enable', $_active, 'scan_ip');
     }
     
     public static function getVersionPlugin(){
