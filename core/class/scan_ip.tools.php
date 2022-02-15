@@ -84,14 +84,22 @@ class scan_ip_tools extends eqLogic {
         else { return NULL; }
     }
     
-    public static function getPlageIp($_ip){
-        list($a, $b, $c) = explode('.', $_ip);
-        return $a . "." . $b . "." . $c;
+    public static function getPlageIp($_ip = NULL){
+        if($_ip != NULL){
+            @list($a, $b, $c) = explode('.', $_ip);
+            return $a . "." . $b . "." . $c;
+        } else {
+            return NULL;
+        }
     }
     
-    public static function getLastMac($_mac){
-        list($a, $b, $c, $d, $e, $f) = explode(':', $_mac);
-        return $d . ":" . $e . ":" . $f;
+    public static function getLastMac($_mac = NULL){
+        if($_mac != NULL){
+            @list($a, $b, $c, $d, $e, $f) = explode(':', $_mac);
+            return $d . ":" . $e . ":" . $f;
+        } else {
+            return NULL;
+        }
     }
     
     public static function isOffline($_expire = NULL, $_time){
@@ -172,8 +180,12 @@ class scan_ip_tools extends eqLogic {
         elseif($_type == "date"){
             $tmp = explode(" ", $_string);
             $tmp1 = explode("/", $tmp[0]);
-            $tmp2 = str_replace(":", "", $tmp[1]);
-            return $tmp1[2].$tmp1[1].$tmp1[0].$tmp2;
+            if(empty($tmp1)){
+                $tmp2 = str_replace(":", "", $tmp[1]);
+                return $tmp1[2].$tmp1[1].$tmp1[0].$tmp2;
+            } else {
+                return NULL;
+            }
         }
         if($_string == "..."){
             if($_type == "int"){

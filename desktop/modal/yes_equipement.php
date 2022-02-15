@@ -56,7 +56,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                         
                         foreach ($allEquipements as $equipement) {
 
-                            if($equipement["on_line"] == 0 AND $equipement["ip_v4"] == ""){ 
+                            if($equipement["on_line"] == 0){ 
                                 $color = "red"; 
                                 $equipement["ip_v4"] = "..."; 
                                 $statut = "Hors ligne"; 

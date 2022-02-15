@@ -87,12 +87,6 @@ class scan_ip_eqLogic extends eqLogic {
                     $return[$a]["ip_v4"] = "...";
                 }
                 
-                if(!empty(scan_ip_cmd::getCommande('ip_v4', $scan_ip))){
-                    $return[$a]["ip_v4"] = scan_ip_cmd::getCommande('ip_v4', $scan_ip);
-                } else {
-                    $return[$a]["ip_v4"] = "...";
-                }
-                
                 if(!empty(scan_ip_cmd::getCommande('update_date', $scan_ip))){
                     $return[$a]["update_date"] = scan_ip_cmd::getCommande('update_date', $scan_ip);
                 } else {
