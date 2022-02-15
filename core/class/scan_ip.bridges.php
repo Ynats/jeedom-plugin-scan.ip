@@ -115,7 +115,7 @@ class scan_ip_bridges extends eqLogic {
                 echo '<div class="form-group">';
                 echo '<label class="col-sm-3 control-label">{{Association '.$index.'}}</label>';
                 echo '<div class="col-sm-5">';
-                echo '<select class="form-control eqLogicAttr plug_element_plugin plug_element_plugin_'.$index.'" onchange="verifEquipement('. self::$_defaut_bridges_by_equipement .');" data-l1key="configuration" data-l2key="plug_element_plugin_'.$index.'">';
+                echo '<select class="form-control eqLogicAttr plug_element_plugin plug_element_plugin_'.$index.'" onchange="verifEquipement('. self::$_defaut_bridges_by_equipement .'); verifEquipementCore('.$index.');" data-l1key="configuration" data-l2key="plug_element_plugin_'.$index.'">';
                 echo '<option value="">Sélectionnez un élément</option>';
                 echo $selection;
                 echo '</select>';

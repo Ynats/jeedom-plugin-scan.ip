@@ -137,8 +137,6 @@ function verifEquipement(nb) {
         var listCore = [];
         var valueEquipement = "";
         
-        $('#div_alert_scan_ip_equipement_core').hide();
-
         for (x = 1; x <= nb; x++) {
             var val = $('.plug_element_plugin_' + x).find(":selected").val();
             if(val){
@@ -170,12 +168,31 @@ function verifEquipement(nb) {
         
         $.each(listCore, function (index2, value2) {
             if(value2 != ""){ 
-                $('#div_alert_scan_ip_equipement_core').showAlert({message: "{{Attention, cet équipement est associé au bridge <span style='font-weight: bold;'>core</span> de votre Jeedom !<br />Ce qui veut dire que Scan.Ip peut modifier votre configuration Jeedom.<br />Cette association s'adresse à des utilisateurs avancés car cela peut générer des erreurs dans votre config globale ou sur le bon fonctionnement d'autres plugins.}}", level: 'warning'});
                 $('.plug_element_plugin_' + value2).attr("style", "color : #cc8500 !important;");
             }  
         });
 
     }
+}
+
+function verifEquipementCore(id) {
+
+    var listCore = 0;
+
+    $('#div_alert_scan_ip_equipement_core').hide();
+
+    var val = $('.plug_element_plugin_' + id).find(":selected").val();
+    if (val) {
+	var split = val.split("|");
+	if (split[0] == "core") {
+	    listCore = 1;
+	}
+    }
+
+    if (listCore == 1) {
+	$('#div_alert_scan_ip_equipement_core').showAlert({message: "{{Attention, cet équipement est associé au bridge <span style='font-weight: bold;'>core</span> de votre Jeedom !<br />Ce qui veut dire que Scan.Ip peut modifier votre configuration Jeedom.<br />Cette association s'adresse à des utilisateurs avancés car cela peut générer des erreurs dans votre config globale ou sur le bon fonctionnement d'autres plugins.}}", level: 'warning'});
+    }
+
 }
 
 // Synchro
