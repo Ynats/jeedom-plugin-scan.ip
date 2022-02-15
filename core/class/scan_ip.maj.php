@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../../../plugins/scan_ip/core/class/scan_ip.require_
 
 class scan_ip_maj extends eqLogic {
     
-    public static $_versionPlugin = "1.1.4";
+    public static $_versionPlugin = "1.1.5";
     
     public static function checkPluginVersionAJour(){
         if(self::getVersionPlugin() == self::$_versionPlugin){
