@@ -52,7 +52,7 @@ class scan_ip_json extends eqLogic {
     }
     
     public static function majNetworkCommentaires($_array){
-        self::createJsonFile(scan_ip::$_jsonCommentairesEquipement, $_array);
+        self::createAndMergeJsonFile(scan_ip::$_jsonCommentairesEquipement, $_array);
     }
     
     public static function recordInJson($_file, $_data) {
@@ -82,6 +82,18 @@ class scan_ip_json extends eqLogic {
         if (!is_dir(scan_ip::$_folderJson)) {
             log::add('scan_ip', 'debug', 'miseEnCacheJson :.  Création du dossier :' . scan_ip::$_folderJson);
             mkdir(scan_ip::$_folderJson, 0777);
+        }
+    }
+    
+    public static function createAndMergeJsonFile($_file, $_data){
+        log::add('scan_ip', 'debug', 'createAndMergeJsonFile :. Lancement');
+        
+        if(file_exists($_file.'.json')){
+            $oldData = self::getJson($_file);
+            $newData = $result = array_merge($_data, $oldData);
+            self::createJsonFile($_file, $newData);
+        } else {
+            self::createJsonFile($_file, $_data);
         }
     }
     
