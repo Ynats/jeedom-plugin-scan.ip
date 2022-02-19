@@ -1,3 +1,16 @@
+# 19/02/2022 | v1.5
+* Intégration des CRAN dans le moteur de tache du système Jeedom
+* Fixe erreurs Scan OnLine
+* Fixe erreurs des alertes multi Core Error au chargement de la page
+* Fix Bug de la perte de commentaires (#73803)
+* Fixe Bug affichage de la versino dans la configuration
+
+# 04/02/2022 | v1.4
+* Correction état de connexion sur la popin Network
+
+# 01/02/2022
+* Fixe bug - Erreur javascript lors de l’affichage de la stupidtable dans le widget network (#77688)
+
 # 07/10/2021
 * Fix bug : désactivation du widget d'Alerte (#66586)
 

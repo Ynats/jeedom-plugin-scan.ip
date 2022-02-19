@@ -90,7 +90,7 @@ class scan_ip_json extends eqLogic {
         
         if(file_exists($_file.'.json')){
             $oldData = self::getJson($_file);
-            $newData = $result = array_merge($_data, $oldData);
+            $newData = $result = array_merge($oldData, $_data);
             self::createJsonFile($_file, $newData);
         } else {
             self::createJsonFile($_file, $_data);
