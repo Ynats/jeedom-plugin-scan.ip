@@ -88,7 +88,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
 
 
                             echo '<tr>'
-                                . '<td class="scanTd" style="width:40px; padding-left:14px !important;"><span style="display:none;">' . $sortOnLine . '</span>' . scan_ip_tools::getCycle("15px", $color) . '</td>'
+                                . '<td class="scanTd" style="width:40px; padding:5px 0; padding-left:14px !important;"><span style="display:none;">' . $sortOnLine . '</span><div style="margin:5px 0;">' . scan_ip_tools::getCycle("15px", $color) . '</div></td>'
                                 . '<td class="scanTd">' . $equipement["link"] . '</td>'
                                 . '<td class="scanTd">' . $equipement["mac"] . '</td>'
                                 . '<td class="scanTd"><span style="display:none;">' . $sortip_v4 . '</span>' . $equipement["ip_v4"] . '</td>'

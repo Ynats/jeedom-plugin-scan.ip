@@ -145,6 +145,8 @@ class scan_ip_json extends eqLogic {
         }
         
         $savingMac = scan_ip_eqLogic::getAlleqLogics();
+        $onLineTime = scan_ip::$_defaut_offline_time*60;
+        $timeNow = time();
         
         foreach ($ipsReseau["sort"] as $device) {
             if (empty($savingMac[$device["mac_id"]]["name"])) {
@@ -155,13 +157,20 @@ class scan_ip_json extends eqLogic {
                     $comment = NULL;
                 }
                 
+                if($timeNow < ($device["time"] + $onLineTime)){
+                    $online = 1;
+                } else {
+                    $online = 0;
+                }
+                
                 $return[] = array(
                     "name" => $device["equipement"], 
                     "mac" => $device["mac"], 
                     "ip_v4" => $device["ip_v4"], 
                     "comment" => $comment, 
                     "time" => $device["time"],
-                    "record" => $jsonEquipement[$device["mac_id"]]["record"]
+                    "record" => $jsonEquipement[$device["mac_id"]]["record"],
+                    "online" => $online
                 );
             }
         }
