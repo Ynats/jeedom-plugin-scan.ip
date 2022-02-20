@@ -1,9 +1,12 @@
-# 19/02/2022 | v1.5
+# 20/02/2022 | v1.2
 * Intégration des CRAN dans le moteur de tache du système Jeedom
 * Fixe erreurs Scan OnLine
 * Fixe erreurs des alertes multi Core Error au chargement de la page
 * Fix Bug de la perte de commentaires (#73803)
 * Fixe Bug affichage de la versino dans la configuration
+* Fixe Last IP (tableau des équipements enregistrés)
+* Fixe Ajout de la colonne On Line equipement offline
+* Amélioration hauteur tableaux équipement
 
 # 04/02/2022 | v1.4
 * Correction état de connexion sur la popin Network
