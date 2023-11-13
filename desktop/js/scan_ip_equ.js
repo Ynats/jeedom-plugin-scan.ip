@@ -111,7 +111,7 @@ function verifCadence() {
     var cron_pass = $("#cronPass").attr('data-cron');
     var delta = offline_time / cron_pass;
 
-    if (delta < 2) {
+    if (offline_time && delta < 2) {
         $('#div_alert_scan_ip_cadence').showAlert({message: "{{Si vous validez cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
     } else {
         $('#div_alert_scan_ip_cadence').hide();
