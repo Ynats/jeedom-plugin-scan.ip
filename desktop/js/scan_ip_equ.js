@@ -1,6 +1,6 @@
 
 $("#hiden_type_widget").change(function () {
-    if($("#hiden_type_widget").val() == "normal"){
+    if($("#hiden_type_widget").val() == "normal" || $("#hiden_type_widget").val() == null){
         $("#hiden_type_normal").show();
         $("#scan_ip_info_widget").hide();
         $("[data-action='copy']").show();
