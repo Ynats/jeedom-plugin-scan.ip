@@ -1,5 +1,6 @@
 # 20/11/2023 | v1.22
 * Ajout de la colonne de valeurs des commandes
+* Ajout de valeurs de config par défaut à la première installation du plugin
 
 # 14/11/2023 | v1.21
 * Corrige la configuration d'un nouveau équiupement qui disparait.
