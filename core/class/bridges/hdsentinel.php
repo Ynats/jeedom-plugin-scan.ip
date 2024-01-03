@@ -3,14 +3,14 @@
 /**
 * le nom de la class doit commencer par "scan_ip_" et se poursuivre par le nom du plugin
 */
-class scan_ip_pjlink {
+class scan_ip_hdsentinel {
     
     /**
     * Nom du Plugin correspondant au nom du fichier présent dans core/bridges/*****.php
     * Nom de la variable ip à modifier
     */
-    public static $plug = "pjlink";
-    public static $ip = "host";
+    public static $plug = "hdsentinel";
+    public static $ip = "addressip";
     
     /**
     * getAllElements sert à récupérer les infos des éléments liés au plugin
@@ -27,17 +27,15 @@ class scan_ip_pjlink {
         $return = NULL;
         $eqLogics = eqLogic::byType(self::$plug); 
         
-        foreach ($eqLogics as $eqLogic) {    
+        foreach ($eqLogics as $eqLogic) {  
+           if ($eqLogic->getConfiguration(self::$ip) != '')
+           {
             $return[$eqLogic->getId()]["plugin"] = self::$plug;
-
-            if (strpos($eqLogic->getConfiguration('pjlink_model'), "Connection failed") === false) {
-                $return[$eqLogic->getId()]["plugin_print"] = self::$plug . " :: " . $eqLogic->getConfiguration('pjlink_model');
-            } else {
-                $return[$eqLogic->getId()]["plugin_print"] = self::$plug;
-            }
+            $return[$eqLogic->getId()]["plugin_print"] = self::$plug;
             $return[$eqLogic->getId()]["name"] = $eqLogic->getName();
             $return[$eqLogic->getId()]["id"] = $eqLogic->getId();
             $return[$eqLogic->getId()]["ip_v4"] = $eqLogic->getConfiguration(self::$ip);
+           }
         }
         return $return;
     }
@@ -59,7 +57,7 @@ class scan_ip_pjlink {
                 if($eqLogic->getConfiguration(self::$ip) != $_array["ip"]){
                     $eqLogic->setConfiguration(self::$ip, $_array["ip"]);
                     $eqLogic->save(); 
-                    // Si besoin de relancer un deamon on retourne self::$plug
+                    // Retourne le deamon à lancer
                     return NULL;
                 }   
             }

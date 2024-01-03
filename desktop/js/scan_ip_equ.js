@@ -1,6 +1,6 @@
 
 $("#hiden_type_widget").change(function () {
-    if($("#hiden_type_widget").val() == "normal"){
+    if($("#hiden_type_widget").val() == "normal" || $("#hiden_type_widget").val() == null){
         $("#hiden_type_normal").show();
         $("#scan_ip_info_widget").hide();
         $("[data-action='copy']").show();
@@ -111,7 +111,7 @@ function verifCadence() {
     var cron_pass = $("#cronPass").attr('data-cron');
     var delta = offline_time / cron_pass;
 
-    if (delta < 2) {
+    if (offline_time && delta < 2) {
         $('#div_alert_scan_ip_cadence').showAlert({message: "{{Si vous validez cette configuration, il est possible que certains de vos équipements soient indiqués comme hors-ligne alors qu'ils ne le sont pas.}}", level: 'warning'});
     } else {
         $('#div_alert_scan_ip_cadence').hide();
@@ -245,6 +245,11 @@ function addCmdToTable(_cmd) {
     tr += '<input class="cmdAttr form-control input-sm" data-l1key="name">';
     tr += '</div>';
     tr += '</div>';
+    tr += '</td>';
+    tr += '<td>';
+    if (init(_cmd.type) == 'info') {
+      tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>';
+    }
     tr += '</td>';
     tr += '<td>';
     if (is_numeric(_cmd.id)) {
