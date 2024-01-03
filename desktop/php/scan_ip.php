@@ -193,7 +193,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                             <label class="col-lg-3 control-label">{{Ordre d'affichage du Widget}}</sup>
                             </label>
                             <div class="col-lg-5">
-                                <select class="eqLogicAttr form-control" id="offline_time" data-l1key="configuration" data-l2key="saveOrderColonWidegetNetwork">
+                                <select class="eqLogicAttr form-control" id="saveOrderColonWidegetNetwork" data-l1key="configuration" data-l2key="saveOrderColonWidegetNetwork">
                                     <option value="online">{{par "En ligne"}}</option>
                                     <option value="saving">{{par "Elément enregistré"}}</option>
                                     <option value="mac">{{par "Adresse MAC"}}</option>
@@ -341,7 +341,7 @@ require_once dirname(__FILE__) . "/../../../../plugins/scan_ip/core/class/scan_i
                 <table id="table_cmd" class="table table-bordered table-condensed">
                     <thead>
                         <tr>
-                            <th>{{Nom}}</th><th>{{Action}}</th>
+                            <th>{{Nom}}</th><th>{{Valeur}}</th><th>{{Action}}</th>
                         </tr>
                     </thead>
                     <tbody>
