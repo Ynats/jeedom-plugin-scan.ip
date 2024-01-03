@@ -3,8 +3,8 @@
 * Ajout de valeurs de config par défaut à la première installation du plugin
 
 # 14/11/2023 | v1.21
-* Corrige la configuration d'un nouveau équiupement qui disparait.
-* Corrige la popup qui indique que l'appareil risque d'apparait hors ligne.
+* Corrige la configuration d'un nouveau équipement qui disparait.
+* Corrige la popup qui indique que l'appareil risque d'apparaire hors ligne.
 
 # 20/02/2022 | v1.2
 * Intégration des CRAN dans le moteur de tache du système Jeedom
