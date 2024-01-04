@@ -1,3 +1,6 @@
+# 04/01/2024 | v1.23
+* Mise à jour du ieee-oui et du ieee-iab
+
 # 20/11/2023 | v1.22
 * Ajout de la colonne de valeurs des commandes
 * Ajout de valeurs de config par défaut à la première installation du plugin
