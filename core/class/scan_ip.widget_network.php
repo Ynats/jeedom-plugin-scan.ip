@@ -41,7 +41,7 @@ class scan_ip_widget_network extends eqLogic {
         return $scan_ip;
     }
     
-    public function setCmdWidgetNetwork($_scanIp){
+    public static function setCmdWidgetNetwork($_scanIp){
         
 //        $refresh = $_scanIp->getCmd(null, 'refresh');
 //        if (!is_object($refresh)) {
