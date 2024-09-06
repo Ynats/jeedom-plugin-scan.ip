@@ -77,7 +77,7 @@ class scan_ip_widget_normal extends eqLogic {
         return $return;
     }
     
-    public function setCmdWidgetNormal($_scanIp){
+    public static function setCmdWidgetNormal($_scanIp){
         
         $info = $_scanIp->getCmd(null, 'ip_v4');
         if (!is_object($info)) {
