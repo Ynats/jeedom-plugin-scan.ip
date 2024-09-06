@@ -40,7 +40,7 @@ class scan_ip_widget_alerte extends eqLogic {
         return $scan_ip;
     }
     
-    public function setCmdAlerteNewEquipement($_scanIp){
+    public static function setCmdAlerteNewEquipement($_scanIp){
         
         for ($i = 0; $i <= (scan_ip::$_defaut_alerte_new_equipement -1); $i++) {
             $info = $_scanIp->getCmd(null, 'last_'.$i.'_mac');
